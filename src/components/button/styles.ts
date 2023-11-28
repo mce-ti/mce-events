@@ -5,11 +5,11 @@ export const styles = StyleSheet.create({
     width: '100%',
     height: 40,
     paddingHorizontal: 10,
+    flexDirection: 'row',
+    gap: 10,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 4
   },
-  text: {
-
-  },
+  text: { },
 })

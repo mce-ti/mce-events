@@ -7,7 +7,7 @@ type IconButtonProps = {
   outlined?: boolean
 } & TouchableOpacityProps
 
-const IconButton = ({ children, size = 40, color = 'blue', outlined = false }: IconButtonProps) => {
+const IconButton = ({ children, size = 40, color = 'blue', outlined = false, ...props }: IconButtonProps) => {
 
   const style: StyleProp<ViewStyle> = outlined ? {
     borderWidth: 1,
@@ -17,14 +17,17 @@ const IconButton = ({ children, size = 40, color = 'blue', outlined = false }: I
   }
 
   return (
-    <TouchableOpacity style={{
-      height: size,
-      width: size,
-      justifyContent: 'center',
-      alignItems: 'center',
-      borderRadius: 4,
-      ...style
-    }}>
+    <TouchableOpacity
+      style={{
+        height: size,
+        width: size,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 4,
+        ...style
+      }}
+      {...props}
+    >
       {children}
     </TouchableOpacity>
   )

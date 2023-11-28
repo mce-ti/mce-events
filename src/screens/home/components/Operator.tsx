@@ -1,19 +1,21 @@
-import { SafeAreaView, StyleSheet, View, Text } from "react-native"
-import { Button, IconButton } from "../../../components"
+import { StyleSheet, View, Text } from "react-native"
+import { IconButton } from "../../../components"
 
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 type OperatorProps = {
   entry: () => void
   output: () => void
+  name: string
+  color: string | null
 }
 
-const Operator = ({ entry, output }: OperatorProps) => {
+const Operator = ({ entry, output, name }: OperatorProps) => {
 
   return (
     <View style={styles.container}>
       <View style={{ flex: 1 }}>
-        <Text style={styles.name}>Operador 1</Text>
+        <Text style={styles.name}>{name}</Text>
       </View>
       <View>
         <IconButton color="green" outlined onPress={entry}>

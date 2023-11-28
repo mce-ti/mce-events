@@ -1,53 +1,38 @@
-import { SafeAreaView, StyleSheet, View, Text, FlatList } from "react-native"
-import { Header } from "../../template";
-import { Divider, Input } from "../../components";
+import { StyleSheet, View, Text, FlatList } from "react-native"
+import { Layout } from "src/template";
+import { Divider, Input } from "src/components";
 import { Operator } from "./components/Operator";
+import { useHome } from './hooks/useHome';
 
-import { RootStackParamList } from "../../routes/stack.routes";
-import { NavigationProp } from "@react-navigation/native";
+import type { RootStackNavigation } from "src/routes/stack.routes";
 
-type HomeScreenProps = {
-  navigation: NavigationProp<RootStackParamList, 'Home'>
-}
+const Home = ({ navigation }: RootStackNavigation<'Home'>) => {
 
-const Home = ({ navigation }: HomeScreenProps) => {
+  const { operators } = useHome({ navigation })
 
   return (
-    <View style={styles.container}>
-      <Header />
-      <SafeAreaView style={styles.content}>
-        <View style={styles.infos}>
-          <Text style={styles.eventName}>Planeta Atlântida</Text>
-          <Text style={styles.eventLocal}>Av. Interbalneários Interbalneários, 413 - XANGRI-LÁ, Xangri-lá - RS</Text>
-          <Text style={styles.eventDate}>02/02/2024</Text>
-        </View>
+    <Layout>
+      <View>
+        <Text style={styles.eventName}>Planeta Atlântida</Text>
+        <Text style={styles.eventLocal}>Av. Interbalneários Interbalneários, 413 - XANGRI-LÁ, Xangri-lá - RS</Text>
+        <Text style={styles.eventDate}>02/02/2024</Text>
+      </View>
 
-        <Divider space={20} />
+      <Divider space={20} />
 
-        <Input placeholder="Buscar..." />
+      <Input placeholder="Buscar..." />
 
-        <Divider opacity={0} />
+      <Divider opacity={0} />
 
-        <FlatList
-          data={[{},{},{},{}]}
-          renderItem={({ item }) => <Operator entry={() => navigation.navigate('ProductEntry')} output={() => navigation.navigate('ProductEntry')} />}
-        />
-      </SafeAreaView>
-    </View>
+      <FlatList
+        data={operators}
+        renderItem={({ item }) => <Operator name={item.nome} color={item.cor} entry={() => navigation.navigate('ProductEntry')} output={() => navigation.navigate('ProductEntry')} />}
+      />
+    </Layout>
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5'
-  },
-  content: {
-    padding: 20
-  },
-  infos: {
-
-  },
   eventName: {
     fontSize: 24,
     fontWeight: "600",
