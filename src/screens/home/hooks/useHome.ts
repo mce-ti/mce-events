@@ -2,24 +2,28 @@ import { useEffect, useState } from 'react'
 
 import { useAsyncStorage } from 'src/hooks'
 
-import type { OperatorStorage } from 'src/storage/storage.types'
+import type { EventStorage, OperatorStorage } from 'src/storage/storage.types'
 import type { RootStackNavigation } from 'src/routes/stack.routes'
 
 const useHome = ({ navigation }: RootStackNavigation<'Home'> ) => {
   const [operators, setOpreators] = useState<OperatorStorage[]>([])
+  const [useEvent, setEvent] = useState<EventStorage|null>(null)
+  const [searchValue, setSearchValue] = useState<string>('')
 
   const { getItem } = useAsyncStorage()
 
   const loadInfos = async () => {
     const operatorsStorage: OperatorStorage[] = await getItem('operators') || []
+    const eventStorage: EventStorage|null = await getItem('event')
 
+    setEvent(eventStorage)
     setOpreators(operatorsStorage)
   }
 
   const onScreenFocus = () => {    
-    const unsubscribe = navigation.addListener('focus', () => {
-      loadInfos()
+    loadInfos()
 
+    const unsubscribe = navigation.addListener('focus', () => {
       navigation.canGoBack() && navigation.reset({
         index: 0,
         routes: [{ name: 'Home' }],
@@ -29,13 +33,13 @@ const useHome = ({ navigation }: RootStackNavigation<'Home'> ) => {
     return unsubscribe
   }
 
-  useEffect(() => {
-    
-    return onScreenFocus();
-  }, [])
+  useEffect(onScreenFocus, [])
 
   return {
-    operators
+    operators,
+    useEvent,
+    searchValue,
+    setSearchValue
   }
 }
 

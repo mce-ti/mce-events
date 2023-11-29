@@ -29,3 +29,14 @@ export type ArtStorage = {
   quantidade: number
   valor: number
 }
+
+export type ProductMovementStorage = {
+  time: number
+  datetime: string
+  responsible: string
+  type: 'in' | 'out'
+  quantity: number
+  id_art: number
+  id_operator: number
+  image: string
+}

@@ -5,28 +5,45 @@ import { Operator } from "./components/Operator";
 import { useHome } from './hooks/useHome';
 
 import type { RootStackNavigation } from "src/routes/stack.routes";
+import { formatDBDate } from "src/utils/date.utils";
 
-const Home = ({ navigation }: RootStackNavigation<'Home'>) => {
+const Home = ({ navigation, route }: RootStackNavigation<'Home'>) => {
 
-  const { operators } = useHome({ navigation })
+  const {
+    operators,
+    useEvent,
+    searchValue,
+    setSearchValue
+  } = useHome({ navigation, route })
 
   return (
     <Layout>
       <View>
-        <Text style={styles.eventName}>Planeta Atlântida</Text>
-        <Text style={styles.eventLocal}>Av. Interbalneários Interbalneários, 413 - XANGRI-LÁ, Xangri-lá - RS</Text>
-        <Text style={styles.eventDate}>02/02/2024</Text>
+        <Text style={styles.eventName}>{useEvent?.nome}</Text>
+        <Text style={styles.eventLocal}>{useEvent?.local}</Text>
+        <Text style={styles.eventDate}>{formatDBDate(useEvent?.data)}</Text>
       </View>
 
       <Divider space={20} />
 
-      <Input placeholder="Buscar..." />
+      <Input
+        placeholder="Buscar..."
+        value={searchValue}
+        onChangeText={setSearchValue}
+      />
 
       <Divider opacity={0} />
 
       <FlatList
-        data={operators}
-        renderItem={({ item }) => <Operator name={item.nome} color={item.cor} entry={() => navigation.navigate('ProductEntry')} output={() => navigation.navigate('ProductEntry')} />}
+        data={operators.filter(({ nome }) => nome.toLowerCase().includes(searchValue.toLowerCase()))}
+        renderItem={({ item }) => (
+          <Operator
+            name={item.nome}
+            color={item.cor}
+            entry={() => navigation.navigate('ProductEntry', { id: item.id })}
+            output={() => navigation.navigate('ProductEntry', { id: item.id })}
+          />
+        )}
       />
     </Layout>
   )

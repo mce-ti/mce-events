@@ -2,8 +2,12 @@ import { StyleSheet, View, StatusBar, TouchableOpacity } from "react-native"
 import Logo from '../../../assets/logo.svg'
 
 import Ionicons from '@expo/vector-icons/Ionicons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+
 import { useNavigation } from "@react-navigation/native";
 import { useAsyncStorage } from "src/hooks";
+import { SyncButton } from "../syncButton/SyncButton";
 
 const Header = () => {
 
@@ -18,6 +22,7 @@ const Header = () => {
     
     navigation.reset({
       index: 0,
+      // @ts-ignore
       routes: [{ name: 'Login' }],
     })
   }
@@ -25,12 +30,15 @@ const Header = () => {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="#172554" />
+      
       <View style={styles.content}>
-        <Logo width={90} style={{ borderColor: 'red', borderWidth: 1 }} />
-  
-        <TouchableOpacity style={styles.exit} onPress={logout}>
+        <TouchableOpacity onPress={logout}>
           <Ionicons name="exit-outline" size={24} color="white" />
         </TouchableOpacity>
+
+        <Logo width={90} style={{ borderColor: 'red', borderWidth: 1 }} />
+  
+        <SyncButton />
       </View>
     </View>
   )
@@ -41,14 +49,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#172554',
   },
   content: {
-    paddingHorizontal: 10,
+    paddingHorizontal: 15,
     height: 70,
     justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',
   },
-  exit: {
-    marginRight: 5
+  refresh: {
+    position: 'relative'
+  },
+  refreshIcon: {
+    position: 'absolute',
+    right: -7,
+    top: -7,
   }
 })
 

@@ -7,11 +7,20 @@ import { ArtOption } from "./components/ArtOption"
 
 import * as ImagePicker from 'expo-image-picker';
 
-const ProductEntry = () => {
+import type { RootStackNavigation } from "src/routes/stack.routes"
 
-  const { artValue, setArtValue } = useProductEntry()
+const ProductEntry = ({ navigation, route }: RootStackNavigation<'ProductEntry'>) => {
 
-  const [image, setImage] = useState<null|number[]>(null);
+  const {
+    arts,
+    artValue,
+    setArtValue,
+    onQuantityChange,
+    quantityValue,
+    responsibleValue,
+    setResponsibleValue,
+    saveMovement
+  } = useProductEntry(route.params)
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -38,38 +47,45 @@ const ProductEntry = () => {
       <Divider space={20} />
 
       <View style={styles.optionsContainer}>
-        <ArtOption
-          id={1}
-          currentValue={artValue}
-          image="https://www.mce.dev.br/assets/eventos/images/arte-1.png"
-          onTouch={setArtValue}
-        />
-
-        <ArtOption
-          id={2}
-          currentValue={artValue}
-          image="https://www.mce.dev.br/assets/eventos/images/arte-2.png"
-          onTouch={setArtValue}
-        />        
-        <ArtOption
-          id={3}
-          currentValue={artValue}
-          image="https://www.mce.dev.br/assets/eventos/images/arte-2.png"
-          onTouch={setArtValue}
-        />        
+        {arts.map(art => (
+          <ArtOption
+            key={`art-${art.id}`}
+            id={art.id}
+            currentValue={artValue}
+            image={art.imagem}
+            onTouch={setArtValue}
+          />
+        ))}     
       </View>
 
       <Divider opacity={0} space={10} />
 
-      <Input placeholder="Quantidade" keyboardType="number-pad" />
+      <Input
+        placeholder="Quantidade"
+        keyboardType="number-pad"
+        value={quantityValue}
+        onChangeText={onQuantityChange}
+      />
 
       <Divider opacity={0} />
 
-      <Input placeholder="Responsável" />
+      <Input
+        placeholder="Responsável"
+        value={responsibleValue}
+        onChangeText={setResponsibleValue}
+      />
 
       <Divider opacity={0} />
 
-      <Button label="Adiconar foto" onPress={pickImage} />
+      <Button label="Adicionar foto" onPress={pickImage} />
+
+      <View style={styles.imageContainer}>
+
+      </View>
+
+      <Divider opacity={0} />
+
+      <Button label="Salvar" color="green" />
     </Layout>
   )
 }
@@ -88,6 +104,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 20,
+  },
+  imageContainer: {
+    height: 200
   }
 })
 

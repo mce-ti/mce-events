@@ -4,7 +4,7 @@ import { styles } from './styles'
 
 type ButtonProps = {
   label: string
-  color?: 'blue' | 'red'
+  color?: keyof typeof colors
   full?: boolean
   loading?: boolean
 } & TouchableOpacityProps

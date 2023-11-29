@@ -6,5 +6,9 @@ export const colors = {
   red: {
     container: { backgroundColor: '#dc2626' },
     text: { color: 'white' }
+  },
+  green: {
+    container: { backgroundColor: '#16a34a' },
+    text: { color: 'white' }
   }
 }
