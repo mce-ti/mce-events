@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useAsyncStorage } from 'src/hooks'
 
+import * as ImagePicker from 'expo-image-picker'
+
 import type { EventStorage, OperatorStorage, ArtStorage } from 'src/storage/storage.types'
 
 type UseProductEntryProps = {
@@ -10,14 +12,15 @@ type UseProductEntryProps = {
 const useProductEntry = ({ id }: UseProductEntryProps) => {
   const [quantityValue, setQauntityValue] = useState<string>('')
   const [responsibleValue, setResponsibleValue] = useState<string>('')
-  const [imageValue, setImageValue] = useState<null|number>(null)
+  const [imageValue, setImageValue] = useState<null|string>(null)
   const [artValue, setArtValue] = useState<null|number>(null)
   const [arts, setArts] = useState<ArtStorage[]>([])
 
   const { getItem } = useAsyncStorage()
 
   const loadInfos = async () => {
-    // const operatorsStorage: OperatorStorage[] = await getItem('operators') || []
+    const operatorsStorage: OperatorStorage[] = await getItem('operators') || []
+    const operatorStorage = operatorsStorage.find(operator => operator.id === id)
     // const eventStorage: EventStorage|null = await getItem('event')
     const artStorage: ArtStorage[] = await getItem('arts') || []
 
@@ -47,6 +50,16 @@ const useProductEntry = ({ id }: UseProductEntryProps) => {
     }
   }
 
+  const pickImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    })
+
+    result.assets?.length &&  setImageValue(result.assets[0].uri)
+  };
+
   return {
     arts,
     artValue,
@@ -55,7 +68,9 @@ const useProductEntry = ({ id }: UseProductEntryProps) => {
     onQuantityChange,
     responsibleValue,
     setResponsibleValue,
-    saveMovement
+    saveMovement,
+    pickImage,
+    imageValue
   }
 }
 

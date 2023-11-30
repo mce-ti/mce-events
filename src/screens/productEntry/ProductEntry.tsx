@@ -1,13 +1,12 @@
-import { useState } from "react"
-import { SafeAreaView, TextInput, StyleSheet, View, Text, Image } from "react-native"
+import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native"
 import { Layout } from "../../template"
-import { Button, Divider, Input, RadioButton } from "../../components"
+import { Button, Divider, Input } from "../../components"
 import { useProductEntry } from "./hooks/useProductEntry"
 import { ArtOption } from "./components/ArtOption"
 
-import * as ImagePicker from 'expo-image-picker';
-
 import type { RootStackNavigation } from "src/routes/stack.routes"
+
+import { AntDesign } from '@expo/vector-icons/'
 
 const ProductEntry = ({ navigation, route }: RootStackNavigation<'ProductEntry'>) => {
 
@@ -19,25 +18,10 @@ const ProductEntry = ({ navigation, route }: RootStackNavigation<'ProductEntry'>
     quantityValue,
     responsibleValue,
     setResponsibleValue,
-    saveMovement
+    saveMovement,
+    pickImage,
+    imageValue
   } = useProductEntry(route.params)
-
-  const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      quality: 1,
-    });
-
-    console.log(result);
-
-    if (result.assets?.length) {
-      // setImage(result?.assets?[0]?.uri);
-      console.log(result.assets[0])
-    }
-  };
-
 
   return (
     <Layout>
@@ -77,11 +61,16 @@ const ProductEntry = ({ navigation, route }: RootStackNavigation<'ProductEntry'>
 
       <Divider opacity={0} />
 
-      <Button label="Adicionar foto" onPress={pickImage} />
-
-      <View style={styles.imageContainer}>
-
-      </View>
+      <TouchableOpacity style={styles.imageContainer} activeOpacity={.75} onPress={pickImage}>
+        {imageValue ? (
+          <Image source={{ uri: imageValue }} style={styles.image} />
+        ) : (
+          <>
+            <Text style={styles.imageText}>Adicionar foto</Text>
+            <AntDesign name="picture" size={120} color={'#0009'} />
+          </>
+        )}
+      </TouchableOpacity>
 
       <Divider opacity={0} />
 
@@ -106,7 +95,22 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   imageContainer: {
-    height: 200
+    height: 200,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+    borderColor: '#0009',
+    borderWidth: 3
+  },
+  imageText: {
+    fontWeight: '600',
+    color: '#0009',
+    fontSize: 18
+  },
+  image: {
+    width: '100%',
+    resizeMode: 'cover',
+    height: '100%'
   }
 })
 
