@@ -32,7 +32,6 @@ export type ArtStorage = {
 
 export type ProductMovementStorage = {
   time: number
-  datetime: string
   responsible: string
   type: 'in' | 'out'
   quantity: number

@@ -1,13 +1,11 @@
 import { StyleSheet, View, StatusBar, TouchableOpacity } from "react-native"
 import Logo from '../../../assets/logo.svg'
 
-import Ionicons from '@expo/vector-icons/Ionicons';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import Ionicons from '@expo/vector-icons/Ionicons'
 
-import { useNavigation } from "@react-navigation/native";
-import { useAsyncStorage } from "src/hooks";
-import { SyncButton } from "../syncButton/SyncButton";
+import { useNavigation } from "@react-navigation/native"
+import { useAsyncStorage } from "src/hooks"
+import { SyncButton } from "../syncButton/SyncButton"
 
 const Header = () => {
 
@@ -19,6 +17,7 @@ const Header = () => {
     await removeItem('user')
     await removeItem('arts')
     await removeItem('operators')
+    await removeItem('movements')
     
     navigation.reset({
       index: 0,

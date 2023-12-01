@@ -30,12 +30,18 @@ const Login = ({ navigation }: LoginScreenProps) => {
 
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Login:</Text>
-        <TextInput style={styles.input} value={username} onChangeText={setUsername} autoCapitalize="none" />
+        <TextInput
+          style={styles.input}
+          value={username}
+          onChangeText={setUsername}
+          autoCapitalize="none"
+          id="username"
+        />
       </View>
 
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Senha:</Text>
-        <TextInput style={styles.input} secureTextEntry value={password} onChangeText={setPassword} autoCapitalize="none" />
+        <TextInput style={styles.input} secureTextEntry value={password} onChangeText={setPassword} autoCapitalize="none"  id="password" />
       </View>
 
       <Button label="Entrar" onPress={singIn} disabled={isLoading} loading={isLoading} />

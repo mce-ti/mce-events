@@ -17,7 +17,7 @@ const useSyncButton = () => {
     const movements: ProductMovementStorage[] = await getItem('movements') || []
 
     setHasSync(!!movements.length)
-  }, 5000)
+  }, 5000, true)
 
   const anim = useRef(Animated.loop(
     Animated.timing(spinAnimation,
@@ -35,8 +35,9 @@ const useSyncButton = () => {
 
     await new Promise(r => setTimeout(r, 5000))
 
-    anim.stop()
+    anim.reset()
     setIsSyncing(false)
+    setHasSync(false)
   }
 
   const rotate = spinAnimation.interpolate({

@@ -10,5 +10,9 @@ export const colors = {
   green: {
     container: { backgroundColor: '#16a34a' },
     text: { color: 'white' }
+  },
+  gray: {
+    container: { backgroundColor: '#374151' },
+    text: { color: 'white' }
   }
 }

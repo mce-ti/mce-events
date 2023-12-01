@@ -1,11 +1,11 @@
 import { StyleSheet, View, Text, FlatList } from "react-native"
-import { Layout } from "src/template";
-import { Divider, Input } from "src/components";
-import { Operator } from "./components/Operator";
-import { useHome } from './hooks/useHome';
+import { Layout } from "src/template"
+import { Divider, Input } from "src/components"
+import { Operator } from "./components/Operator"
+import { formatDBDate } from "src/utils/date.utils"
+import { useHome } from './hooks/useHome'
 
-import type { RootStackNavigation } from "src/routes/stack.routes";
-import { formatDBDate } from "src/utils/date.utils";
+import type { RootStackNavigation } from "src/routes/stack.routes"
 
 const Home = ({ navigation, route }: RootStackNavigation<'Home'>) => {
 
@@ -20,11 +20,13 @@ const Home = ({ navigation, route }: RootStackNavigation<'Home'>) => {
     <Layout>
       <View>
         <Text style={styles.eventName}>{useEvent?.nome}</Text>
-        <Text style={styles.eventLocal}>{useEvent?.local}</Text>
-        <Text style={styles.eventDate}>{formatDBDate(useEvent?.data)}</Text>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <Text style={styles.eventLocal}>{useEvent?.local}</Text>
+          <Text style={styles.eventDate}>{formatDBDate(useEvent?.data)}</Text>
+        </View>
       </View>
 
-      <Divider space={20} />
+      <Divider space={10} />
 
       <Input
         placeholder="Buscar..."
@@ -33,15 +35,15 @@ const Home = ({ navigation, route }: RootStackNavigation<'Home'>) => {
       />
 
       <Divider opacity={0} />
-
       <FlatList
         data={operators.filter(({ nome }) => nome.toLowerCase().includes(searchValue.toLowerCase()))}
+        scrollEnabled={false}
         renderItem={({ item }) => (
           <Operator
             name={item.nome}
             color={item.cor}
-            entry={() => navigation.navigate('ProductEntry', { id: item.id })}
-            output={() => navigation.navigate('ProductEntry', { id: item.id })}
+            entry={() => navigation.navigate('ProductMovement', { id: item.id, movementType: 'in' })}
+            output={() => navigation.navigate('ProductMovement', { id: item.id, movementType: 'out' })}
           />
         )}
       />
@@ -57,13 +59,11 @@ const styles = StyleSheet.create({
   },
   eventLocal: {
     color: '#4b5563',
-    fontWeight: "400",
-    marginBottom: 5
+    fontWeight: "400"
   },
   eventDate: {
     color: '#1f2937',
-    fontWeight: "400",
-    marginBottom: 5
+    fontWeight: "400"
   }
 });
 

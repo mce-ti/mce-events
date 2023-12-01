@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
-import { SafeAreaView, StyleSheet, View } from "react-native"
+import { SafeAreaView, StyleSheet, View, ScrollView } from "react-native"
 import { Header } from "../header/Header";
+// import { ScrollView } from 'react-native-gesture-handler';
 
 type LayoutProps = {
   children: ReactNode
@@ -9,9 +10,11 @@ type LayoutProps = {
 const Layout = ({ children }: LayoutProps) => (
   <View style={styles.container}>
     <Header />
+      <ScrollView>
     <SafeAreaView style={styles.content}>
-      {children}
+        {children}
     </SafeAreaView>
+      </ScrollView>
   </View>
 )
 

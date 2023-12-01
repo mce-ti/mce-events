@@ -1,14 +1,15 @@
 import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native"
-import { Layout } from "../../template"
-import { Button, Divider, Input } from "../../components"
-import { useProductEntry } from "./hooks/useProductEntry"
+import { Layout } from "src/template"
+import { Button, Divider, Input } from "src/components"
+
+import { useProductMovement } from "./hooks/useProductMovement"
 import { ArtOption } from "./components/ArtOption"
 
 import type { RootStackNavigation } from "src/routes/stack.routes"
 
 import { AntDesign } from '@expo/vector-icons/'
 
-const ProductEntry = ({ navigation, route }: RootStackNavigation<'ProductEntry'>) => {
+const ProductMovement = ({ navigation, route: { params } }: RootStackNavigation<'ProductMovement'>) => {
 
   const {
     arts,
@@ -20,13 +21,14 @@ const ProductEntry = ({ navigation, route }: RootStackNavigation<'ProductEntry'>
     setResponsibleValue,
     saveMovement,
     pickImage,
-    imageValue
-  } = useProductEntry(route.params)
+    imageValue,
+    operatorName
+  } = useProductMovement(params)
 
   return (
     <Layout>
-      <Text style={styles.title}>Entrega de copos</Text>
-      <Text style={styles.subtitle}>Bar 1</Text>
+      <Text style={styles.title}>{params.movementType === 'in' ? 'Entrega' : 'Saída'} de copos</Text>
+      <Text style={styles.subtitle}>{operatorName}</Text>
 
       <Divider space={20} />
 
@@ -67,14 +69,31 @@ const ProductEntry = ({ navigation, route }: RootStackNavigation<'ProductEntry'>
         ) : (
           <>
             <Text style={styles.imageText}>Adicionar foto</Text>
-            <AntDesign name="picture" size={120} color={'#0009'} />
+            <AntDesign name="picture" size={120} color={'#0005'} />
           </>
         )}
       </TouchableOpacity>
 
       <Divider opacity={0} />
 
-      <Button label="Salvar" color="green" />
+      <View style={styles.actionsContainer}>
+        <View style={styles.actionContent}>
+          <Button
+            label="Cancelar"
+            color="gray"
+            onPress={() => navigation.goBack()}
+          />
+        </View>
+
+        <View style={styles.actionContent}>
+          <Button
+            label="Salvar"
+            color="green"
+            onPress={saveMovement}
+            disabled={!(imageValue && quantityValue && responsibleValue && artValue)}
+          />
+        </View>
+      </View>
     </Layout>
   )
 }
@@ -99,19 +118,27 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 5,
-    borderColor: '#0009',
+    borderColor: '#0005',
     borderWidth: 3
   },
   imageText: {
     fontWeight: '600',
-    color: '#0009',
+    color: '#0005',
     fontSize: 18
   },
   image: {
     width: '100%',
     resizeMode: 'cover',
     height: '100%'
+  },
+  actionsContainer: {
+    flexDirection: 'row',
+    gap: 20,
+    maxWidth: '100%'
+  },
+  actionContent: {
+    flex:1 
   }
 })
 
-export { ProductEntry }
+export { ProductMovement }

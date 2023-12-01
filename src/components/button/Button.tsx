@@ -21,7 +21,6 @@ const Button = ({
     style={[
       styles.container,
       colors[color].container,
-      full && { width: '100%' },
       props.disabled && { opacity: .6 }
     ]}
     {...props}

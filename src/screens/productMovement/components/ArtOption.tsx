@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     maxWidth: '48%'
   },
   image: {
-    resizeMode: 'contain',
+    resizeMode: 'cover',
     minHeight: 100,
     width: '100%'
   }

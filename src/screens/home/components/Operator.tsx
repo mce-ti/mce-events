@@ -10,21 +10,23 @@ type OperatorProps = {
   color: string | null
 }
 
-const Operator = ({ entry, output, name }: OperatorProps) => {
+const Operator = ({ entry, output, name, color }: OperatorProps) => {
 
   return (
     <View style={styles.container}>
-      <View style={{ flex: 1 }}>
+      <View style={[styles.nameContent, { backgroundColor: color || '#1f2937' }]}>
         <Text style={styles.name}>{name}</Text>
       </View>
+
       <View>
         <IconButton color="green" outlined onPress={entry}>
-          <Ionicons name="arrow-up" size={20} color="#16a34a" />
+          <Ionicons name="caret-down" size={26} color="#16a34a" />
         </IconButton>
       </View>
+
       <View>
         <IconButton color="red" outlined onPress={output}>
-          <Ionicons name="arrow-down" size={20} color="#dc2626" />
+          <Ionicons name="caret-up" size={26} color="#dc2626" />
         </IconButton>
       </View>
     </View>
@@ -40,9 +42,17 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: '#d1d5db'
   },
+  nameContent: {
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    height: 40,
+    flex: 1,
+    justifyContent: 'center'
+  },
   name: {
     fontWeight: '600',
-    fontSize: 16
+    fontSize: 16,
+    color: 'white'
   }
 })
 

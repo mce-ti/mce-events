@@ -1,29 +1,33 @@
 import { useEffect, useState } from 'react'
+import { Alert } from 'react-native'
 import { useAsyncStorage } from 'src/hooks'
+import { addProductsMovement } from 'src/storage/storage'
 
 import * as ImagePicker from 'expo-image-picker'
 
-import type { EventStorage, OperatorStorage, ArtStorage } from 'src/storage/storage.types'
+import type { OperatorStorage, ArtStorage } from 'src/storage/storage.types'
 
-type UseProductEntryProps = {
+type UseProductMovementProps = {
   id: number
+  movementType: 'in' | 'out'
 }
 
-const useProductEntry = ({ id }: UseProductEntryProps) => {
+const useProductMovement = ({ id, movementType }: UseProductMovementProps) => {
   const [quantityValue, setQauntityValue] = useState<string>('')
   const [responsibleValue, setResponsibleValue] = useState<string>('')
   const [imageValue, setImageValue] = useState<null|string>(null)
   const [artValue, setArtValue] = useState<null|number>(null)
   const [arts, setArts] = useState<ArtStorage[]>([])
+  const [operatorName, setOperatorName] = useState('')
 
   const { getItem } = useAsyncStorage()
 
   const loadInfos = async () => {
     const operatorsStorage: OperatorStorage[] = await getItem('operators') || []
-    const operatorStorage = operatorsStorage.find(operator => operator.id === id)
-    // const eventStorage: EventStorage|null = await getItem('event')
+    const operatorStorage: OperatorStorage = operatorsStorage.find(operator => operator.id === id)!
     const artStorage: ArtStorage[] = await getItem('arts') || []
 
+    setOperatorName(operatorStorage.nome)
     setArts(artStorage)
   }
 
@@ -42,12 +46,29 @@ const useProductEntry = ({ id }: UseProductEntryProps) => {
   }
 
   const saveMovement = async () => {
-    const hasAllValues = (quantityValue && responsibleValue && artValue && imageValue)
+    const hasAllValues = (quantityValue && responsibleValue && artValue && imageValue && id)
 
     if (!hasAllValues) {
-      alert('Preencha os campos corretamente')
+      Alert.alert('Preencha os campos corretamente')
       return;
     }
+
+    await addProductsMovement({
+      time: new Date().getTime(),
+      id_art: artValue,
+      id_operator: id,
+      image: imageValue,
+      quantity: parseInt(quantityValue),
+      responsible: responsibleValue,
+      type: movementType
+    })
+
+    Alert.alert('Registros salvos no dispositivo.')
+
+    setQauntityValue('')
+    setResponsibleValue('')
+    setImageValue(null)
+    setArtValue(null)
   }
 
   const pickImage = async () => {
@@ -70,8 +91,9 @@ const useProductEntry = ({ id }: UseProductEntryProps) => {
     setResponsibleValue,
     saveMovement,
     pickImage,
-    imageValue
+    imageValue,
+    operatorName
   }
 }
 
-export { useProductEntry }
+export { useProductMovement }
