@@ -1,9 +1,9 @@
-import { NavigationContainer } from "@react-navigation/native";
-import { StackRoutes } from './stack.routes'
+import { NavigationContainer } from "@react-navigation/native"
+import { RootRoutes } from "./routes"
 
 const Routes = () => (
   <NavigationContainer>
-    <StackRoutes />
+    <RootRoutes />
   </NavigationContainer>
 )
 

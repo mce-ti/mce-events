@@ -5,9 +5,9 @@ import { Operator } from "./components/Operator"
 import { formatDBDate } from "src/utils/date.utils"
 import { useHome } from './hooks/useHome'
 
-import type { RootStackNavigation } from "src/routes/stack.routes"
+import type { HomeStackRouteScreen } from "src/routes/routes.types"
 
-const Home = ({ navigation, route }: RootStackNavigation<'Home'>) => {
+const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
 
   const {
     operators,
@@ -42,6 +42,7 @@ const Home = ({ navigation, route }: RootStackNavigation<'Home'>) => {
           <Operator
             name={item.nome}
             color={item.cor}
+            localizacao={item?.localizacao}
             entry={() => navigation.navigate('ProductMovement', { id: item.id, movementType: 'in' })}
             output={() => navigation.navigate('ProductMovement', { id: item.id, movementType: 'out' })}
           />

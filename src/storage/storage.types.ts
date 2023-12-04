@@ -19,6 +19,7 @@ export type UserStorage = {
 export type OperatorStorage = {
   id: number
   nome: string
+  localizacao: string | null
   cor: string | null
 }
 
@@ -38,4 +39,5 @@ export type ProductMovementStorage = {
   id_art: number
   id_operator: number
   image: string
+  sync?: boolean
 }

@@ -1,50 +1,58 @@
 import { useEffect, useState } from 'react'
-import { useAsyncStorage } from "../../../hooks"
-import { apiAuth } from '../../../services/api'
+import { AwesomeAlertProps, useAsyncStorage } from "src/hooks"
+import { apiAuth } from 'src/services/api'
 
-import type { NavigationProp } from '@react-navigation/native'
-import type { RootStackParamList } from '../../../routes/stack.routes'
-import type { UserStorage } from '../../../storage/storage.types'
+import type { UserStorage } from 'src/storage/storage.types'
+
+import { useFormik } from 'formik'
+import { useAuth } from 'src/context/AuthContext'
 
 type useLoginProps = {
-  navigation: NavigationProp<RootStackParamList, 'Login'>
+  showAlert: (arg0: AwesomeAlertProps) => void
 }
 
-const useLogin = ({ navigation }: useLoginProps) => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+const useLogin = ({ showAlert }: useLoginProps) => {
+  const { login } = useAuth()
+
+  const formik = useFormik({
+    initialValues: {
+      username: '',
+      password: ''
+    },
+    onSubmit: async values => {
+      setIsLoading(true)
+
+      const response = await apiAuth.login(values)
+
+      if ('message' in response) {
+        setIsLoading(false)
+        showAlert({
+          show: true,
+          title: 'Erro',
+          message: response.message,
+          confirmText: 'Entendi',
+        })
+
+        return;
+      }
+
+      await setItem('event', response.evento)
+      await setItem('user', response.usuario)
+      await setItem('arts', response.artes)
+      await setItem('operators', response.operadores)
+
+      login(response.usuario.id)
+    }
+  })
 
   const [isLoading, setIsLoading] = useState(false)
 
   const { getItem, setItem } = useAsyncStorage()
 
-  const singIn = async () => {
-    setIsLoading(true)
-
-    const response = await apiAuth.login({ username, password })
-
-    console.log('response', response)
-
-    if ('message' in response) {
-      setIsLoading(false)
-      alert(response.message)
-      return;
-    }
-
-    await setItem('event', response.evento)
-    await setItem('user', response.usuario)
-    await setItem('arts', response.artes)
-    await setItem('operators', response.operadores)
-
-    navigation.navigate('Home')
-  }
-
   const verifyUserIsLogged = async () => {
     const user: UserStorage|null = await getItem('user')
 
-    console.log('user', user)
-
-    user && navigation.navigate('Home')
+    user && login(user.id)
   }
 
   useEffect(() => {
@@ -52,12 +60,8 @@ const useLogin = ({ navigation }: useLoginProps) => {
   }, [])
 
   return {
-    username,
-    setUsername,
-    password,
-    setPassword,
-    singIn,
-    isLoading
+    isLoading,
+    formik
   }
 }
 

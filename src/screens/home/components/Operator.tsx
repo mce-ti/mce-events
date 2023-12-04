@@ -8,24 +8,26 @@ type OperatorProps = {
   output: () => void
   name: string
   color: string | null
+  localizacao?: string | null
 }
 
-const Operator = ({ entry, output, name, color }: OperatorProps) => {
+const Operator = ({ entry, output, name, localizacao = '', color }: OperatorProps) => {
 
   return (
     <View style={styles.container}>
       <View style={[styles.nameContent, { backgroundColor: color || '#1f2937' }]}>
         <Text style={styles.name}>{name}</Text>
+        {localizacao && <Text style={styles.location}>{localizacao}</Text>}
       </View>
 
       <View>
-        <IconButton color="green" outlined onPress={entry}>
+        <IconButton size={44} color="green" outlined onPress={entry}>
           <Ionicons name="caret-down" size={26} color="#16a34a" />
         </IconButton>
       </View>
 
       <View>
-        <IconButton color="red" outlined onPress={output}>
+        <IconButton size={44} color="red" outlined onPress={output}>
           <Ionicons name="caret-up" size={26} color="#dc2626" />
         </IconButton>
       </View>
@@ -45,13 +47,18 @@ const styles = StyleSheet.create({
   nameContent: {
     paddingHorizontal: 10,
     borderRadius: 5,
-    height: 40,
+    height: 44,
     flex: 1,
     justifyContent: 'center'
   },
   name: {
     fontWeight: '600',
     fontSize: 16,
+    color: 'white'
+  },
+  location: {
+    fontWeight: '400',
+    fontSize: 10,
     color: 'white'
   }
 })

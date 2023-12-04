@@ -23,6 +23,7 @@ export type LoginResponse = {
   operadores: {
     id: number
     nome: string
+    localizacao: string | null
     cor: string | null
   }[]
   artes: {

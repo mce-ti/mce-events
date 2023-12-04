@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useAsyncStorage } from 'src/hooks'
 
 import type { EventStorage, OperatorStorage } from 'src/storage/storage.types'
-import type { RootStackNavigation } from 'src/routes/stack.routes'
+import type { RootStackNavigation } from 'src/routes/routes'
 
 const useHome = ({ navigation }: RootStackNavigation<'Home'> ) => {
   const [operators, setOpreators] = useState<OperatorStorage[]>([])
@@ -18,6 +18,8 @@ const useHome = ({ navigation }: RootStackNavigation<'Home'> ) => {
 
     setEvent(eventStorage)
     setOpreators(operatorsStorage)
+
+    console.log(operatorsStorage)
   }
 
   const onScreenFocus = () => {    

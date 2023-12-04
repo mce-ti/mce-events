@@ -1,28 +1,24 @@
 import { SafeAreaView, TextInput, View, Text } from "react-native"
 
-import { useLogin } from "./hooks/useLogin";
-import { Button } from "src/components";
-import { styles } from "./styles";
-
-import type { RootStackParamList } from "src/routes/stack.routes";
-import type { NavigationProp  } from "@react-navigation/native";
+import { useLogin } from "./hooks/useLogin"
+import { Button } from "src/components"
+import { styles } from "./styles"
+import { useAwesomeAlert } from "src/hooks"
 
 import Logo from '../../../assets/logo.svg'
 
-type LoginScreenProps = {
-  navigation: NavigationProp<RootStackParamList, 'Login'>
-}
+const Login = () => {
 
-const Login = ({ navigation }: LoginScreenProps) => {
+  const { AwesomeAlertComponent, showAlert } = useAwesomeAlert()
 
   const {
-    password,
-    setPassword,
-    setUsername,
-    username,
-    singIn,
-    isLoading
-  } = useLogin({ navigation })
+    isLoading,
+    formik: {
+      values,
+      handleChange,
+      submitForm
+    }
+  } = useLogin({ showAlert })
 
   return (
     <SafeAreaView style={styles.container}>
@@ -32,8 +28,8 @@ const Login = ({ navigation }: LoginScreenProps) => {
         <Text style={styles.label}>Login:</Text>
         <TextInput
           style={styles.input}
-          value={username}
-          onChangeText={setUsername}
+          value={values.username}
+          onChangeText={handleChange('username')}
           autoCapitalize="none"
           id="username"
         />
@@ -41,10 +37,19 @@ const Login = ({ navigation }: LoginScreenProps) => {
 
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Senha:</Text>
-        <TextInput style={styles.input} secureTextEntry value={password} onChangeText={setPassword} autoCapitalize="none"  id="password" />
+        <TextInput
+          secureTextEntry
+          style={styles.input}
+          value={values.password}
+          onChangeText={handleChange('password')}
+          autoCapitalize="none"
+          id="password"
+        />
       </View>
 
-      <Button label="Entrar" onPress={singIn} disabled={isLoading} loading={isLoading} />
+      <Button label="Entrar" onPress={submitForm} disabled={isLoading} loading={isLoading} />
+
+      <AwesomeAlertComponent />
     </SafeAreaView>
   )
 }

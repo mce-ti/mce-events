@@ -5,7 +5,7 @@ import { Button, Divider, Input } from "src/components"
 import { useProductMovement } from "./hooks/useProductMovement"
 import { ArtOption } from "./components/ArtOption"
 
-import type { RootStackNavigation } from "src/routes/stack.routes"
+import type { RootStackNavigation } from "src/routes/routes"
 
 import { AntDesign } from '@expo/vector-icons/'
 

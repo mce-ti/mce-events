@@ -1,7 +1,6 @@
 import { ReactNode } from 'react'
 import { SafeAreaView, StyleSheet, View, ScrollView } from "react-native"
-import { Header } from "../header/Header";
-// import { ScrollView } from 'react-native-gesture-handler';
+import { Header } from "../header/Header"
 
 type LayoutProps = {
   children: ReactNode
@@ -10,11 +9,11 @@ type LayoutProps = {
 const Layout = ({ children }: LayoutProps) => (
   <View style={styles.container}>
     <Header />
-      <ScrollView>
-    <SafeAreaView style={styles.content}>
+    <ScrollView>
+      <SafeAreaView style={styles.content}>
         {children}
-    </SafeAreaView>
-      </ScrollView>
+      </SafeAreaView>
+    </ScrollView>
   </View>
 )
 
@@ -25,7 +24,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5'
   },
   content: {
-    padding: 20
+    padding: 20,
+    paddingTop: 10
   },
 });
 
