@@ -9,7 +9,6 @@ export type LoginResponse = {
     nome: string
     local: string
     login: string
-    ativo: boolean
     caucao: boolean
     data: string
   }

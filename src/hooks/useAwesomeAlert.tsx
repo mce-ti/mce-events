@@ -18,7 +18,6 @@ export const useAwesomeAlert = () => {
   })
 
   const showAlert = (props: AwesomeAlertProps) => {
-    console.log(props)
     setAlertProps(props)
   }
 

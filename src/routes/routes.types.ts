@@ -23,6 +23,11 @@ export type RootStackParamList = {
   RootDrawer: undefined
 }
 
+export type RootDrawerScreen<T extends keyof RootDrawerParams> = {
+  navigation: NavigationProp<RootDrawerParams, T>
+  route: RouteProp<RootDrawerParams, T>
+}
+
 export type RootRouteScreen<T extends keyof RootStackParamList> = {
   navigation: NavigationProp<RootStackParamList, T>
   route: RouteProp<RootStackParamList, T>

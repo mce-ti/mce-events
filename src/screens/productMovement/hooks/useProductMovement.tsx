@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
-import { Alert } from 'react-native'
 import { useAsyncStorage } from 'src/hooks'
 import { addProductsMovement } from 'src/storage/storage'
 
 import * as ImagePicker from 'expo-image-picker'
+import * as MediaLibrary from 'expo-media-library'
 
 import type { OperatorStorage, ArtStorage } from 'src/storage/storage.types'
 import type { HomeStackRouteScreen } from 'src/routes/routes.types'
@@ -16,8 +16,8 @@ type useProductMovementPrps = {
 const useProductMovement = ({ navigation, route: { params }, showAlert }: useProductMovementPrps) => {
   const [quantityValue, setQauntityValue] = useState<string>('')
   const [responsibleValue, setResponsibleValue] = useState<string>('')
-  const [imageValue, setImageValue] = useState<null|string>(null)
-  const [artValue, setArtValue] = useState<null|number>(null)
+  const [imageValue, setImageValue] = useState<null | string>(null)
+  const [artValue, setArtValue] = useState<null | number>(null)
   const [arts, setArts] = useState<ArtStorage[]>([])
   const [operatorName, setOperatorName] = useState('')
 
@@ -36,7 +36,7 @@ const useProductMovement = ({ navigation, route: { params }, showAlert }: usePro
     loadInfos()
   }, [])
 
-  const onQuantityChange = (value: string|number = 0) => {
+  const onQuantityChange = (value: string | number = 0) => {
     let newValue = ''
 
     if (typeof value === 'string') newValue = value.replace(/\D/g, "") || '0'
@@ -55,43 +55,69 @@ const useProductMovement = ({ navigation, route: { params }, showAlert }: usePro
         title: 'Atenção',
         message: 'Preencha os campos corretamente.',
       })
-      return;
+
+      return
     }
 
-    await addProductsMovement({
-      time: new Date().getTime(),
-      id_art: artValue,
-      id_operator: params.id,
-      image: imageValue,
-      quantity: parseInt(quantityValue),
-      responsible: responsibleValue,
-      type: params.movementType
-    })
-
-    showAlert({
-      show: true,
-      title: 'Sucesso',
-      message: 'Registros salvos no dispositivo.',
-      onConfirm: () => {
-        navigation.goBack()
+    try {
+      const { status } = await MediaLibrary.requestPermissionsAsync();
+      
+      if (status !== 'granted') {
+        throw new Error()
       }
-    })
 
-    setQauntityValue('')
-    setResponsibleValue('')
-    setImageValue(null)
-    setArtValue(null)
+      const asset = await MediaLibrary.createAssetAsync(imageValue)
+      
+      const album = await MediaLibrary.createAlbumAsync('mceEvents', asset, false)
+
+      const albumAssets = (await MediaLibrary.getAssetsAsync({ album }))
+      const uriAsset = albumAssets.assets.find(file => file.filename === asset.filename)?.uri
+
+      if (!uriAsset) {
+       throw new Error()
+      }
+
+      await addProductsMovement({
+        time: new Date().getTime(),
+        id_art: artValue,
+        id_operator: params.id,
+        name_operator: operatorName,
+        image: uriAsset,
+        quantity: parseInt(quantityValue),
+        responsible: responsibleValue,
+        type: params.movementType
+      })
+  
+      showAlert({
+        show: true,
+        title: 'Sucesso',
+        message: 'Registros salvos no dispositivo.',
+        onConfirm: () => {
+          navigation.goBack()
+        }
+      })
+  
+      setQauntityValue('')
+      setResponsibleValue('')
+      setImageValue(null)
+      setArtValue(null)
+    } catch (error) {
+      showAlert({
+        show: true,
+        title: 'Atenção',
+        message: 'Falha ao salvar a imagem, verifique as permições do aplicativo.',
+      })
+    }    
   }
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      quality: 1,
+      allowsEditing: true,      
     })
 
-    result.assets?.length &&  setImageValue(result.assets[0].uri)
-  };
+    result.assets?.length && setImageValue(result.assets[0].uri)
+  }
 
   return {
     arts,

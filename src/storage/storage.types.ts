@@ -3,7 +3,6 @@ export type EventStorage = {
   nome: string
   local: string
   login: string
-  ativo: boolean
   caucao: boolean
   data: string
 }
@@ -38,6 +37,7 @@ export type ProductMovementStorage = {
   quantity: number
   id_art: number
   id_operator: number
+  name_operator: string
   image: string
   sync?: boolean
 }
