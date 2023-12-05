@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react'
 import { useAsyncStorage } from 'src/hooks'
 
 import type { EventStorage, OperatorStorage } from 'src/storage/storage.types'
-import type { RootStackNavigation } from 'src/routes/routes'
+import type { HomeStackRouteScreen } from 'src/routes/routes.types'
 
-const useHome = ({ navigation }: RootStackNavigation<'Home'> ) => {
+const useHome = ({ navigation }: HomeStackRouteScreen<'Home'> ) => {
   const [operators, setOpreators] = useState<OperatorStorage[]>([])
   const [useEvent, setEvent] = useState<EventStorage|null>(null)
   const [searchValue, setSearchValue] = useState<string>('')
@@ -18,8 +18,6 @@ const useHome = ({ navigation }: RootStackNavigation<'Home'> ) => {
 
     setEvent(eventStorage)
     setOpreators(operatorsStorage)
-
-    console.log(operatorsStorage)
   }
 
   const onScreenFocus = () => {    

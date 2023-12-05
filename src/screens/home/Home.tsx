@@ -36,7 +36,7 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
 
       <Divider opacity={0} />
       <FlatList
-        data={operators.filter(({ nome }) => nome.toLowerCase().includes(searchValue.toLowerCase()))}
+        data={operators.filter(({ nome, localizacao }) => nome.toLowerCase().includes(searchValue.toLowerCase()) || localizacao?.toLowerCase().includes(searchValue.toLowerCase()))}
         scrollEnabled={false}
         renderItem={({ item }) => (
           <Operator

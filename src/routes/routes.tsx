@@ -1,6 +1,6 @@
 import { createStackNavigator } from '@react-navigation/stack'
 import { createDrawerNavigator } from '@react-navigation/drawer'
-import { Home, Login, ProductMovement } from '../screens'
+import { Home, Login, MovementHistory, ProductMovement } from '../screens'
 
 import { CustomDrawerContent } from './CustomDrawerContent'
 
@@ -10,8 +10,6 @@ import { useAuth } from 'src/context/AuthContext'
 const Drawer = createDrawerNavigator<RootDrawerParams>()
 const HomeStack = createStackNavigator<HomeStackParams>()
 const RootStack = createStackNavigator<RootStackParams>()
-const Stack = createStackNavigator()
-
 const AuthStack = createStackNavigator()
 
 const HomeStackRoutes = () => (
@@ -28,6 +26,7 @@ export const RootDrawer = () => (
     initialRouteName='HomeStackRoutes'
   >
     <Drawer.Screen name="HomeStackRoutes" options={{ drawerLabel: 'Início' }} component={HomeStackRoutes} />
+    <Drawer.Screen name="MovementHistory" options={{ drawerLabel: 'Histórico' }} component={MovementHistory} />
   </Drawer.Navigator>
 )
 

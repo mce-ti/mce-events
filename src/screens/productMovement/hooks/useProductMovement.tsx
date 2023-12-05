@@ -6,13 +6,14 @@ import { addProductsMovement } from 'src/storage/storage'
 import * as ImagePicker from 'expo-image-picker'
 
 import type { OperatorStorage, ArtStorage } from 'src/storage/storage.types'
+import type { HomeStackRouteScreen } from 'src/routes/routes.types'
+import type { AwesomeAlertProps } from 'src/hooks/useAwesomeAlert'
 
-type UseProductMovementProps = {
-  id: number
-  movementType: 'in' | 'out'
-}
+type useProductMovementPrps = {
+  showAlert: (arg0: AwesomeAlertProps) => void
+} & HomeStackRouteScreen<'ProductMovement'>
 
-const useProductMovement = ({ id, movementType }: UseProductMovementProps) => {
+const useProductMovement = ({ navigation, route: { params }, showAlert }: useProductMovementPrps) => {
   const [quantityValue, setQauntityValue] = useState<string>('')
   const [responsibleValue, setResponsibleValue] = useState<string>('')
   const [imageValue, setImageValue] = useState<null|string>(null)
@@ -24,7 +25,7 @@ const useProductMovement = ({ id, movementType }: UseProductMovementProps) => {
 
   const loadInfos = async () => {
     const operatorsStorage: OperatorStorage[] = await getItem('operators') || []
-    const operatorStorage: OperatorStorage = operatorsStorage.find(operator => operator.id === id)!
+    const operatorStorage: OperatorStorage = operatorsStorage.find(operator => operator.id === params.id)!
     const artStorage: ArtStorage[] = await getItem('arts') || []
 
     setOperatorName(operatorStorage.nome)
@@ -46,24 +47,35 @@ const useProductMovement = ({ id, movementType }: UseProductMovementProps) => {
   }
 
   const saveMovement = async () => {
-    const hasAllValues = (quantityValue && responsibleValue && artValue && imageValue && id)
+    const hasAllValues = (quantityValue && responsibleValue && artValue && imageValue && params.id)
 
     if (!hasAllValues) {
-      Alert.alert('Preencha os campos corretamente')
+      showAlert({
+        show: true,
+        title: 'Atenção',
+        message: 'Preencha os campos corretamente.',
+      })
       return;
     }
 
     await addProductsMovement({
       time: new Date().getTime(),
       id_art: artValue,
-      id_operator: id,
+      id_operator: params.id,
       image: imageValue,
       quantity: parseInt(quantityValue),
       responsible: responsibleValue,
-      type: movementType
+      type: params.movementType
     })
 
-    Alert.alert('Registros salvos no dispositivo.')
+    showAlert({
+      show: true,
+      title: 'Sucesso',
+      message: 'Registros salvos no dispositivo.',
+      onConfirm: () => {
+        navigation.goBack()
+      }
+    })
 
     setQauntityValue('')
     setResponsibleValue('')

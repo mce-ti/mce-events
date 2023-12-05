@@ -10,6 +10,7 @@ export type HomeStackParams = {
 
 export type RootDrawerParams = {
   HomeStackRoutes: undefined
+  MovementHistory: undefined
 }
 
 export type RootStackParams = {

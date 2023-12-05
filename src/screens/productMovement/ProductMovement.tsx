@@ -5,11 +5,14 @@ import { Button, Divider, Input } from "src/components"
 import { useProductMovement } from "./hooks/useProductMovement"
 import { ArtOption } from "./components/ArtOption"
 
-import type { RootStackNavigation } from "src/routes/routes"
+import type { HomeStackRouteScreen } from "src/routes/routes.types"
 
 import { AntDesign } from '@expo/vector-icons/'
+import { useAwesomeAlert } from "src/hooks"
 
-const ProductMovement = ({ navigation, route: { params } }: RootStackNavigation<'ProductMovement'>) => {
+const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMovement'>) => {
+  
+  const { AwesomeAlertComponent, showAlert } = useAwesomeAlert()
 
   const {
     arts,
@@ -23,11 +26,11 @@ const ProductMovement = ({ navigation, route: { params } }: RootStackNavigation<
     pickImage,
     imageValue,
     operatorName
-  } = useProductMovement(params)
+  } = useProductMovement({ navigation, route, showAlert })
 
   return (
     <Layout>
-      <Text style={styles.title}>{params.movementType === 'in' ? 'Entrega' : 'Saída'} de copos</Text>
+      <Text style={styles.title}>{route.params.movementType === 'in' ? 'Entrega' : 'Saída'} de copos</Text>
       <Text style={styles.subtitle}>{operatorName}</Text>
 
       <Divider space={20} />
@@ -41,7 +44,7 @@ const ProductMovement = ({ navigation, route: { params } }: RootStackNavigation<
             image={art.imagem}
             onTouch={setArtValue}
           />
-        ))}     
+        ))}
       </View>
 
       <Divider opacity={0} space={10} />
@@ -94,6 +97,8 @@ const ProductMovement = ({ navigation, route: { params } }: RootStackNavigation<
           />
         </View>
       </View>
+
+      <AwesomeAlertComponent />
     </Layout>
   )
 }
@@ -137,7 +142,7 @@ const styles = StyleSheet.create({
     maxWidth: '100%'
   },
   actionContent: {
-    flex:1 
+    flex: 1
   }
 })
 
