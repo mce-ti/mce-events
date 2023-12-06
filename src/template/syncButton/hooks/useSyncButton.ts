@@ -1,10 +1,11 @@
 import { useState, useRef } from "react"
 import { Animated } from "react-native"
+import { useAuth } from "src/context/AuthContext"
 
 import { useAsyncStorage, useInterval } from "src/hooks"
 import { apiMovements } from "src/services/api"
 import { SyncMovementsRequest } from "src/services/api/movements/movements.types"
-import { addProductsMovement, getEventStorage, getMovementsStorage, getOperatorsStorage } from "src/storage/storage"
+import { getEventStorage, getMovementsStorage, getOperatorsStorage } from "src/storage/storage"
 import { readFile } from "src/utils/file.utils"
 
 const useSyncButton = () => {
@@ -14,6 +15,8 @@ const useSyncButton = () => {
   const [spinAnimation] = useState(new Animated.Value(0))
 
   const { removeItem } = useAsyncStorage()
+
+  const { syncDbMovements } = useAuth()
 
   useInterval(async () => {
     const movements = await getMovementsStorage()
@@ -38,13 +41,12 @@ const useSyncButton = () => {
 
     const movements = await getMovementsStorage()
     const event = await getEventStorage()
-    const operators = await getOperatorsStorage()
 
     const unSyncMovements = movements.filter(({ sync }) => !sync)
 
-    if (event && unSyncMovements.length) {
+    if (event) {
       const requestData: SyncMovementsRequest = []
-  
+
       for (const movement of unSyncMovements) {
         requestData.push({
           id_evento: event.id,
@@ -58,28 +60,14 @@ const useSyncButton = () => {
           app_time: movement.time
         })
       }
-  
-      if (await apiMovements.syncMovements([])) {
-        await removeItem('movements')
-  
-        const updatedMovements = await apiMovements.getMovements({ id_evento: event.id })
-  
-        for (const movement of updatedMovements) {
-          const operator = operators.find(op => op.id == movement.id_operador)
-  
-          await addProductsMovement({
-            id_art: movement.id_arte,
-            id_operator: movement.id_operador,
-            image: '',
-            name_operator: operator?.nome || '',
-            quantity: movement.quantidade,
-            responsible: movement.responsavel,
-            time: movement.app_time ? parseInt(movement.app_time?.toString?.()) : 0,
-            type: movement.controle === 'Entrada' ? 'in' : 'out',
-            sync: true
-          })
-        }
-      }
+
+      const hasUpdate = requestData.length
+        ? await apiMovements.syncMovements(requestData)
+        : true
+
+      removeItem('movements')
+
+      hasUpdate && await syncDbMovements()
     }
 
     anim.reset()

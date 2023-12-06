@@ -22,13 +22,13 @@ const Operator = ({ entry, output, name, localizacao = '', color }: OperatorProp
 
       <View>
         <IconButton size={44} color="green" outlined onPress={entry}>
-          <Ionicons name="caret-down" size={26} color="#16a34a" />
+          <Ionicons name="caret-up" size={26} color="#16a34a" />
         </IconButton>
       </View>
 
       <View>
         <IconButton size={44} color="red" outlined onPress={output}>
-          <Ionicons name="caret-up" size={26} color="#dc2626" />
+          <Ionicons name="caret-down" size={26} color="#dc2626" />
         </IconButton>
       </View>
     </View>

@@ -7,3 +7,32 @@ export function formatDBDate(date: string|null|undefined): string {
 
   return result
 }
+
+export function formatDBDateTime(date: string|null|undefined): string {
+  if (!date) return ''
+
+  const split = date.split(' ')
+  const dateSplit = split[0].split('-')
+
+  const result = `${dateSplit[2]}/${dateSplit[1]}/${dateSplit[0]} ${split[1]}`
+
+  return result
+}
+
+export function formatTimeToDateTime(time: number|string|null|undefined): string {
+  if (!time) return ''
+
+  const date = new Date(time)
+
+  const d = date.getDate().toString().padStart(2, '0')
+  const m = (date.getMonth() + 1).toString().padStart(2, '0')
+  const y = date.getFullYear()
+
+  const hour = date.getHours().toString().padStart(2, '0')
+  const min = date.getMinutes().toString().padStart(2, '0')
+  const sec = date.getSeconds().toString().padStart(2, '0')
+
+  const result = `${d}/${m}/${y} ${hour}:${min}:${sec}`
+
+  return result
+}

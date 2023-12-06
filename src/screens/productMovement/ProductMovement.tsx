@@ -16,21 +16,20 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
 
   const {
     arts,
-    artValue,
-    setArtValue,
     onQuantityChange,
-    quantityValue,
-    responsibleValue,
-    setResponsibleValue,
-    saveMovement,
     pickImage,
-    imageValue,
-    operatorName
+    operatorName,
+    formik: {
+      values,
+      handleChange,
+      setFieldValue,
+      submitForm,
+    }
   } = useProductMovement({ navigation, route, showAlert })
 
   return (
     <Layout>
-      <Text style={styles.title}>{route.params.movementType === 'in' ? 'Entrega' : 'Saída'} de copos</Text>
+      <Text style={styles.title}>{route.params.movementType === 'in' ? 'Entrega' : 'Devolução'} de copos</Text>
       <Text style={styles.subtitle}>{operatorName}</Text>
 
       <Divider space={20} />
@@ -40,9 +39,10 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
           <ArtOption
             key={`art-${art.id}`}
             id={art.id}
-            currentValue={artValue}
+            currentValue={values.art}
             image={art.imagem}
-            onTouch={setArtValue}
+            name={art.nome}
+            onTouch={v => setFieldValue('art', v)}
           />
         ))}
       </View>
@@ -52,7 +52,7 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
       <Input
         placeholder="Quantidade"
         keyboardType="number-pad"
-        value={quantityValue}
+        value={values.quantity?.toString()}
         onChangeText={onQuantityChange}
       />
 
@@ -60,15 +60,15 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
 
       <Input
         placeholder="Responsável"
-        value={responsibleValue}
-        onChangeText={setResponsibleValue}
+        value={values.responsilbe}
+        onChangeText={handleChange('responsilbe')}
       />
 
       <Divider opacity={0} />
 
       <TouchableOpacity style={styles.imageContainer} activeOpacity={.75} onPress={pickImage}>
-        {imageValue ? (
-          <Image source={{ uri: imageValue }} style={styles.image} />
+        {values.image ? (
+          <Image source={{ uri: values.image }} style={styles.image} />
         ) : (
           <>
             <Text style={styles.imageText}>Adicionar foto</Text>
@@ -92,8 +92,8 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
           <Button
             label="Salvar"
             color="green"
-            onPress={saveMovement}
-            disabled={!(imageValue && quantityValue && responsibleValue && artValue)}
+            onPress={submitForm}
+            disabled={!(values.art && values.image && values.quantity && values.responsilbe)}
           />
         </View>
       </View>

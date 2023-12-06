@@ -8,21 +8,32 @@ import { Layout } from "src/template"
 import { MaterialIcons, FontAwesome5 } from '@expo/vector-icons'
 
 import type { RootDrawerScreen } from "src/routes/routes.types"
+import { formatDBDateTime, formatTimeToDateTime } from "src/utils/date.utils"
+import { useAuth } from "src/context/AuthContext"
 
 const MovementHistory = ({ navigation }: RootDrawerScreen<'MovementHistory'>) => {
-  const [movements, setMovements] = useState<ProductMovementStorage[]>([])
+  // const [movements, setMovements] = useState<ProductMovementStorage[]>([])
 
-  const { getItem } = useAsyncStorage()
+  const { movements } = useAuth()
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', async () => {
-      const productMovements: ProductMovementStorage[] = await getItem('movements') || []
-  
-      setMovements(productMovements)
-    })
+  // const { getItem } = useAsyncStorage()
 
-    return unsubscribe
-  }, [navigation])
+  // useEffect(() => {
+  //   const unsubscribe = navigation.addListener('focus', async () => {
+  //     const productMovements: ProductMovementStorage[] = await getItem('movements') || []
+
+  //     const sort = productMovements.sort((a,b) => {
+  //       const d1 = a.date ? new Date(a.date).getTime() : a.time
+  //       const d2 = b.date ? new Date(b.date).getTime() : b.time
+
+  //       return d2 - d1
+  //     })
+
+  //     setMovements(sort)
+  //   })
+
+  //   return unsubscribe
+  // }, [navigation])
 
   return (
     <Layout>
@@ -32,27 +43,32 @@ const MovementHistory = ({ navigation }: RootDrawerScreen<'MovementHistory'>) =>
 
       <View style={styles.table}>
         <View style={styles.thead}>
-          <Text style={[styles.th, { flex: 2 }]}>Bar</Text>
-          <Text style={[styles.th, { flex: 2 }]}>Tipo</Text>
-          <Text style={[styles.th, { flex: 1, textAlign: 'right' }]}>Qntd.</Text>
-          <Text style={[styles.th, { flex: 1, textAlign: 'center' }]}>Sinc.</Text>
+          <Text style={[styles.th, { flex: 1 }]}>Bar</Text>
+          <Text style={[styles.th, { width: 90, textAlign: 'center' }]}>Tipo</Text>
+          <Text style={[styles.th, { width: 70, textAlign: 'right' }]}>Qntd.</Text>
+          <Text style={[styles.th, { width: 70, textAlign: 'center' }]}>Sinc.</Text>
         </View>
 
         {movements.map((movement, idx) => (
           <View
-            key={`movement-${movement.time || idx}`}
-            style={[styles.tr, { backgroundColor: (idx % 2 ? '#e0f2fe': '#fff') }]}
+            key={`movement-${movement?.id || movement.time}-${idx}`}
+            style={[
+              styles.tr,
+              { backgroundColor: (idx % 2 ? '#dbeafe99': '#fff') },
+              (idx+1 === movements.length ? styles.lastTr : {})
+            ]}
           >
-            <View style={[styles.td, { flex: 2 }]}>
-              <Text style={styles.text}>{movement.name_operator}</Text>
+            <View style={[styles.td, { flex: 1, flexDirection: 'column' }]}>
+              <Text style={styles.text}>{movement.name_operator || '-'}</Text>
+              <Text style={[styles.text, { fontSize: 10 }]}>{movement.date ? formatDBDateTime(movement.date) : formatTimeToDateTime(movement.time)}</Text>
             </View>
-            <View style={[styles.td, { flex: 2 }]}>
+            <View style={[styles.td, { width: 90 }]}>
               <Text style={[styles.typeTag, movement.type === 'in' ? styles.typeTagIn : styles.typeTagOut]}>{movement.type === 'in' ? 'Entrada' : 'Saída'}</Text>
             </View>
-            <View style={[styles.td, { flex: 1, justifyContent: 'flex-end'}]}>
+            <View style={[styles.td, { width: 70, justifyContent: 'flex-end'}]}>
               <Text style={styles.text}>{movement.quantity}</Text>
             </View>
-            <View style={[styles.td, { alignItems: 'center', justifyContent: 'center' }]}>
+            <View style={[styles.td, { width: 70, alignItems: 'center', justifyContent: 'center' }]}>
               {movement.sync ? (
                 <MaterialIcons name="check-circle" size={20} color="#16a34a" />
               ): (
@@ -85,21 +101,21 @@ const styles = StyleSheet.create({
   },
   th: {
     color: 'white',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    fontWeight: '600',
-    flex: 1
+    paddingHorizontal: 15,
+    paddingVertical: 7.5,
+    fontWeight: '600'
   },
   tr: {
     flexDirection: 'row',
-    backgroundColor: '#e0f2fe',
-    // height: 40,
     alignItems: 'center'
   },
+  lastTr: {
+    borderBottomLeftRadius: 2,
+    borderBottomRightRadius: 2
+  },
   td: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    flex: 1,
+    paddingHorizontal: 15,
+    paddingVertical: 7.5,
     flexDirection: 'row',
     flexWrap: 'wrap'
   },
@@ -110,7 +126,9 @@ const styles = StyleSheet.create({
     paddingVertical: 2.5,
     paddingHorizontal: 5,
     fontWeight: '500',
-    borderRadius: 2
+    borderRadius: 2,
+    width: '100%',
+    textAlign: 'center'
   },
   typeTagIn: {
     backgroundColor: '#dcfce7',

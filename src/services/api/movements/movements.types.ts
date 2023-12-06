@@ -16,14 +16,12 @@ export type GetMovementsRequest = {
 
 export type GetMovementsResponse = {
   id: number
-  id_evento: number
   id_operador: number
+  nome_operador: string
   controle: 'Entrada' | 'Saída'
   quantidade: number
-  caucao: 'Sim' | 'Não'
   id_arte: number
-  app_time: number | string
+  app_time: number
   responsavel: string
-  foto: string
   data: string
 }[]

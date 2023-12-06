@@ -31,6 +31,8 @@ export type ArtStorage = {
 }
 
 export type ProductMovementStorage = {
+  id?: number
+  id_evento: number
   time: number
   responsible: string
   type: 'in' | 'out'
@@ -40,4 +42,5 @@ export type ProductMovementStorage = {
   name_operator: string
   image: string
   sync?: boolean
+  date?: string
 }

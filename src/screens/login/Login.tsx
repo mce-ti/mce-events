@@ -31,7 +31,8 @@ const Login = () => {
           value={values.username}
           onChangeText={handleChange('username')}
           autoCapitalize="none"
-          id="username"
+          textContentType="username"
+          autoComplete="username"
         />
       </View>
 
@@ -43,7 +44,8 @@ const Login = () => {
           value={values.password}
           onChangeText={handleChange('password')}
           autoCapitalize="none"
-          id="password"
+          textContentType="password"
+          autoComplete="password"
         />
       </View>
 
