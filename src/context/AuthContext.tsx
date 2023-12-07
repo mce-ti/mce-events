@@ -3,17 +3,19 @@ import { useAsyncStorage } from 'src/hooks'
 
 import type { ReactNode } from 'react'
 
-import { apiMovements } from 'src/services/api'
+import { apiMovements, apiOperators } from 'src/services/api'
 import { getEventStorage, getMovementsStorage } from 'src/storage/storage'
-import { ProductMovementStorage } from 'src/storage/storage.types'
+import type { OperatorStorage, ProductMovementStorage } from 'src/storage/storage.types'
 
 type AuthContextType = {
   user: number | null
   login: (arg0: number) => void;
   logout: () => void
   syncDbMovements: () => Promise<void>
+  syncDbOperators: () => Promise<void>
   addProductsMovement: (data: ProductMovementStorage) => Promise<void>
   movements: ProductMovementStorage[]
+  operators: OperatorStorage[]
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -25,8 +27,9 @@ type AuthProviderProps = {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<number | null>(null)
   const [movements, setMovements] = useState<ProductMovementStorage[]>([])
+  const [operators, setOperators] = useState<OperatorStorage[]>([])
 
-  const { removeItem, setItem } = useAsyncStorage()
+  const { removeItem, setItem, getItem } = useAsyncStorage()
 
   const login = (id: number) => {
     setUser(id)
@@ -48,6 +51,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     await removeItem('operators')
 
     setUser(null)
+  }
+
+  const syncDbOperators = async () => {
+    const event = await getEventStorage()
+
+    if (!event) return
+
+    const dbOperators = await apiOperators.getOperators(event.id)
+
+    await setItem('operators', dbOperators)
+
+    const operatorsStorage: OperatorStorage[] = await getItem('operators') || []
+
+    setOperators(operatorsStorage)
   }
 
   const syncDbMovements = async () => {
@@ -85,7 +102,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, syncDbMovements, movements, addProductsMovement }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        login,
+        logout,
+        syncDbMovements,
+        movements,
+        addProductsMovement,
+        operators,
+        syncDbOperators
+      }}>
       {children}
     </AuthContext.Provider>
   )

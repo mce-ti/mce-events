@@ -15,7 +15,7 @@ const useLogin = ({ showAlert }: useLoginProps) => {
   const [isLoading, setIsLoading] = useState(false)
 
   const { getItem, setItem } = useAsyncStorage()
-  const { login, syncDbMovements } = useAuth()
+  const { login, syncDbMovements, syncDbOperators } = useAuth()
 
   const formik = useFormik({
     initialValues: {
@@ -42,9 +42,9 @@ const useLogin = ({ showAlert }: useLoginProps) => {
       await setItem('event', response.evento)
       await setItem('user', response.usuario)
       await setItem('arts', response.artes)
-      await setItem('operators', response.operadores)
 
       await syncDbMovements()
+      await syncDbOperators()
 
       login(response.usuario.id)
     }

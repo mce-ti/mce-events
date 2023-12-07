@@ -5,7 +5,7 @@ import { useAuth } from "src/context/AuthContext"
 import { useAsyncStorage, useInterval } from "src/hooks"
 import { apiMovements } from "src/services/api"
 import { SyncMovementsRequest } from "src/services/api/movements/movements.types"
-import { getEventStorage, getMovementsStorage, getOperatorsStorage } from "src/storage/storage"
+import { getEventStorage, getMovementsStorage } from "src/storage/storage"
 import { readFile } from "src/utils/file.utils"
 
 const useSyncButton = () => {
@@ -16,7 +16,7 @@ const useSyncButton = () => {
 
   const { removeItem } = useAsyncStorage()
 
-  const { syncDbMovements } = useAuth()
+  const { syncDbMovements, syncDbOperators } = useAuth()
 
   useInterval(async () => {
     const movements = await getMovementsStorage()
@@ -68,6 +68,8 @@ const useSyncButton = () => {
       removeItem('movements')
 
       hasUpdate && await syncDbMovements()
+
+      await syncDbOperators()
     }
 
     anim.reset()
