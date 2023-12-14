@@ -6,9 +6,14 @@ export type SyncMovementsRequest = {
   caucao: 'Sim' | 'Não',
   id_arte: number
   responsavel: string
-  foto: string
+  foto: {
+    base64: string
+    type: string
+    name: string
+    uri: string
+  }
   app_time: number | string
-}[]
+}
 
 export type GetMovementsRequest = {
   id_evento: number

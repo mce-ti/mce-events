@@ -4,9 +4,6 @@ import { httpClient } from "../httpClient"
 import { LoginRequest, LoginResponse } from "./auth.types"
 
 export const login = async ({ username, password }: LoginRequest): Promise<LoginResponse> => {
-
-  console.log({ username, password })
-
   try {
     const response = await httpClient.post('auth', { username, password })
 
@@ -17,8 +14,6 @@ export const login = async ({ username, password }: LoginRequest): Promise<Login
     console.log(error)
 
     const message = (axios.isAxiosError(error) && error?.response?.data?.message) || 'Houve um problema ao realizar a autênticação.'
-
-    console.log(error?.response?.data)
 
     return { message }
   }

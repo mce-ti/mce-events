@@ -5,6 +5,7 @@ export type HomeStackParams = {
   ProductMovement: {
     id: number
     movementType: 'in' | 'out'
+    name: string
   }
 }
 

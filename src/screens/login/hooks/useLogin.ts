@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 import { AwesomeAlertProps, useAsyncStorage } from "src/hooks"
-import { apiAuth, apiMovements } from 'src/services/api'
+import { apiAuth } from 'src/services/api'
 
 import type { UserStorage } from 'src/storage/storage.types'
 
 import { useFormik } from 'formik'
 import { useAuth } from 'src/context/AuthContext'
+import { useMovementStore, useOperatorsStore } from 'src/stores'
+import { useArtsStore } from 'src/stores/artsStore'
 
 type useLoginProps = {
   showAlert: (arg0: AwesomeAlertProps) => void
@@ -15,7 +17,11 @@ const useLogin = ({ showAlert }: useLoginProps) => {
   const [isLoading, setIsLoading] = useState(false)
 
   const { getItem, setItem } = useAsyncStorage()
-  const { login, syncDbMovements, syncDbOperators } = useAuth()
+  const { login } = useAuth()
+
+  const syncMovements = useMovementStore(state => state.sync)
+  const syncOperators = useOperatorsStore(state => state.syncOperators)
+  const syncArts = useArtsStore(state => state.syncArts)
 
   const formik = useFormik({
     initialValues: {
@@ -41,10 +47,10 @@ const useLogin = ({ showAlert }: useLoginProps) => {
 
       await setItem('event', response.evento)
       await setItem('user', response.usuario)
-      await setItem('arts', response.artes)
 
-      await syncDbMovements()
-      await syncDbOperators()
+      await syncArts()
+      await syncMovements()
+      await syncOperators()
 
       login(response.usuario.id)
     }
@@ -52,6 +58,10 @@ const useLogin = ({ showAlert }: useLoginProps) => {
 
   const verifyUserIsLogged = async () => {
     const user: UserStorage|null = await getItem('user')
+
+    await syncArts()
+    await syncMovements()
+    await syncOperators()
 
     user && login(user.id)
   }

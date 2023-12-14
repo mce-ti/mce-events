@@ -1,6 +1,9 @@
 import { ReactNode } from 'react'
-import { SafeAreaView, StyleSheet, View, ScrollView } from "react-native"
-import { Header } from "../header/Header"
+import { SafeAreaView, View, ScrollView, StatusBar } from "react-native"
+import { SyncButton } from "../syncButton/SyncButton"
+import { styles } from './styles'
+
+import Logo from '../../../assets/logo.svg'
 
 type LayoutProps = {
   children: ReactNode
@@ -8,7 +11,16 @@ type LayoutProps = {
 
 const Layout = ({ children }: LayoutProps) => (
   <View style={styles.container}>
-    <Header />
+    <View style={styles.header}>
+      <StatusBar backgroundColor="#172554" />
+
+      <View style={styles.headerContent}>
+        <Logo width={90} style={{ borderColor: 'red', borderWidth: 1 }} />
+
+        <SyncButton />
+      </View>
+    </View>
+
     <ScrollView>
       <SafeAreaView style={styles.content}>
         {children}
@@ -16,17 +28,5 @@ const Layout = ({ children }: LayoutProps) => (
     </ScrollView>
   </View>
 )
-
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5'
-  },
-  content: {
-    padding: 20,
-    paddingTop: 10
-  },
-});
 
 export { Layout }
