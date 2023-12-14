@@ -18,7 +18,6 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
     arts,
     onQuantityChange,
     pickImage,
-    operatorName,
     formik: {
       values,
       handleChange,
@@ -30,7 +29,7 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
   return (
     <Layout>
       <Text style={styles.title}>{route.params.movementType === 'in' ? 'Entrega' : 'Devolução'} de copos</Text>
-      <Text style={styles.subtitle}>{operatorName}</Text>
+      <Text style={styles.subtitle}>{route.params.name}</Text>
 
       <Divider space={20} />
 

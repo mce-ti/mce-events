@@ -1,5 +1,5 @@
 import { useAsyncStorage } from "src/hooks"
-import type { EventStorage, OperatorStorage, ProductMovementStorage } from "./storage.types"
+import type { ArtStorage, EventStorage, OperatorStorage, ProductMovementStorage } from "./storage.types"
 
 export const getEventStorage = async () => {
   const { getItem } = useAsyncStorage()
@@ -23,4 +23,12 @@ export const getMovementsStorage = async () => {
   const movements: ProductMovementStorage[] = await getItem('movements') || []
 
   return movements
+}
+
+export const getArtsStorage = async () => {
+  const { getItem } = useAsyncStorage()
+
+  const arts: ArtStorage[] = await getItem('arts') || []
+
+  return arts
 }

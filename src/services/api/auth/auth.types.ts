@@ -19,19 +19,6 @@ export type LoginResponse = {
     nivel: string
     data: string
   }
-  operadores: {
-    id: number
-    nome: string
-    localizacao: string | null
-    cor: string | null
-  }[]
-  artes: {
-    id: number
-    imagem: string
-    nome: string
-    quantidade: number
-    valor: number
-  }[]
 } | {
   message: string
 }

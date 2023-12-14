@@ -43,8 +43,8 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
             name={item.nome}
             color={item.cor}
             localizacao={item?.localizacao}
-            entry={() => navigation.navigate('ProductMovement', { id: item.id, movementType: 'in' })}
-            output={() => navigation.navigate('ProductMovement', { id: item.id, movementType: 'out' })}
+            entry={() => navigation.navigate('ProductMovement', { id: item.id, name: item.nome, movementType: 'in' })}
+            output={() => navigation.navigate('ProductMovement', { id: item.id, name: item.nome, movementType: 'out' })}
           />
         )}
       />

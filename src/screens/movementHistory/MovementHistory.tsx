@@ -1,39 +1,15 @@
-import { useEffect, useState } from "react"
 import { Text, StyleSheet, View } from "react-native"
-import { Divider, Table } from "src/components"
-import { useAsyncStorage } from "src/hooks"
-import { ProductMovementStorage } from "src/storage/storage.types"
+import { Divider } from "src/components"
 import { Layout } from "src/template"
 
 import { MaterialIcons, FontAwesome5 } from '@expo/vector-icons'
 
 import type { RootDrawerScreen } from "src/routes/routes.types"
 import { formatDBDateTime, formatTimeToDateTime } from "src/utils/date.utils"
-import { useAuth } from "src/context/AuthContext"
+import { useMovementStore } from "src/stores"
 
 const MovementHistory = ({ navigation }: RootDrawerScreen<'MovementHistory'>) => {
-  // const [movements, setMovements] = useState<ProductMovementStorage[]>([])
-
-  const { movements } = useAuth()
-
-  // const { getItem } = useAsyncStorage()
-
-  // useEffect(() => {
-  //   const unsubscribe = navigation.addListener('focus', async () => {
-  //     const productMovements: ProductMovementStorage[] = await getItem('movements') || []
-
-  //     const sort = productMovements.sort((a,b) => {
-  //       const d1 = a.date ? new Date(a.date).getTime() : a.time
-  //       const d2 = b.date ? new Date(b.date).getTime() : b.time
-
-  //       return d2 - d1
-  //     })
-
-  //     setMovements(sort)
-  //   })
-
-  //   return unsubscribe
-  // }, [navigation])
+  const movements = useMovementStore(state => state.movements)
 
   return (
     <Layout>
