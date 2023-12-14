@@ -36,6 +36,8 @@ const useSyncButton = () => {
   )).current
 
   const sync = async () => {
+    if (isSyncing) return;
+    
     anim.start()
     setIsSyncing(true)
 

@@ -1,15 +1,15 @@
 {
   "expo": {
-    "name": "mce-events",
+    "name": "EVENTOS MCE",
     "slug": "mce-events",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/app-logo.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#007b8b"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -19,8 +19,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/app-logo.png",
+        "backgroundColor": "#007b8b"
       },
       "permissions": [
         "android.permission.RECORD_AUDIO"
