@@ -40,11 +40,10 @@ const useProductMovement = ({ navigation, route: { params }, showAlert }: usePro
 
       if (await getPermission('MediaLibrary')) {
         const asset = await MediaLibrary.createAssetAsync(values.image)
-
         const album = await MediaLibrary.createAlbumAsync('mceEvents', asset, false)
-
         const albumAssets = await MediaLibrary.getAssetsAsync({ album })
-        const uriAsset = albumAssets.assets[albumAssets.assets.length-1].uri
+
+        const uriAsset = albumAssets.assets.find(albumAsset => albumAsset.filename === asset.filename)?.uri
 
         if (uriAsset) {
           await addProductMovement({
