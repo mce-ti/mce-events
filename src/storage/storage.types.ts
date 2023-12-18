@@ -44,3 +44,9 @@ export type ProductMovementStorage = {
   sync?: boolean
   date?: string
 }
+
+export type StockStorage = {
+  id: number
+  nome: string
+  quantidade: number
+}[]

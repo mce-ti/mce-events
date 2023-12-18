@@ -7,15 +7,16 @@ import Logo from '../../../assets/logo.svg'
 
 type LayoutProps = {
   children: ReactNode
+  onLogoPress?: () => void
 }
 
-const Layout = ({ children }: LayoutProps) => (
+const Layout = ({ children, onLogoPress }: LayoutProps) => (
   <View style={styles.container}>
     <View style={styles.header}>
       <StatusBar backgroundColor="#172554" />
 
       <View style={styles.headerContent}>
-        <Logo width={90} style={{ borderColor: 'red', borderWidth: 1 }} />
+        <Logo width={90} style={{ borderColor: 'red', borderWidth: 1 }} onPress={() => onLogoPress?.()} />
 
         <SyncButton />
       </View>

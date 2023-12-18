@@ -32,6 +32,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     await removeItem('event')
     await removeItem('user')
     await removeItem('arts')
+    await removeItem('stock')
+    await removeItem('operators')
 
     setUser(null)
   }

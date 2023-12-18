@@ -6,6 +6,8 @@ import { formatDBDate } from "src/utils/date.utils"
 import { useHome } from './hooks/useHome'
 
 import type { HomeStackRouteScreen } from "src/routes/routes.types"
+import { DrawerActions } from "@react-navigation/native"
+import { useStockStore } from "src/stores/stockStore"
 
 const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
 
@@ -16,8 +18,10 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
     setSearchValue
   } = useHome({ navigation, route })
 
+  const stock = useStockStore(state => state.stock)
+
   return (
-    <Layout>
+    <Layout onLogoPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
       <View>
         <Text style={styles.eventName}>{useEvent?.nome}</Text>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -48,6 +52,19 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
           />
         )}
       />
+
+      <Divider opacity={0} />
+      <Text style={styles.eventName}>Estoque</Text>
+      {stock.map(item => (
+        <View key={`stock-item-${item.id}`}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Text style={styles.eventLocal}>{item.nome}</Text>
+            <Text style={styles.eventDate}>{item.quantidade}</Text>
+          </View>
+
+          <Divider opacity={.1} space={2.5} />
+        </View>
+      ))}
     </Layout>
   )
 }

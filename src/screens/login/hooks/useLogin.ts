@@ -8,6 +8,7 @@ import { useFormik } from 'formik'
 import { useAuth } from 'src/context/AuthContext'
 import { useMovementStore, useOperatorsStore } from 'src/stores'
 import { useArtsStore } from 'src/stores/artsStore'
+import { useStockStore } from 'src/stores/stockStore'
 
 type useLoginProps = {
   showAlert: (arg0: AwesomeAlertProps) => void
@@ -22,6 +23,7 @@ const useLogin = ({ showAlert }: useLoginProps) => {
   const syncMovements = useMovementStore(state => state.sync)
   const syncOperators = useOperatorsStore(state => state.syncOperators)
   const syncArts = useArtsStore(state => state.syncArts)
+  const syncStock = useStockStore(state => state.syncStock)
 
   const formik = useFormik({
     initialValues: {
@@ -51,6 +53,7 @@ const useLogin = ({ showAlert }: useLoginProps) => {
       await syncArts()
       await syncMovements()
       await syncOperators()
+      await syncStock()
 
       login(response.usuario.id)
     }
@@ -62,6 +65,7 @@ const useLogin = ({ showAlert }: useLoginProps) => {
     await syncArts()
     await syncMovements()
     await syncOperators()
+    await syncStock()
 
     user && login(user.id)
   }

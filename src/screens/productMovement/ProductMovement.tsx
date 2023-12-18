@@ -27,7 +27,7 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
   } = useProductMovement({ navigation, route, showAlert })
 
   return (
-    <Layout>
+    <Layout onLogoPress={() => navigation.goBack()}>
       <Text style={styles.title}>{route.params.movementType === 'in' ? 'Entrega' : 'Devolução'} de copos</Text>
       <Text style={styles.subtitle}>{route.params.name}</Text>
 

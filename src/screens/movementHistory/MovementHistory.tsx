@@ -7,12 +7,13 @@ import { MaterialIcons, FontAwesome5 } from '@expo/vector-icons'
 import type { RootDrawerScreen } from "src/routes/routes.types"
 import { formatDBDateTime, formatTimeToDateTime } from "src/utils/date.utils"
 import { useMovementStore } from "src/stores"
+import { DrawerActions } from "@react-navigation/native"
 
 const MovementHistory = ({ navigation }: RootDrawerScreen<'MovementHistory'>) => {
   const movements = useMovementStore(state => state.movements)
 
   return (
-    <Layout>
+    <Layout onLogoPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
       <Text style={styles.title}>Histórico</Text>
 
       <Divider opacity={0} />
