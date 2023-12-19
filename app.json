@@ -4,7 +4,7 @@
     "slug": "mce-events",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/logo.png",
+    "icon": "./assets/app-logo.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/app-logo.png",

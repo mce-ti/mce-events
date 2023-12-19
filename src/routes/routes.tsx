@@ -21,7 +21,7 @@ const HomeStackRoutes = () => (
 
 export const RootDrawer = () => (
   <Drawer.Navigator
-    screenOptions={{ headerShown: false }}
+    screenOptions={{ headerShown: false, swipeEdgeWidth: 5 }}
     drawerContent={CustomDrawerContent}
     initialRouteName='HomeStackRoutes'
   >
