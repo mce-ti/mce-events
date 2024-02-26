@@ -1,13 +1,15 @@
-import { StyleSheet, View, Text, FlatList } from "react-native"
+import { StyleSheet, View, Text, FlatList, TouchableOpacity  } from "react-native"
 import { Layout } from "src/template"
 import { Divider, Input } from "src/components"
 import { Operator } from "./components/Operator"
 import { formatDBDate } from "src/utils/date.utils"
 import { useHome } from './hooks/useHome'
+import { MyQRCode } from "src/components"
 
 import type { HomeStackRouteScreen } from "src/routes/routes.types"
-import { DrawerActions } from "@react-navigation/native"
+import { DrawerActions, useNavigation } from "@react-navigation/native"
 import { useStockStore } from "src/stores/stockStore"
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
 
@@ -19,6 +21,10 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
   } = useHome({ navigation, route })
 
   const stock = useStockStore(state => state.stock)
+
+  const handlePress = () => {
+    navigation.navigate('PrintQrCode');
+  };
 
   return (
     <Layout onLogoPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
@@ -65,6 +71,20 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
           <Divider opacity={.1} space={2.5} />
         </View>
       ))}
+
+      <Divider opacity={0} />
+
+      <View style={{flex: 1}}>
+        <TouchableOpacity 
+          style={styles.gerarQRcode}
+          activeOpacity={0.7}
+          onPress={handlePress}
+          >
+          <Text style={styles.text}>GERAR QR CODE  <Ionicons name="qr-code" size={14} color="white" /> </Text>
+        </TouchableOpacity>
+      </View>
+
+      <Divider opacity={0} />
     </Layout>
   )
 }
@@ -82,7 +102,22 @@ const styles = StyleSheet.create({
   eventDate: {
     color: '#1f2937',
     fontWeight: "400"
-  }
+  },
+  gerarQRcode: {
+    color: '#fff',
+    backgroundColor: '#475569',
+    borderRadius: 5,
+    height: 40,
+  },
+  text: {
+    color: 'white',
+    textAlign: 'center',
+    padding: 9,
+    fontWeight: "600"
+  },
+  mgLft10: {
+    marginLeft: 50,
+  },
 });
 
 export { Home }

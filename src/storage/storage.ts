@@ -1,5 +1,5 @@
 import { useAsyncStorage } from "src/hooks"
-import type { ArtStorage, EventStorage, OperatorStorage, ProductMovementStorage, StockStorage } from "./storage.types"
+import type { ArtStorage, EventStorage, OperatorStorage, ProductMovementStorage, StockStorage, QrCodeStorage } from "./storage.types"
 
 export const getEventStorage = async () => {
   const { getItem } = useAsyncStorage()
@@ -39,4 +39,12 @@ export const getStockStorage = async () => {
   const stock: StockStorage = await getItem('stock') || []
 
   return stock
+}
+
+export const getQrCodesStorage = async () => {
+  const { getItem } = useAsyncStorage()
+
+  const qrCodes: QrCodeStorage[] = await getItem('qrCodes') || []
+
+  return qrCodes
 }

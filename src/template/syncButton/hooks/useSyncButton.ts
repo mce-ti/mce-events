@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react"
 import { Animated } from "react-native"
 
-import { useMovementStore, useOperatorsStore } from "src/stores"
+import { useMovementStore, useOperatorsStore, useQrCodeStore } from "src/stores"
 import { useArtsStore } from "src/stores/artsStore"
 import { useStockStore } from "src/stores/stockStore"
 import { hasNetwork } from "src/utils/net"
@@ -19,6 +19,7 @@ const useSyncButton = () => {
   const syncOperators = useOperatorsStore(state => state.syncOperators)
   const syncArts = useArtsStore(state => state.syncArts)
   const syncStock = useStockStore(state => state.syncStock)
+  const sendStorageDataQrCodes = useQrCodeStore(state => state.sendStorageData)
 
   const anim = useRef(Animated.loop(
     Animated.timing(spinAnimation,
@@ -43,6 +44,7 @@ const useSyncButton = () => {
       await syncOperators()
       await syncArts()
       await syncStock()
+      await sendStorageDataQrCodes()
     } else {
       alert('Sem conexão com a internet')
     }

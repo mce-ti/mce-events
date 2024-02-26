@@ -50,3 +50,7 @@ export type StockStorage = {
   nome: string
   quantidade: number
 }[]
+
+export type QrCodeStorage = {
+  codigo: number
+}
