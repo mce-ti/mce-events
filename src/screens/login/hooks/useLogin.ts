@@ -6,7 +6,7 @@ import type { UserStorage } from 'src/storage/storage.types'
 
 import { useFormik } from 'formik'
 import { useAuth } from 'src/context/AuthContext'
-import { useMovementStore, useOperatorsStore } from 'src/stores'
+import { useMovementStore, useOperatorsStore, useQrCodeStore } from 'src/stores'
 import { useArtsStore } from 'src/stores/artsStore'
 import { useStockStore } from 'src/stores/stockStore'
 
@@ -24,6 +24,7 @@ const useLogin = ({ showAlert }: useLoginProps) => {
   const syncOperators = useOperatorsStore(state => state.syncOperators)
   const syncArts = useArtsStore(state => state.syncArts)
   const syncStock = useStockStore(state => state.syncStock)
+  const syncQrCodes = useQrCodeStore(state => state.sync)
 
   const formik = useFormik({
     initialValues: {
@@ -54,6 +55,7 @@ const useLogin = ({ showAlert }: useLoginProps) => {
       await syncMovements()
       await syncOperators()
       await syncStock()
+      await syncQrCodes()
 
       login(response.usuario.id)
     }
@@ -66,6 +68,7 @@ const useLogin = ({ showAlert }: useLoginProps) => {
     await syncMovements()
     await syncOperators()
     await syncStock()
+    await syncQrCodes()
 
     user && login(user.id)
   }

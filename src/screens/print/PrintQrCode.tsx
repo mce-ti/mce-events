@@ -2,8 +2,8 @@ import { Layout } from "src/template"
 import type { HomeStackRouteScreen } from "src/routes/routes.types"
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native"
 import ViewShot from 'react-native-view-shot';
-import { Divider, MyQRCode } from "src/components";
-import { useRef, useState } from "react";
+import { MyQRCode } from "src/components";
+import { useEffect, useRef, useState } from "react";
 import { useQrCodeStore } from "src/stores";
 import { QrCodeStorage } from "src/storage/storage.types";
 import { format } from 'date-fns';
@@ -11,9 +11,19 @@ import * as Print from 'expo-print';
 import * as FileSystem from 'expo-file-system';
 import LogoMceBlack from "../../../assets/mce-black-logo.svg";
 import Ionicons from '@expo/vector-icons/Ionicons';
-
+import { stringMd5 } from 'react-native-quick-md5';
+import { getQrCodesStorage } from "src/storage/storage";
+import { useAsyncStorage } from "src/hooks"
 
 const PrintQrCode = ({ navigation }: HomeStackRouteScreen<'PrintQrCode'>) => {
+
+  function uniqid(length : number) {
+    let hash = '';
+    while (hash.length < length) {
+      hash += Math.random().toString(36).substring(2);
+    }
+    return hash.substring(0, length);
+  }
 
   const addQrCodeStore = useQrCodeStore(state => state.addQrCode);
 
@@ -23,18 +33,38 @@ const PrintQrCode = ({ navigation }: HomeStackRouteScreen<'PrintQrCode'>) => {
 
   const [timestamp, setTimestamp] = useState(Date.now());
 
+  const [code, setCode] = useState(uniqid(13) + "-" + stringMd5(timestamp.toString()));
+
   const viewShotRef = useRef<ViewShot>(null);
-
-  const [capturedImage, setCapturedImage] = useState<string>('');
-
+ 
   const qrCodeData: QrCodeStorage = {
-    codigo: timestamp
+    codigo: code
+  }
+
+  const removeQrCodes = async () => {
+    const { removeItem } = useAsyncStorage()
+    removeItem('qrCodes')
   };
 
-  const updateTimestamp = () => {
-    setTimestamp(Date.now());
-    qrCodeData.codigo = timestamp;
-    // addQrCodeStore(qrCodeData);
+  const logQrcodes = async () => {
+    const unSyncQrodes = await getQrCodesStorage() || [];
+    console.log(unSyncQrodes);
+  };
+
+  useEffect(() => {
+    addQrCodeStore(qrCodeData);
+  }, []);
+
+  const updateCode = () => {
+    const newTimestamp = Date.now();
+    const newCode = uniqid(13) + "-" + stringMd5(newTimestamp.toString());
+    setCode(newCode);
+    
+    const updatedQrCodeData: QrCodeStorage = {
+      codigo: newCode
+    };
+
+    addQrCodeStore(updatedQrCodeData);
   };
 
   const captureAndPrint = async () => {
@@ -106,9 +136,13 @@ const PrintQrCode = ({ navigation }: HomeStackRouteScreen<'PrintQrCode'>) => {
   return (
     <Layout onLogoPress={() => navigation.goBack()}>
       <View style={styles.actBtns}> 
+        <TouchableOpacity style={styles.print} onPress={removeQrCodes}><Ionicons name="remove" size={30} color="white" /></TouchableOpacity>
+
+        <TouchableOpacity style={styles.print} onPress={logQrcodes}><Ionicons name="pin" size={30} color="white" /></TouchableOpacity>
+
         <TouchableOpacity style={styles.print} onPress={captureAndPrint}><Ionicons name="print" size={30} color="white" /></TouchableOpacity>
 
-        <TouchableOpacity style={styles.newVoucher} onPress={updateTimestamp}><Ionicons name="add-circle-outline" size={30} color="white" /></TouchableOpacity>
+        <TouchableOpacity style={styles.newVoucher} onPress={updateCode}><Ionicons name="add-circle-outline" size={30} color="white" /></TouchableOpacity>
       </View>
     
       <ViewShot ref={viewShotRef} style={{ backgroundColor: 'white', width: '100%'}}>
@@ -126,7 +160,7 @@ const PrintQrCode = ({ navigation }: HomeStackRouteScreen<'PrintQrCode'>) => {
           </View>
 
           <View style={{ width: 320 }}>
-            <MyQRCode code={qrCodeData.toString()} size={230} />
+            <MyQRCode code={qrCodeData.codigo} size={230} />
           </View>
 
           <View style={styles.ctnData}>
@@ -134,17 +168,10 @@ const PrintQrCode = ({ navigation }: HomeStackRouteScreen<'PrintQrCode'>) => {
             <View><Text style={styles.data}>{formattedDateTime}</Text></View>
             <View><Text>.</Text></View>
           </View>
+
+          <Text style={styles.codigoQr}>{qrCodeData.codigo}</Text>
         </View>
       </ViewShot>
-
-      <View style={{ flex: 1 }}>
-        {!!capturedImage && (
-          <View style={{ flex: 1 }}>
-            <Text>Imagem {capturedImage}</Text>
-            <Image source={{ uri: capturedImage }} style={{ flex: 1, width: 300, height: 300 }} resizeMode="contain" />
-          </View>
-        )}
-      </View>
     </Layout>
   )
 }
@@ -207,12 +234,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: "space-between",
     marginTop: 30,
-    marginBottom: 20,
+    marginBottom: 50,
   },
   data: {
     textAlign: 'center',
     fontSize: 20
   },
+  codigoQr: {
+    transform: [{ rotate: '270deg' }],
+    position: 'absolute',
+    bottom: 173,
+    left: -155,
+    textAlign: 'center',
+    fontSize: 14,
+  }
 });
 
 export { PrintQrCode }

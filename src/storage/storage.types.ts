@@ -52,5 +52,6 @@ export type StockStorage = {
 }[]
 
 export type QrCodeStorage = {
-  codigo: number
+  codigo: string
+  sync?: boolean
 }

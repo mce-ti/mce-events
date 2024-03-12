@@ -30,7 +30,7 @@ export const useMovementStore = create<MovementSate>((set, get) => ({
     const event = await getEventStorage()
 
     if (!event) return
-
+    
     if (await hasNetwork()) {
       const { removeItem, setItem } = useAsyncStorage()
   

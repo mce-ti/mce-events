@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react"
 import { Animated } from "react-native"
+import { getQrCodesStorage } from "src/storage/storage"
 
 import { useMovementStore, useOperatorsStore, useQrCodeStore } from "src/stores"
 import { useArtsStore } from "src/stores/artsStore"
@@ -14,8 +15,12 @@ const useSyncButton = () => {
   const movements = useMovementStore(state => state.movements)
   const sendStorageData = useMovementStore(state => state.sendStorageData)
   
-  const hasSync = !!movements.filter(({ sync }) => !sync).length
-  
+  let hasSync = !!movements.filter(({ sync }) => !sync).length
+
+  const qrCodes = useQrCodeStore(state => state.qrCodes)
+  // console.log('use sync', qrCodes)
+  if(qrCodes.length) hasSync = true;
+ 
   const syncOperators = useOperatorsStore(state => state.syncOperators)
   const syncArts = useArtsStore(state => state.syncArts)
   const syncStock = useStockStore(state => state.syncStock)

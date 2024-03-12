@@ -2,7 +2,7 @@ import { httpClient } from "../httpClient"
 
 import type { GetQrCodeResponse } from "./qrCode.types"
 
-export const syncQrCode = async (id_evento: number, codigo: number): Promise<GetQrCodeResponse> => {
+export const syncQrCode = async (id_evento: number, codigo: string): Promise<GetQrCodeResponse> => {
   const formData = new FormData();
   
   formData.append('id_evento', id_evento.toString());

@@ -11,6 +11,9 @@ type QrCodesState = {
   qrCodes: QrCodeStorage[]
   addQrCode: (data: QrCodeStorage) => Promise<void>
   sendStorageData: () => Promise<void>
+  verifyAsyncData: () => Promise<void>
+  removeAllQrCodes: () => Promise<void>
+  sync: () => Promise<void>
 }
 
 export const useQrCodeStore = create<QrCodesState>((set, get) => ({
@@ -43,5 +46,26 @@ export const useQrCodeStore = create<QrCodesState>((set, get) => ({
 
       removeItem('qrCodes')
     }
+
+    set(() => ({ qrCodes: [] }))
+  },
+  verifyAsyncData: async () => {
+    const event = await getEventStorage()
+    const unSyncQrodes = await getQrCodesStorage() || [];
+
+    if (!event || !unSyncQrodes.length) return;
+
+  },
+  removeAllQrCodes: async () => {
+    removeItem('qrCodes')
+    set(() => ({ qrCodes: [] }))
+  },
+  sync: async () => {
+    const event = await getEventStorage()
+    const unSyncQrodes = await getQrCodesStorage() || [];
+
+    if (!event || !unSyncQrodes.length) return
+
+    set(() => ({ qrCodes: unSyncQrodes }))
   }
 }))
