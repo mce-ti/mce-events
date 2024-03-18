@@ -76,12 +76,24 @@ export const styles = StyleSheet.create({
     color: '#fff',
     backgroundColor: '#475569',
     borderRadius: 5,
-    height: 40,
+    height: 50,
+    width: 170
   },
   textButton: {
     color: 'white',
     textAlign: 'center',
-    padding: 9,
-    fontWeight: "600"
+    padding: 15,
+    fontWeight: "bold"
   },
+  inputQuantidade: {
+    textAlign: 'center',
+    width: 60,
+    height: 50,
+    borderWidth: 1,
+    borderColor: '#9ca3af',
+    borderRadius: 3,
+    color: 'black',
+    marginHorizontal: 10,
+    fontSize: 18
+  }
 })

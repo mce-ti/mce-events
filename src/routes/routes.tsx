@@ -1,11 +1,12 @@
 import { createStackNavigator } from '@react-navigation/stack'
 import { createDrawerNavigator } from '@react-navigation/drawer'
-import { Home, Login, MovementHistory, ProductMovement, PrintQrCode } from '../screens'
+import { Home, Login, MovementHistory, QrCodesHistory,  ProductMovement } from '../screens'
 
 import { CustomDrawerContent } from './CustomDrawerContent'
 
 import type { HomeStackParams, RootDrawerParams, RootStackParams } from './routes.types'
 import { useAuth } from 'src/context/AuthContext'
+import { useQrCodeStore } from 'src/stores/qrCodesStore'
 
 const Drawer = createDrawerNavigator<RootDrawerParams>()
 const HomeStack = createStackNavigator<HomeStackParams>()
@@ -16,7 +17,6 @@ const HomeStackRoutes = () => (
   <HomeStack.Navigator initialRouteName='Home' screenOptions={{ headerShown: false }}>
     <HomeStack.Screen name="Home" component={Home} />
     <HomeStack.Screen name="ProductMovement" component={ProductMovement} />
-    <HomeStack.Screen name="PrintQrCode" component={PrintQrCode} />
   </HomeStack.Navigator>
 )
 
@@ -28,6 +28,8 @@ export const RootDrawer = () => (
   >
     <Drawer.Screen name="HomeStackRoutes" options={{ drawerLabel: 'Início' }} component={HomeStackRoutes} />
     <Drawer.Screen name="MovementHistory" options={{ drawerLabel: 'Histórico' }} component={MovementHistory} />
+    <Drawer.Screen name="QrCodesHistory" options={{ drawerLabel: 'Histórico Qr-Codes' }} component={QrCodesHistory} />
+ 
   </Drawer.Navigator>
 )
 

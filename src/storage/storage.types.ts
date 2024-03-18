@@ -10,6 +10,7 @@ export type EventStorage = {
 export type UserStorage = {
   id: number
   nome: string
+  id_impressora: number
   login: string
   nivel: string
   data: string
@@ -52,6 +53,11 @@ export type StockStorage = {
 }[]
 
 export type QrCodeStorage = {
+  id?: number
+  id_evento?: number
   codigo: string
+  quantidade: number
+  id_impressora?: number
+  data?: string
   sync?: boolean
 }

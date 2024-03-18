@@ -91,7 +91,7 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
             label="Salvar"
             color="green"
             onPress={submitForm}
-            disabled={!(values.art && values.image && values.quantity && values.responsilbe)}
+            disabled={!(values.art && values.quantity && values.responsilbe)}
           />
         </View>
       </View>

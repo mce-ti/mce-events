@@ -7,12 +7,12 @@ export type HomeStackParams = {
     movementType: 'in' | 'out'
     name: string
   }
-  PrintQrCode: undefined
 }
 
 export type RootDrawerParams = {
   HomeStackRoutes: undefined
   MovementHistory: undefined
+  QrCodesHistory: undefined
 }
 
 export type RootStackParams = {

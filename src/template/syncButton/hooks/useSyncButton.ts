@@ -18,8 +18,8 @@ const useSyncButton = () => {
   let hasSync = !!movements.filter(({ sync }) => !sync).length
 
   const qrCodes = useQrCodeStore(state => state.qrCodes)
-  // console.log('use sync', qrCodes)
-  if(qrCodes.length) hasSync = true;
+
+  if(qrCodes.length) hasSync = !!qrCodes.filter(({ sync }) => !sync).length
  
   const syncOperators = useOperatorsStore(state => state.syncOperators)
   const syncArts = useArtsStore(state => state.syncArts)

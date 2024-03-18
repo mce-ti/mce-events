@@ -1,9 +1,9 @@
-import { View, Text, TouchableOpacity } from "react-native"
+import { View, Text, TouchableOpacity, TextInput } from "react-native"
 import ViewShot from 'react-native-view-shot';
 import { MyQRCode } from "./QrCode";
 import { useEffect, useRef, useState } from "react";
 import { useQrCodeStore } from "src/stores";
-import { QrCodeStorage } from "src/storage/storage.types";
+import { QrCodeStorage, UserStorage } from "src/storage/storage.types";
 import { format } from 'date-fns';
 import LogoMceBlack from "../../../assets/mce-black-logo.svg";
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -34,9 +34,27 @@ const PrintQrCode = () => {
   const [timestamp, setTimestamp] = useState(Date.now());
 
   const [code, setCode] = useState(uniqid(13) + "-" + stringMd5(timestamp.toString()));
+  const [quantidade, setQuantidade] = useState(1);
+  const [id_impressora, setIdImpressora] = useState<number | undefined>(undefined);
+
+  const { getItem } = useAsyncStorage()
+
+  useEffect(() => {
+    const logUser = async () => {
+      const storedUser: UserStorage | null = await getItem('user');
+  
+      if (storedUser?.id_impressora) {
+        setIdImpressora(storedUser.id_impressora)
+      }
+    };
+
+    logUser();
+  }, []);
 
   const qrCodeData: QrCodeStorage = {
-    codigo: code
+    codigo: code,
+    quantidade: quantidade,
+    id_impressora: id_impressora
   }
 
   const updateCode = () => {
@@ -45,7 +63,9 @@ const PrintQrCode = () => {
     setCode(newCode);
 
     const updatedQrCodeData: QrCodeStorage = {
-      codigo: newCode
+      codigo: newCode,
+      quantidade: quantidade,
+      id_impressora: id_impressora
     };
 
     addQrCodeStore(updatedQrCodeData);
@@ -63,21 +83,46 @@ const PrintQrCode = () => {
     console.log(unSyncQrCodes);
   };
 
+  const changeQuantidade = async (type: string) => {
+    if (type === 'add') setQuantidade(quantidade + 1);
+    if (type === 'remove' && quantidade > 1) setQuantidade(quantidade - 1);
+  };
+
   return (
     <View>
-      <View style={{ flex: 1 }}>
-        <TouchableOpacity
-          onPress={() => {
-            captureAndPrint(viewShotRef);
-            updateCode();
-          }}
-          style={styles.gerarQRcode}
-          activeOpacity={0.7}
-        >
-          <Text style={styles.textButton}>GERAR QR CODE  <Ionicons name="qr-code" size={14} color="white" /> </Text>
-        </TouchableOpacity>
-      </View>
+      <View style={{ flex: 1, flexDirection: "column", marginBottom: 20 }}>
+        <View style={{ flex: 1, flexDirection: "row", justifyContent: 'center', alignItems: 'center', marginBottom: 30}}>
+          {/* <Text style={{ fontSize: 20, marginRight: 15, fontWeight: 'bold' }}>QUANTIDADE </Text> */}
+          <TouchableOpacity onPress={() => changeQuantidade('remove')}><Ionicons name="remove-circle-outline" size={50} color="red" /></TouchableOpacity>
+          <TextInput 
+            keyboardType="numeric" 
+            editable={false}
+            style={styles.inputQuantidade} 
+            value={quantidade.toString()}  
+            onChangeText={(val) => {   
+              const parsedValue = parseInt(val, 10);
+              if (!isNaN(parsedValue) || val === '') { // Verifica se é um número válido ou se é uma string vazia
+                setQuantidade(isNaN(parsedValue) ? 0 : parsedValue); // Se for inválido, define como 0
+              } 
+            }}
+          />
+          <TouchableOpacity onPress={() => changeQuantidade('add')}><Ionicons name="add-circle-outline" size={50} color="green" /></TouchableOpacity>
+        </View>
 
+        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center'}}>
+          <TouchableOpacity
+            onPress={() => {
+              captureAndPrint(viewShotRef);
+              updateCode();
+            }}
+            style={styles.gerarQRcode}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.textButton}>GERAR QR CODE  <Ionicons name="qr-code" size={14} color="white" /> </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+  
       {/* BOTOES PARA DEBUG */}
       {/* <View style={styles.actBtns}>
         <TouchableOpacity style={styles.print} onPress={useQrCodeStore(state => state.removeAllQrCodes)}><Ionicons name="remove" size={30} color="white" /></TouchableOpacity>
@@ -89,7 +134,7 @@ const PrintQrCode = () => {
         <TouchableOpacity style={styles.newVoucher} onPress={updateCode}><Ionicons name="add-circle-outline" size={30} color="white" /></TouchableOpacity>
       </View> */}
 
-      <ViewShot ref={viewShotRef} style={{ backgroundColor: 'white', width: '100%', position: 'absolute', top: 100 }}>
+      <ViewShot ref={viewShotRef} style={{ backgroundColor: 'white', width: '100%', position: 'absolute', top: 1000 }}>
         <View style={styles.container}>
           <View style={{ flexDirection: 'row' }}>
             <LogoMceBlack width={150} height={100} />
