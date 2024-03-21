@@ -124,7 +124,7 @@ const PrintQrCode = () => {
       </View>
   
       {/* BOTOES PARA DEBUG */}
-      {/* <View style={styles.actBtns}>
+      <View style={styles.actBtns}>
         <TouchableOpacity style={styles.print} onPress={useQrCodeStore(state => state.removeAllQrCodes)}><Ionicons name="remove" size={30} color="white" /></TouchableOpacity>
 
         <TouchableOpacity style={styles.print} onPress={logQrcodes}><Ionicons name="pin" size={30} color="white" /></TouchableOpacity>
@@ -132,7 +132,7 @@ const PrintQrCode = () => {
         <TouchableOpacity style={styles.print} onPress={() => captureAndPrint(viewShotRef)}><Ionicons name="print" size={30} color="white" /></TouchableOpacity>
 
         <TouchableOpacity style={styles.newVoucher} onPress={updateCode}><Ionicons name="add-circle-outline" size={30} color="white" /></TouchableOpacity>
-      </View> */}
+      </View>
 
       <ViewShot ref={viewShotRef} style={{ backgroundColor: 'white', width: '100%', position: 'absolute', top: 1000 }}>
         <View style={styles.container}>

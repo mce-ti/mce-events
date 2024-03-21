@@ -13,6 +13,7 @@ type QrCodesState = {
   sendStorageData: () => Promise<void>
   verifyAsyncData: () => Promise<void>
   removeAllQrCodes: () => Promise<void>
+  removeLastQrCode: (codigo: string, sync?: boolean) => Promise<void>
   sync: () => Promise<void>
 }
 
@@ -60,6 +61,45 @@ export const useQrCodeStore = create<QrCodesState>((set, get) => ({
     const { removeItem } = useAsyncStorage()
     // removeItem('qrCodes')
     // set(() => ({ qrCodes: [] }))
+  },
+  removeLastQrCode: async (codigo, sync) => {
+    const { setItem } = useAsyncStorage();
+    const { removeItem } = useAsyncStorage()
+    const stQrCodes = await getQrCodesStorage();
+
+    if (await hasNetwork() && sync) {
+      const removeQrCode = await apiQrCode.removeQrCode(codigo);
+
+      if(removeQrCode) {
+        const newQrCodes = stQrCodes.filter(item => item.codigo !== codigo);
+      
+        await removeItem('qrCodes')
+        
+        await setItem('qrCodes', newQrCodes);
+    
+        set(() => ({ qrCodes: newQrCodes }));
+      } else if(!sync) {
+        const newQrCodes = stQrCodes.filter(item => item.codigo !== codigo);
+      
+        await removeItem('qrCodes')
+        
+        await setItem('qrCodes', newQrCodes);
+
+        await setItem('Qrcode', ['excluido', true]);
+    
+        set(() => ({ qrCodes: newQrCodes }));
+      } else if(!await hasNetwork()) {
+        alert('Não foi possível realizar esta ação! Você precisa se conectar a internet.')
+      }
+    } else {
+      const newQrCodes = stQrCodes.filter(item => item.codigo !== codigo);
+  
+      await removeItem('qrCodes')
+      
+      await setItem('qrCodes', newQrCodes);
+  
+      set(() => ({ qrCodes: newQrCodes }));
+    }
   },
   sync: async () => {
     const event = await getEventStorage();

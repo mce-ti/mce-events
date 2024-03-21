@@ -29,9 +29,18 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
 
   const [id_impressora, setIdImpressora] = useState<number | undefined>(undefined);
 
+  const [deletePermission, setDeletePermission] = useState<boolean>(false);
+
   const { getItem } = useAsyncStorage()
 
+  const removeLastQrCode = useQrCodeStore(state => state.removeLastQrCode);
+
   useEffect(() => {
+    setDeletePermission(true);
+  }, [qrCodes]);
+
+  useEffect(() => {
+    
     const logUser = async () => {
       const storedUser: UserStorage | null = await getItem('user');
 
@@ -42,6 +51,14 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
 
     logUser();
   }, []);
+
+  const removeQrCode = async (codigo: string, sync?: boolean) => {
+    let syncQr = false;
+
+    if(sync) syncQr = true;
+
+    removeLastQrCode(codigo, syncQr);
+  }
 
   return (
     <Layout>
@@ -101,23 +118,35 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
           <Divider opacity={0} />
 
           <Text style={styles.eventName}>Ultimos registros</Text>
-          {qrCodes.slice(0, 10).map(item => (
+          {qrCodes.slice(0, 10).map((item, index) => (
             <View key={`stock-item-${item.codigo}`} style={{ marginTop: 10 }}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <View>
                   <Text style={styles.voucherCode}>{item.codigo}</Text>
                   <Text style={styles.eventDate}>{item.data}</Text>
                 </View>
-     
+
                 <Text style={styles.eventDate}>{item.quantidade}</Text>
 
                 <Text style={styles.eventDate}>{item.sync}</Text>
-                
+
+                {index == 0 && deletePermission &&
+                  <TouchableOpacity
+                    onPress={() => {
+                      removeQrCode(item.codigo, item.sync)
+                    }}
+                    activeOpacity={0.7}
+                  >
+                    <MaterialIcons name="delete" size={20} color="red" />
+                  </TouchableOpacity>
+                }
+
                 {item.sync ? (
                   <MaterialIcons name="check-circle" size={20} color="#16a34a" />
                 ) : (
                   <FontAwesome5 name="exclamation-circle" size={20} color="orange" />
                 )}
+
               </View>
               <Divider opacity={.1} space={2.5} />
             </View>
@@ -147,7 +176,7 @@ const styles = StyleSheet.create({
   },
   voucherCode: {
     maxWidth: 200,
-    overflow:  'hidden',
+    overflow: 'hidden',
     marginBottom: 5,
     color: '#4b5563'
   }

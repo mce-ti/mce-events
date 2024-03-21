@@ -41,3 +41,17 @@ export const getQrcodes = async (id_evento: number, id_impressora: number): Prom
     return []
   }
 }
+
+export const removeQrCode = async (codigo: string): Promise<GetQrCodeResponse> => {
+  try {
+    const response = await httpClient.get('removeQrCode/' + codigo)
+
+    const data: GetQrCodeResponse = response.data
+
+    return data
+  } catch (error) {
+    console.log(error)
+
+    return []
+  }
+}
