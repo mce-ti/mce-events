@@ -2,26 +2,17 @@ import { Text, View } from "react-native"
 import { Divider } from "src/components"
 import { Layout } from "src/template"
 import { MaterialIcons, FontAwesome5 } from '@expo/vector-icons'
-import { formatDBDateTime, formatTimeToDateTime } from "src/utils/date.utils"
 import { useQrCodeStore } from "src/stores"
-import { DrawerActions } from "@react-navigation/native"
 import { styles } from "./styles"
 
 import type { RootDrawerScreen } from "src/routes/routes.types"
 
-const QrCodesHistory = ({ navigation }: RootDrawerScreen<'MovementHistory'>) => {
+const QrCodesHistory = ({ navigation }: RootDrawerScreen<'QrCodesHistory'>) => {
   const qrCodes = useQrCodeStore(state => state.qrCodes)
 
-  // const movements = qrCodesStore.sort((a, b) => {
-  //   const d1 = a.date ? new Date(a.date).getTime() : a.time
-  //   const d2 = b.date ? new Date(b.date).getTime() : b.time
-
-  //   return d2 - d1
-  // })
-
   return (
-    <Layout onLogoPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
-      <Text style={styles.title}>Histórico</Text>
+    <Layout>
+      <Text style={styles.title}>Histórico - QR Codes</Text>
 
       <Divider opacity={0} />
 

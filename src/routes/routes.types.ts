@@ -15,6 +15,12 @@ export type RootDrawerParams = {
   QrCodesHistory: undefined
 }
 
+export type RootTabParams = {
+  HomeStackRoutes: undefined
+  MovementHistory: undefined
+  QrCodesHistory: undefined
+}
+
 export type RootStackParams = {
   Login: undefined
   RootDrawer: undefined

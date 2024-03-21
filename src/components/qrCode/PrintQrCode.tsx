@@ -142,7 +142,7 @@ const PrintQrCode = () => {
           </View>
 
           <View style={styles.containerTexts}>
-            <Text style={styles.textDeafault}>1. Ler o QR Code com seu celular</Text>
+            <Text style={styles.textDeafault}>1. Leia o QR Code com seu celular</Text>
             <Text style={styles.textDeafault}>2. Entre na página web</Text>
             <Text style={styles.textDeafault}>3. Preencha os seus dados Pix</Text>
             <Text style={styles.textDeafault}>4. Receba a sua caução de volta em até 2 dias úteis</Text>
@@ -157,6 +157,8 @@ const PrintQrCode = () => {
             <View><Text style={styles.data}>{formattedDateTime}</Text></View>
             <View><Text>.</Text></View>
           </View>
+
+          <Text style={styles.email}>Dúvidas? contato@meucopoeco.com.br</Text>
 
           <Text style={styles.codigoQr}>{qrCodeData.codigo}</Text>
         </View>

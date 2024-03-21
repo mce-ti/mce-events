@@ -8,13 +8,11 @@ import { PrintQrCode } from "src/components"
 import { MaterialIcons, FontAwesome5 } from '@expo/vector-icons'
 
 import type { HomeStackRouteScreen } from "src/routes/routes.types"
-import { DrawerActions, useNavigation } from "@react-navigation/native"
 import { useStockStore } from "src/stores/stockStore"
 import { useAsyncStorage } from "src/hooks"
 import { useEffect, useState } from "react"
 import { UserStorage } from "src/storage/storage.types"
 import { useQrCodeStore } from "src/stores"
-import { getQrCodesStorage } from "src/storage/storage"
 
 const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
 
@@ -28,13 +26,6 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
   const stock = useStockStore(state => state.stock)
 
   const qrCodes = useQrCodeStore(state => state.qrCodes)
-
-  // const qrCodes = qrCodesStore.sort((a, b) => {
-  //   const d1 = a.codigo
-  //   const d2 = b.codigo
-
-  //   return d2 - d1
-  // })
 
   const [id_impressora, setIdImpressora] = useState<number | undefined>(undefined);
 
@@ -53,7 +44,7 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
   }, []);
 
   return (
-    <Layout onLogoPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
+    <Layout>
       <View>
         <Text style={styles.eventName}>{useEvent?.nome}</Text>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -109,8 +100,8 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
 
           <Divider opacity={0} />
 
-          <Text style={styles.eventName}>Ultimos QR Codes</Text>
-          {qrCodes.slice(0, 15).map(item => (
+          <Text style={styles.eventName}>Ultimos registros</Text>
+          {qrCodes.slice(0, 10).map(item => (
             <View key={`stock-item-${item.codigo}`} style={{ marginTop: 10 }}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <View>
@@ -118,7 +109,7 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
                   <Text style={styles.eventDate}>{item.data}</Text>
                 </View>
      
-                <Text style={styles.eventDate}>qtd. {item.quantidade}</Text>
+                <Text style={styles.eventDate}>{item.quantidade}</Text>
 
                 <Text style={styles.eventDate}>{item.sync}</Text>
                 

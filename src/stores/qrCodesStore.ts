@@ -26,7 +26,7 @@ export const useQrCodeStore = create<QrCodesState>((set, get) => ({
 
     const storageQrCodes = await getQrCodesStorage() || []
     const dataQrcode = { id_evento: event.id, codigo: data.codigo, quantidade: data.quantidade, id_impressora: data.id_impressora }
-    const newQrCode = [...storageQrCodes, dataQrcode]
+    const newQrCode = [dataQrcode, ...storageQrCodes]
 
     await setItem('qrCodes', newQrCode)
 
@@ -46,6 +46,8 @@ export const useQrCodeStore = create<QrCodesState>((set, get) => ({
 
       removeItem('qrCodes')
     }
+
+    await get().sync()
   },
   verifyAsyncData: async () => {
     const event = await getEventStorage()
@@ -89,7 +91,7 @@ export const useQrCodeStore = create<QrCodesState>((set, get) => ({
       }
 
       for (const qrCode of unSyncQrodes) {
-        newQrCode.push(qrCode)
+        newQrCode.unshift(qrCode)
       }
 
       await setItem('qrCodes', newQrCode);

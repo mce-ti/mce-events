@@ -4,7 +4,6 @@ import { Layout } from "src/template"
 import { MaterialIcons, FontAwesome5 } from '@expo/vector-icons'
 import { formatDBDateTime, formatTimeToDateTime } from "src/utils/date.utils"
 import { useMovementStore } from "src/stores"
-import { DrawerActions } from "@react-navigation/native"
 import { styles } from "./styles"
 
 import type { RootDrawerScreen } from "src/routes/routes.types"
@@ -20,7 +19,7 @@ const MovementHistory = ({ navigation }: RootDrawerScreen<'MovementHistory'>) =>
   })
 
   return (
-    <Layout onLogoPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
+    <Layout>
       <Text style={styles.title}>Histórico</Text>
 
       <Divider opacity={0} />

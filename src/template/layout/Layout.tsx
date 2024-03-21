@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 import { SafeAreaView, View, ScrollView, StatusBar } from "react-native"
 import { SyncButton } from "../syncButton/SyncButton"
+import { LogOutButton } from "../logoutButton/LogoutButton"
 import { styles } from './styles'
 
 import Logo from '../../../assets/logo.svg'
@@ -18,7 +19,11 @@ const Layout = ({ children, onLogoPress }: LayoutProps) => (
       <View style={styles.headerContent}>
         <Logo width={90} style={{ borderColor: 'red', borderWidth: 1 }} onPress={() => onLogoPress?.()} />
 
-        <SyncButton />
+        <View style={styles.btnsContainer}>
+          <SyncButton />
+
+          <LogOutButton />
+        </View>
       </View>
     </View>
 

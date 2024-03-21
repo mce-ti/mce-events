@@ -29,7 +29,8 @@ export const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: "#d1d1d1"
+    borderColor: "#d1d1d1",
+    paddingLeft: 20
   },
   containerTexts: {
     marginBottom: 20,
@@ -58,19 +59,25 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: "space-between",
     marginTop: 30,
-    marginBottom: 50,
+    marginBottom: 10
   },
   data: {
     textAlign: 'center',
     fontSize: 20
   },
+  email: {
+    textAlign: 'center',
+    fontSize: 14,
+    marginBottom: 30
+  },
   codigoQr: {
     transform: [{ rotate: '270deg' }],
     position: 'absolute',
-    bottom: 173,
-    left: -155,
+    bottom: '46%',
+    left: -235,
     textAlign: 'center',
     fontSize: 14,
+    width: 500
   },
   gerarQRcode: {
     color: '#fff',

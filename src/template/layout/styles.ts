@@ -19,4 +19,9 @@ export const styles = StyleSheet.create({
     padding: 20,
     paddingTop: 10
   },
+  btnsContainer:{
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: 80
+  }
 })
