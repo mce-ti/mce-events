@@ -30,12 +30,11 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: "#d1d1d1",
-    paddingLeft: 20
   },
   containerTexts: {
-    marginBottom: 20,
+    marginBottom: 10,
     width: 330,
-    paddingHorizontal: 15
+    paddingHorizontal: 14
   },
   head: {
     flex: 1,
@@ -43,41 +42,47 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
   },
   title: {
-    fontSize: 24,
+    fontSize: 29,
     width: 150,
     textAlign: 'center',
-    fontWeight: 'bold',
+    fontWeight: '700',
     marginTop: 17,
-    marginLeft: 10
+    marginLeft: 10,
+    paddingTop: 15
   },
   textDeafault: {
-    fontSize: 20,
-    marginBottom: 5,
+    fontSize: 15,
+    marginBottom: 2,
+    fontWeight: '500'
   },
   ctnData: {
     width: 350,
     flexDirection: 'row',
     justifyContent: "space-between",
-    marginTop: 30,
-    marginBottom: 10
+    marginTop: 5,
+    marginBottom: 5
   },
   data: {
     textAlign: 'center',
-    fontSize: 20
+    fontSize: 15,
+    fontWeight: 'bold'
   },
   email: {
     textAlign: 'center',
     fontSize: 14,
-    marginBottom: 30
+    fontWeight: '500'
   },
-  codigoQr: {
-    transform: [{ rotate: '270deg' }],
-    position: 'absolute',
-    bottom: '46%',
-    left: -235,
+  responsabilidade: {
     textAlign: 'center',
     fontSize: 14,
-    width: 500
+    marginBottom: 30,
+    fontWeight: '500'
+  },
+  codigoQr: {
+    textAlign: 'center',
+    fontSize: 13,
+    width: 500,
+    fontWeight: 'bold'
   },
   gerarQRcode: {
     color: '#fff',

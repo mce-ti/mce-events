@@ -40,7 +40,7 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
   }, [qrCodes]);
 
   useEffect(() => {
-    
+
     const logUser = async () => {
       const storedUser: UserStorage | null = await getItem('user');
 
@@ -55,7 +55,7 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
   const removeQrCode = async (codigo: string, sync?: boolean) => {
     let syncQr = false;
 
-    if(sync) syncQr = true;
+    if (sync) syncQr = true;
 
     removeLastQrCode(codigo, syncQr);
   }
@@ -122,30 +122,33 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
             <View key={`stock-item-${item.codigo}`} style={{ marginTop: 10 }}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <View>
-                  <Text style={styles.voucherCode}>{item.codigo}</Text>
-                  <Text style={styles.eventDate}>{item.data}</Text>
+                  <Text style={[styles.voucherCode, item.situacao === 'cancelado' ? { textDecorationLine: 'line-through' } : null]}>{item.codigo}</Text>
+                  <Text style={[styles.eventDate, { fontSize: 10 }, item.situacao === 'cancelado' ? { textDecorationLine: 'line-through' } : null]}>{item.data}</Text>
                 </View>
 
-                <Text style={styles.eventDate}>{item.quantidade}</Text>
+                <Text style={[styles.eventDate, item.situacao === 'cancelado' ? { textDecorationLine: 'line-through' } : null]}>{item.quantidade}</Text>
 
                 <Text style={styles.eventDate}>{item.sync}</Text>
 
-                {index == 0 && deletePermission &&
-                  <TouchableOpacity
-                    onPress={() => {
-                      removeQrCode(item.codigo, item.sync)
-                    }}
-                    activeOpacity={0.7}
-                  >
-                    <MaterialIcons name="delete" size={20} color="red" />
-                  </TouchableOpacity>
-                }
+                <View>
+                  {item.sync ? (
+                    <MaterialIcons name="check-circle" size={20} color="#16a34a" />
+                  ) : (
+                    <FontAwesome5 name="exclamation-circle" size={20} color="orange" />
+                  )}
 
-                {item.sync ? (
-                  <MaterialIcons name="check-circle" size={20} color="#16a34a" />
-                ) : (
-                  <FontAwesome5 name="exclamation-circle" size={20} color="orange" />
-                )}
+                  {index == 0 && deletePermission && item.situacao != 'cancelado' &&
+                    <TouchableOpacity
+                      onPress={() => {
+                        removeQrCode(item.codigo, item.sync)
+                      }}
+                      activeOpacity={0.7}
+                      style={{ marginTop: 10 }}
+                    >
+                      <MaterialIcons name="cancel" size={20} color="red" />
+                    </TouchableOpacity>
+                  }
+                </View>
 
               </View>
               <Divider opacity={.1} space={2.5} />

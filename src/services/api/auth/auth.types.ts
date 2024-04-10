@@ -11,6 +11,7 @@ export type LoginResponse = {
     login: string
     caucao: boolean
     data: string
+    valorVoucher: number
   }
   usuario: {
     id: number

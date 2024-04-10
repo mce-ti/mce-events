@@ -1,11 +1,20 @@
 import { Animated, TouchableOpacity, View } from "react-native"
 import { useSyncButton } from "./hooks/useSyncButton"
+import { useInterval } from "../../hooks/useInterval"
 import { styles } from "./styles"
 
 import { MaterialIcons, FontAwesome5 } from '@expo/vector-icons'
+import { hasNetwork } from "src/utils/net"
 
 const SyncButton = () => {
   const { hasSync, isSyncing, rotate, sync } = useSyncButton()
+
+  useInterval(async () => {
+    const isConnected = await hasNetwork();
+    if (isConnected) {
+      sync();
+    }
+  }, 300000);
 
   return (
     <TouchableOpacity style={styles.container} onPress={sync}>

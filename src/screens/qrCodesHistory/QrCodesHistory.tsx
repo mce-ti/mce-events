@@ -33,11 +33,11 @@ const QrCodesHistory = ({ navigation }: RootDrawerScreen<'QrCodesHistory'>) => {
             ]}
           >
             <View style={[styles.td, { flex: 1, flexDirection: 'column' }]}>
-              <Text style={styles.textCodigo}>{item.codigo}</Text>
-              <Text style={[styles.text, { fontSize: 10 }]}>{item.data}</Text>
+              <Text style={[styles.textCodigo, , item.situacao === 'cancelado' ? { textDecorationLine: 'line-through' } : null]}>{item.codigo}</Text>
+              <Text style={[styles.text, { fontSize: 10 }, item.situacao === 'cancelado' ? { textDecorationLine: 'line-through' } : null]}>{item.data}</Text>
             </View>
             <View style={[styles.td, { width: 70, justifyContent: 'flex-end' }]}>
-              <Text style={styles.text}>{item.quantidade}</Text>
+              <Text style={[styles.text, item.situacao === 'cancelado' ? { textDecorationLine: 'line-through' } : null]}>{item.quantidade}</Text>
             </View>
             <View style={[styles.td, { width: 70, alignItems: 'center', justifyContent: 'center' }]}>
               {item.sync ? (

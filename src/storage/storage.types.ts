@@ -5,6 +5,7 @@ export type EventStorage = {
   login: string
   caucao: boolean
   data: string
+  valorVoucher: number
 }
 
 export type UserStorage = {
@@ -59,5 +60,6 @@ export type QrCodeStorage = {
   quantidade: number
   id_impressora?: number
   data?: string
+  situacao: string
   sync?: boolean
 }

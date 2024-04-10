@@ -26,7 +26,7 @@ export const useQrCodeStore = create<QrCodesState>((set, get) => ({
     const { setItem } = useAsyncStorage()
 
     const storageQrCodes = await getQrCodesStorage() || []
-    const dataQrcode = { id_evento: event.id, codigo: data.codigo, quantidade: data.quantidade, id_impressora: data.id_impressora }
+    const dataQrcode = { id_evento: event.id, codigo: data.codigo, quantidade: data.quantidade, id_impressora: data.id_impressora, situacao: data.situacao }
     const newQrCode = [dataQrcode, ...storageQrCodes]
 
     await setItem('qrCodes', newQrCode)
@@ -37,18 +37,22 @@ export const useQrCodeStore = create<QrCodesState>((set, get) => ({
     const event = await getEventStorage()
     const unSyncQrodes = await getQrCodesStorage() || [];
 
-    if (!event || !unSyncQrodes.length) return
+    if (!event || !unSyncQrodes.length) return;
 
-    const { removeItem } = useAsyncStorage()
 
-    for (const qrCode of unSyncQrodes) {
- 
-      await apiQrCode.syncQrCode(event.id, qrCode.codigo, qrCode.quantidade, qrCode.id_impressora)
+    if (await hasNetwork()) {
+      const { removeItem } = useAsyncStorage()
+
+      for (const qrCode of unSyncQrodes) {
+        if(!qrCode.sync) {
+          await apiQrCode.syncQrCode(event.id, qrCode.codigo, qrCode.quantidade, qrCode.id_impressora)
+        }
+      }
 
       removeItem('qrCodes')
-    }
 
-    await get().sync()
+      await get().sync()
+    }
   },
   verifyAsyncData: async () => {
     const event = await getEventStorage()
@@ -66,39 +70,47 @@ export const useQrCodeStore = create<QrCodesState>((set, get) => ({
     const { setItem } = useAsyncStorage();
     const { removeItem } = useAsyncStorage()
     const stQrCodes = await getQrCodesStorage();
+  
+    if (await hasNetwork() && sync == true) {
+      const removeQrCode = await apiQrCode.cancelQrCode(codigo);
 
-    if (await hasNetwork() && sync) {
-      const removeQrCode = await apiQrCode.removeQrCode(codigo);
+      if (removeQrCode) {
+        const newQrCodes = [...stQrCodes];
 
-      if(removeQrCode) {
-        const newQrCodes = stQrCodes.filter(item => item.codigo !== codigo);
-      
+        newQrCodes.forEach(item => {
+          if (item.codigo === codigo) {
+
+            item.situacao = 'cancelado';
+          }
+        });
+
+        console.log('nova lista', newQrCodes);
+
         await removeItem('qrCodes')
-        
-        await setItem('qrCodes', newQrCodes);
-    
-        set(() => ({ qrCodes: newQrCodes }));
-      } else if(!sync) {
-        const newQrCodes = stQrCodes.filter(item => item.codigo !== codigo);
-      
-        await removeItem('qrCodes')
-        
+
         await setItem('qrCodes', newQrCodes);
 
-        await setItem('Qrcode', ['excluido', true]);
-    
         set(() => ({ qrCodes: newQrCodes }));
-      } else if(!await hasNetwork()) {
-        alert('Não foi possível realizar esta ação! Você precisa se conectar a internet.')
+
+        alert('QR Code cancelado com sucesso!')
       }
     } else {
-      const newQrCodes = stQrCodes.filter(item => item.codigo !== codigo);
-  
+      const newQrCodes = [...stQrCodes];
+
+      newQrCodes.forEach(item => {
+        if (item.codigo === codigo) {
+
+          item.situacao = 'cancelado';
+        }
+      });
+      console.log('sync', sync)
       await removeItem('qrCodes')
-      
+
       await setItem('qrCodes', newQrCodes);
-  
+
       set(() => ({ qrCodes: newQrCodes }));
+
+      alert('Código cancelado com sucesso!')
     }
   },
   sync: async () => {
@@ -126,6 +138,7 @@ export const useQrCodeStore = create<QrCodesState>((set, get) => ({
           quantidade: item.quantidade,
           id_impressora: item.id_impressora,
           data: item.data,
+          situacao: item.situacao,
           sync: true
         });
       }

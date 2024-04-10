@@ -42,9 +42,9 @@ export const getQrcodes = async (id_evento: number, id_impressora: number): Prom
   }
 }
 
-export const removeQrCode = async (codigo: string): Promise<GetQrCodeResponse> => {
+export const cancelQrCode = async (codigo: string): Promise<GetQrCodeResponse> => {
   try {
-    const response = await httpClient.get('removeQrCode/' + codigo)
+    const response = await httpClient.get('cancelQrCode/' + codigo)
 
     const data: GetQrCodeResponse = response.data
 

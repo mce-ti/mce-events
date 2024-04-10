@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from "react"
 import { Animated } from "react-native"
-import { getQrCodesStorage } from "src/storage/storage"
 
 import { useMovementStore, useOperatorsStore, useQrCodeStore } from "src/stores"
 import { useArtsStore } from "src/stores/artsStore"
@@ -37,8 +36,8 @@ const useSyncButton = () => {
   )).current
 
   const sync = async () => {
-    if (isSyncing) return;
-    
+    if (isSyncing || !hasSync) return;
+
     anim.start()
     setIsSyncing(true)
 
