@@ -27,7 +27,7 @@ const useProductMovement = ({ navigation, route: { params }, showAlert }: usePro
 
       const event = await getEventStorage()
 
-      const hasAllValues = (values.quantityByArt && values.responsible && params.id && params.indice_estoque && event)
+      const hasAllValues = (Object.values(values.quantityByArt) && values.responsible && params.id && params.indice_estoque && event)
 
       // const hasAllValues = (values.art && values.image && values.quantity && values.responsible && params.id && event)
 
@@ -45,7 +45,7 @@ const useProductMovement = ({ navigation, route: { params }, showAlert }: usePro
         const quantity = values.quantityByArt[artId];
     
         // Verificar se a quantidade é válida (não é undefined ou NaN)
-        if (typeof quantity === 'number' && !isNaN(quantity)) {
+        if (typeof quantity === 'number' && !isNaN(quantity) && quantity > 0) {
 
           await addProductMovement({
             id_evento: event.id,

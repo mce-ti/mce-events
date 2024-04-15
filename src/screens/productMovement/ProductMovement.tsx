@@ -2,7 +2,7 @@ import { View, Text, Image, TouchableOpacity, TextInput } from "react-native"
 import { Button, Divider, Input } from "src/components"
 import { useProductMovement } from "./hooks/useProductMovement"
 import { ArtOption } from "./components/ArtOption"
-import { AntDesign } from '@expo/vector-icons/'
+// import Signature  from "./components/SignatureComponent"
 import { useAwesomeAlert } from "src/hooks"
 import { Layout } from "src/template"
 import { styles } from "./styles"
@@ -40,7 +40,7 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
               currentValue={values.art}
               image={art.imagem}
               name={art.nome}
-              // onTouch={v => setFieldValue('art', v)}
+              onTouch={v => console.log(values.quantityByArt)}
             />
 
             <TextInput
@@ -94,7 +94,10 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
             label="Salvar"
             color="green"
             onPress={submitForm}
-            disabled={!Object.values(values.quantityByArt).some(value => value !== undefined) || !values.responsible}
+            disabled={
+              !Object.values(values.quantityByArt).some(value => value !== undefined && value > 0) ||
+              !values.responsible
+            }
           />
         </View>
       </View>

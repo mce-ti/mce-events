@@ -10,8 +10,9 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { stringMd5 } from 'react-native-quick-md5';
 import { getQrCodesStorage } from "src/storage/storage";
 import { useAsyncStorage } from "src/hooks"
-import { captureAndPrint } from "./hooks/captureAndPrint";
+import useCaptureAndPrint from './hooks/useCaptureAndPrint';
 import { styles } from './styles'
+import Spinner from "react-native-loading-spinner-overlay";
 
 const PrintQrCode = () => {
 
@@ -38,6 +39,8 @@ const PrintQrCode = () => {
   const [id_impressora, setIdImpressora] = useState<number | undefined>(undefined);
   const [valorVoucher, setValorVoucher] = useState<number | undefined>(undefined);
   const [valorVoucherCalc, setValorVoucherCalc] = useState<number | undefined>(undefined);
+  const { captureAndPrint, loading } = useCaptureAndPrint();
+  const [overlayVisible, setOverlayVisible] = useState(false);
 
   const { getItem } = useAsyncStorage()
 
@@ -73,6 +76,10 @@ const PrintQrCode = () => {
       setValorVoucherCalc(valorFormatado);
     }
   }, [valorVoucher, quantidade]);
+
+  useEffect(() => {
+    setOverlayVisible(loading);
+  }, [loading]);
 
   const qrCodeData: QrCodeStorage = {
     codigo: code,
@@ -118,6 +125,9 @@ const PrintQrCode = () => {
 
   return (
     <View>
+      {overlayVisible && (
+        <TouchableOpacity style={[styles.overlay, { zIndex: 100 }]} activeOpacity={1} />
+      )}
       <View style={{ flex: 1, flexDirection: "column", marginBottom: 20 }}>
         <View style={{ flex: 1, flexDirection: "row", justifyContent: 'center', alignItems: 'center', marginBottom: 30}}>
           {/* <Text style={{ fontSize: 20, marginRight: 15, fontWeight: 'bold' }}>QUANTIDADE </Text> */}
@@ -191,6 +201,12 @@ const PrintQrCode = () => {
           <Text style={styles.responsabilidade}>Voucher único e de sua responsabilidade</Text>
         </View>
       </ViewShot>
+
+      <Spinner
+        visible={loading}
+        textContent={'Carregando...'}
+        textStyle={{ color: '#FFF' }}
+      />
     </View>
   )
 }
