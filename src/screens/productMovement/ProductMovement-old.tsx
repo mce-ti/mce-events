@@ -1,4 +1,4 @@
-import { View, Text, Image, TouchableOpacity, TextInput } from "react-native"
+import { View, Text, Image, TouchableOpacity } from "react-native"
 import { Button, Divider, Input } from "src/components"
 import { useProductMovement } from "./hooks/useProductMovement"
 import { ArtOption } from "./components/ArtOption"
@@ -10,7 +10,7 @@ import { styles } from "./styles"
 import type { HomeStackRouteScreen } from "src/routes/routes.types"
 
 const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMovement'>) => {
-
+  
   const { AwesomeAlertComponent, showAlert } = useAwesomeAlert()
 
   const {
@@ -34,40 +34,37 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
 
       <View style={styles.optionsContainer}>
         {arts.map(art => (
-          <View key={`art-${art.id}`}>
-            <ArtOption
-              id={art.id}
-              currentValue={values.art}
-              image={art.imagem}
-              name={art.nome}
-              // onTouch={v => setFieldValue('art', v)}
-            />
-
-            <TextInput
-              placeholder="Quantidade"
-              style={styles.quantidade}
-              keyboardType="number-pad"
-              value={values.quantityByArt[art.id]?.toString()}
-              onChangeText={text => {
-                const quantity = text.trim() === '' ? undefined : parseInt(text);
-                setFieldValue(`quantityByArt.${art.id}`, quantity);
-              }}
-            />
-          </View>
+          <ArtOption
+            key={`art-${art.id}`}
+            id={art.id}
+            currentValue={values.art}
+            image={art.imagem}
+            name={art.nome}
+            onTouch={v => setFieldValue('art', v)}
+          />
         ))}
       </View>
 
       <Divider opacity={0} space={10} />
 
       <Input
-        placeholder="Responsável"
-        value={values.responsible}
-        onChangeText={handleChange('responsible')}
+        placeholder="Quantidade"
+        keyboardType="number-pad"
+        value={values.quantity?.toString()}
+        onChangeText={onQuantityChange}
       />
 
       <Divider opacity={0} />
 
-      {/* <TouchableOpacity style={styles.imageContainer} activeOpacity={.75} onPress={pickImage}>
+      <Input
+        placeholder="Responsável"
+        value={values.responsilbe}
+        onChangeText={handleChange('responsilbe')}
+      />
+
+      <Divider opacity={0} />
+
+      <TouchableOpacity style={styles.imageContainer} activeOpacity={.75} onPress={pickImage}>
         {values.image ? (
           <Image source={{ uri: values.image }} style={styles.image} />
         ) : (
@@ -78,7 +75,7 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
         )}
       </TouchableOpacity>
 
-      <Divider opacity={0} /> */}
+      <Divider opacity={0} />
 
       <View style={styles.actionsContainer}>
         <View style={styles.actionContent}>
@@ -94,7 +91,7 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
             label="Salvar"
             color="green"
             onPress={submitForm}
-            disabled={!Object.values(values.quantityByArt).some(value => value !== undefined) || !values.responsible}
+            disabled={!(values.art && values.quantity && values.responsilbe)}
           />
         </View>
       </View>

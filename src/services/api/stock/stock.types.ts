@@ -3,3 +3,8 @@ export type GetStockResponse = {
   nome: string
   quantidade: number
 }[]
+
+export type GetStockRelResponse = {
+  estoque: string
+  indice: number
+}[]

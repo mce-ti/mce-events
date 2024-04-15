@@ -1,12 +1,13 @@
 export type SyncMovementsRequest = {
   id_evento: number
+  indice_estoque: number
   id_operador: number
   controle: 'Entrada' | 'Saída',
   quantidade: number
   caucao: 'Sim' | 'Não',
   id_arte: number
   responsavel: string
-  foto: {
+  foto?: {
     base64: string
     type: string
     name: string
@@ -22,6 +23,7 @@ export type GetMovementsRequest = {
 export type GetMovementsResponse = {
   id: number
   id_operador: number
+  indice_estoque: number
   nome_operador: string
   controle: 'Entrada' | 'Saída'
   quantidade: number

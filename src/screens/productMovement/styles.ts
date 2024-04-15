@@ -40,5 +40,13 @@ export const styles = StyleSheet.create({
   },
   actionContent: {
     flex: 1
+  },
+  quantidade: {
+    borderColor: '#a1a1a1',
+    borderWidth: 1,
+    borderRadius: 4,
+    padding: 3,
+    paddingHorizontal: 8,
+    marginTop: 5
   }
 })

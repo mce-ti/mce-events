@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, FlatList, TouchableOpacity } from "react-native"
+import { StyleSheet, View, Text, FlatList, TouchableOpacity, Alert } from "react-native"
 import { Layout } from "src/template"
 import { Divider, Input } from "src/components"
 import { Operator } from "./components/Operator"
@@ -13,21 +13,23 @@ import { useAsyncStorage } from "src/hooks"
 import { useEffect, useState } from "react"
 import { UserStorage } from "src/storage/storage.types"
 import { useQrCodeStore } from "src/stores"
+import React from "react"
 
 const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
 
   const {
     operators,
+    stockRel,
     useEvent,
     searchValue,
     setSearchValue
   } = useHome({ navigation, route })
 
+  const [idImpressora, setIdImpressora] = useState<number | undefined>(undefined);
+
   const stock = useStockStore(state => state.stock)
 
-  const qrCodes = useQrCodeStore(state => state.qrCodes)
-
-  const [id_impressora, setIdImpressora] = useState<number | undefined>(undefined);
+  const qrCodes = useQrCodeStore(state => state.qrCodes).filter(({ id_impressora }) => id_impressora == idImpressora)
 
   const [deletePermission, setDeletePermission] = useState<boolean>(false);
 
@@ -48,17 +50,33 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
         setIdImpressora(storedUser.id_impressora)
       }
     };
+    
 
     logUser();
   }, []);
 
   const removeQrCode = async (codigo: string, sync?: boolean) => {
     let syncQr = false;
-
+  
     if (sync) syncQr = true;
 
-    removeLastQrCode(codigo, syncQr);
-  }
+    Alert.alert(
+      'Cancelar Cupom',
+      'Você tem certeza que deseja cancelar este cupom?',
+      [
+        {
+          text: 'Cancelar',
+          onPress: () => console.log('Não cancelado'),
+          style: 'cancel',
+        },
+        {
+          text: 'Confirmar',
+          onPress: () => removeLastQrCode(codigo, syncQr),
+        },
+      ],
+      { cancelable: false }
+    );
+  };
 
   return (
     <Layout>
@@ -72,7 +90,7 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
 
       <Divider space={10} />
 
-      {!id_impressora ?
+      {!idImpressora ?
         <>
           <Input
             placeholder="Buscar..."
@@ -80,19 +98,29 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
             onChangeText={setSearchValue}
           />
 
-          <Divider opacity={0} />
           <FlatList
-            data={operators.filter(({ nome, localizacao }) => nome.toLowerCase().includes(searchValue.toLowerCase()) || localizacao?.toLowerCase().includes(searchValue.toLowerCase()))}
+            data={stockRel.filter(({ estoque }) => estoque.toLowerCase().includes(searchValue.toLowerCase()))}
             scrollEnabled={false}
-            renderItem={({ item }) => (
-              <Operator
-                name={item.nome}
-                color={item.cor}
-                localizacao={item?.localizacao}
-                entry={() => navigation.navigate('ProductMovement', { id: item.id, name: item.nome, movementType: 'in' })}
-                output={() => navigation.navigate('ProductMovement', { id: item.id, name: item.nome, movementType: 'out' })}
-              />
+            renderItem={({ item: stockItem }) => (
+              <React.Fragment>
+                <Text style={styles.estoque}>{stockItem.estoque}</Text>
+                <FlatList
+                  data={operators.filter(({ nome, localizacao, indice_estoque }) => indice_estoque === stockItem.indice && (nome.toLowerCase().includes(searchValue.toLowerCase()) || localizacao?.toLowerCase().includes(searchValue.toLowerCase())))}
+                  scrollEnabled={false}
+                  renderItem={({ item }) => (
+                    <Operator
+                      name={item.nome}
+                      color={item.cor}
+                      localizacao={item?.localizacao}
+                      entry={() => navigation.navigate('ProductMovement', { id: item.id, name: item.nome, movementType: 'in', indice_estoque : stockItem.indice })}
+                      output={() => navigation.navigate('ProductMovement', { id: item.id, name: item.nome, movementType: 'out', indice_estoque : stockItem.indice })}
+                    />
+                  )}
+                  keyExtractor={(item, index) => index.toString()}
+                />
+              </React.Fragment>
             )}
+            keyExtractor={(item, index) => index.toString()}
           />
 
           <Divider opacity={0} />
@@ -182,6 +210,16 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     marginBottom: 5,
     color: '#4b5563'
+  },
+  estoque: {
+    backgroundColor: '#007b8b9e',
+    color: '#FFFFFF',
+    height: 40,
+    marginTop: 30,
+    fontSize: 20,
+    fontWeight: "bold",
+    textAlign: 'center',
+    paddingVertical: 5
   }
 });
 

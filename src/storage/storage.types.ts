@@ -22,6 +22,7 @@ export type OperatorStorage = {
   nome: string
   localizacao: string | null
   cor: string | null
+  indice_estoque: number | null
 }
 
 export type ArtStorage = {
@@ -35,6 +36,7 @@ export type ArtStorage = {
 export type ProductMovementStorage = {
   id?: number
   id_evento: number
+  indice_estoque: number
   time: number
   responsible: string
   type: 'in' | 'out'
@@ -42,7 +44,7 @@ export type ProductMovementStorage = {
   id_art: number
   id_operator: number
   name_operator: string
-  image: string
+  image?: string
   sync?: boolean
   date?: string
 }
@@ -51,6 +53,11 @@ export type StockStorage = {
   id: number
   nome: string
   quantidade: number
+}[]
+
+export type StockRelStorage = {
+  estoque: string
+  indice: number
 }[]
 
 export type QrCodeStorage = {

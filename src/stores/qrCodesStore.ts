@@ -45,7 +45,7 @@ export const useQrCodeStore = create<QrCodesState>((set, get) => ({
 
       for (const qrCode of unSyncQrodes) {
         if(!qrCode.sync) {
-          await apiQrCode.syncQrCode(event.id, qrCode.codigo, qrCode.quantidade, qrCode.id_impressora)
+          await apiQrCode.syncQrCode(event.id, qrCode.codigo, qrCode.quantidade, qrCode.situacao, qrCode.id_impressora)
         }
       }
 

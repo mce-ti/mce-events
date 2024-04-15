@@ -24,9 +24,12 @@ const useProductMovement = ({ navigation, route: { params }, showAlert }: usePro
   const formik = useFormik({
     initialValues,
     onSubmit: async values => {
+
       const event = await getEventStorage()
 
-      const hasAllValues = (values.art && values.image && values.quantity && values.responsilbe && params.id && event)
+      const hasAllValues = (values.quantityByArt && values.responsible && params.id && params.indice_estoque && event)
+
+      // const hasAllValues = (values.art && values.image && values.quantity && values.responsible && params.id && event)
 
       if (!hasAllValues) {
         showAlert({
@@ -38,44 +41,86 @@ const useProductMovement = ({ navigation, route: { params }, showAlert }: usePro
         return
       }
 
-      if (await getPermission('MediaLibrary')) {
-        const asset = await MediaLibrary.createAssetAsync(values.image)
-        const album = await MediaLibrary.createAlbumAsync('mceEvents', asset, false)
-        const albumAssets = await MediaLibrary.getAssetsAsync({ album })
+      for (const artId in values.quantityByArt) {
+        const quantity = values.quantityByArt[artId];
+    
+        // Verificar se a quantidade é válida (não é undefined ou NaN)
+        if (typeof quantity === 'number' && !isNaN(quantity)) {
 
-        const uriAsset = albumAssets.assets.find(albumAsset => albumAsset.filename === asset.filename)?.uri
-
-        if (uriAsset) {
           await addProductMovement({
             id_evento: event.id,
+            indice_estoque: params.indice_estoque,
             time: new Date().getTime(),
-            id_art: values.art!,
+            id_art: parseInt(artId),
             id_operator: params.id,
             name_operator: params.name,
-            image: uriAsset,
-            quantity: values.quantity!,
-            responsible: values.responsilbe,
+            quantity: quantity,
+            responsible: values.responsible,
             type: params.movementType
-          })
-
-          showAlert({
-            show: true,
-            title: 'Sucesso',
-            message: 'Registros salvos no dispositivo.',
-            onConfirm: () => {
-              navigation.goBack()
-            }
-          })
-
-          return
+          });
         }
       }
 
+      // await addProductMovement({
+      //   id_evento: event.id,
+      //   time: new Date().getTime(),
+      //   id_art: values.art!,
+      //   id_operator: params.id,
+      //   name_operator: params.name,
+      //   quantity: values.quantity!,
+      //   responsible: values.responsible,
+      //   type: params.movementType
+      // })
+
       showAlert({
         show: true,
-        title: 'Atenção',
-        message: 'Falha ao salvar a imagem, verifique as permições do aplicativo.',
+        title: 'Sucesso',
+        message: 'Registros salvos no dispositivo.',
+        onConfirm: () => {
+          navigation.goBack()
+        }
       })
+
+      return
+
+      // if (await getPermission('MediaLibrary')) {
+      //   const asset = await MediaLibrary.createAssetAsync(values.image)
+      //   const album = await MediaLibrary.createAlbumAsync('mceEvents', asset, false)
+      //   const albumAssets = await MediaLibrary.getAssetsAsync({ album })
+
+      //   const uriAsset = albumAssets.assets.find(albumAsset => albumAsset.filename === asset.filename)?.uri
+
+      //   if (uriAsset) {
+      //     await addProductMovement({
+      //       id_evento: event.id,
+      //       time: new Date().getTime(),
+      //       id_art: values.art!,
+      //       id_operator: params.id,
+      //       name_operator: params.name,
+      //       image: uriAsset,
+      //       quantity: values.quantity!,
+      //       responsible: values.responsible,
+      //       type: params.movementType
+      //     })
+
+      //     showAlert({
+      //       show: true,
+      //       title: 'Sucesso',
+      //       message: 'Registros salvos no dispositivo.',
+      //       onConfirm: () => {
+      //         navigation.goBack()
+      //       }
+      //     })
+
+      //     return
+      //   }
+      // }
+
+      // showAlert({
+      //   show: true,
+      //   title: 'Atenção',
+      //   message: 'Falha ao salvar a imagem, verifique as permições do aplicativo.',
+      // })
     }
   })
 

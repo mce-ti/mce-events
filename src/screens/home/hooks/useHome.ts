@@ -5,13 +5,14 @@ import { useAsyncStorage } from 'src/hooks'
 import type { EventStorage, OperatorStorage } from 'src/storage/storage.types'
 import type { HomeStackRouteScreen } from 'src/routes/routes.types'
 import { useAuth } from 'src/context/AuthContext'
-import { useOperatorsStore } from 'src/stores'
+import { useOperatorsStore, useStockStore } from 'src/stores'
 
 const useHome = ({ navigation }: HomeStackRouteScreen<'Home'> ) => {
   const [useEvent, setEvent] = useState<EventStorage|null>(null)
   const [searchValue, setSearchValue] = useState<string>('')
 
   const operators = useOperatorsStore(state => state.operators)
+  const stockRel = useStockStore(state => state.stockRel)
 
   const { getItem } = useAsyncStorage()
 
@@ -38,6 +39,7 @@ const useHome = ({ navigation }: HomeStackRouteScreen<'Home'> ) => {
 
   return {
     operators,
+    stockRel,
     useEvent,
     searchValue,
     setSearchValue

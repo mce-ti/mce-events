@@ -8,7 +8,7 @@ export const login = async ({ username, password }: LoginRequest): Promise<Login
     const response = await httpClient.post('auth', { username, password })
 
     const data:LoginResponse = response.data
-
+    console.log(response.data);
     return data
   } catch (error) {
     console.log(error)

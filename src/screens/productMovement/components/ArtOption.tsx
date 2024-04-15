@@ -18,11 +18,11 @@ const ArtOption = ({ id, image, currentValue, onTouch, name }: ArtOptionProps) =
       ]}
       onTouchEnd={() => onTouch?.(id)}
     >
+      <Text style={styles.name}>{name}</Text>
       <Image
         source={{ uri: image }}
         style={[styles.image]}
       />
-      <Text style={styles.name}>{name}</Text>
     </View>
   )
 }
@@ -31,11 +31,11 @@ const styles = StyleSheet.create({
   optionContent: {
     flex: 1,
     alignItems: 'center',
-    gap: 10,
+    gap: 5,
     borderWidth: 4,
     borderRadius: 2,
-    minWidth: '40%',
-    maxWidth: '48%',
+    minWidth: '45%',
+    maxWidth: '100%',
     backgroundColor: '#e5e7eb'
   },
   image: {

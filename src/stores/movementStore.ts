@@ -45,6 +45,7 @@ export const useMovementStore = create<MovementSate>((set, get) => ({
         newMovements.push({
           id: movement.id,
           id_evento: event.id,
+          indice_estoque: movement.indice_estoque,
           id_art: movement.id_arte,
           id_operator: movement.id_operador,
           image: '',
@@ -83,12 +84,13 @@ export const useMovementStore = create<MovementSate>((set, get) => ({
       await apiMovements.syncMovement({
         id_evento: event.id,
         id_operador: movement.id_operator,
+        indice_estoque: movement.indice_estoque,
         controle: movement.type === 'in' ? 'Entrada' : 'Saída',
         quantidade: movement.quantity,
         caucao: event?.caucao ? 'Sim' : 'Não',
         id_arte: movement.id_art,
         responsavel: movement.responsible,
-        foto: await readFile(movement.image),
+        // foto: await readFile(movement.image),
         app_time: movement.time
       })
 

@@ -24,6 +24,7 @@ const useLogin = ({ showAlert }: useLoginProps) => {
   const syncOperators = useOperatorsStore(state => state.syncOperators)
   const syncArts = useArtsStore(state => state.syncArts)
   const syncStock = useStockStore(state => state.syncStock)
+  const syncStockRel = useStockStore(state => state.syncStockRel)
   const syncQrCodes = useQrCodeStore(state => state.sync)
 
   const formik = useFormik({
@@ -55,6 +56,7 @@ const useLogin = ({ showAlert }: useLoginProps) => {
       await syncMovements()
       await syncOperators()
       await syncStock()
+      await syncStockRel()
       await syncQrCodes()
 
       login(response.usuario.id)
@@ -68,6 +70,7 @@ const useLogin = ({ showAlert }: useLoginProps) => {
     await syncMovements()
     await syncOperators()
     await syncStock()
+    await syncStockRel()
     await syncQrCodes()
 
     user && login(user.id)

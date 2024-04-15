@@ -6,9 +6,30 @@ import { useQrCodeStore } from "src/stores"
 import { styles } from "./styles"
 
 import type { RootDrawerScreen } from "src/routes/routes.types"
+import { useEffect, useState } from "react"
+import { UserStorage } from "src/storage/storage.types"
+import { useAsyncStorage } from "src/hooks"
 
 const QrCodesHistory = ({ navigation }: RootDrawerScreen<'QrCodesHistory'>) => {
-  const qrCodes = useQrCodeStore(state => state.qrCodes)
+
+  const { getItem } = useAsyncStorage()
+
+  useEffect(() => {
+
+    const logUser = async () => {
+      const storedUser: UserStorage | null = await getItem('user');
+
+      if (storedUser?.id_impressora) {
+        setIdImpressora(storedUser.id_impressora)
+      }
+    };
+
+    logUser();
+  }, []);
+
+  const [idImpressora, setIdImpressora] = useState<number | undefined>(undefined);
+  
+  const qrCodes = useQrCodeStore(state => state.qrCodes).filter(({ id_impressora }) => id_impressora == idImpressora)
 
   return (
     <Layout>
