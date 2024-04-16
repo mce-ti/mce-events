@@ -1,11 +1,16 @@
 export type EventStorage = {
-  id: number
-  nome: string
-  local: string
-  login: string
-  caucao: boolean
-  data: string
-  valorVoucher: number
+  id: number;
+  nome: string;
+  local: string;
+  login: string;
+  caucao: boolean;
+  data: string;
+  produtos: Array<{
+    id_arte: number;
+    nome: string;
+    quantidade: number;
+    valor: number;
+  }>;
 }
 
 export type UserStorage = {

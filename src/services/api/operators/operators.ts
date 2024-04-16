@@ -9,7 +9,7 @@ export const getOperators = async (id_evento: number): Promise<GetOperatorsRespo
 
     return data
   } catch (error) {
-    console.log(error)
+    console.log('getOperators', error)
 
     return []
   }

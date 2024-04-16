@@ -11,29 +11,17 @@ import { stringMd5 } from 'react-native-quick-md5';
 import { getQrCodesStorage } from "src/storage/storage";
 import { useAsyncStorage } from "src/hooks"
 import useCaptureAndPrint from './hooks/useCaptureAndPrint';
+import { EventProducts } from "./components/EventProducts";
 import { styles } from './styles'
 import Spinner from "react-native-loading-spinner-overlay";
 
 const PrintQrCode = () => {
 
-  function uniqid(length: number) {
-    let hash = '';
-    while (hash.length < length) {
-      hash += Math.random().toString(36).substring(2);
-    }
-    return hash.substring(0, length);
-  }
-
   const viewShotRef = useRef<ViewShot>(null);
-
   const addQrCodeStore = useQrCodeStore(state => state.addQrCode);
-
   const dateTime = new Date();
-
   const formattedDateTime = format(dateTime, 'dd/MM/yyyy HH:mm:ss');
-
   const [timestamp, setTimestamp] = useState(Date.now());
-
   const [code, setCode] = useState(uniqid(13) + "-" + stringMd5(timestamp.toString()));
   const [quantidade, setQuantidade] = useState(1);
   const [id_impressora, setIdImpressora] = useState<number | undefined>(undefined);
@@ -41,17 +29,16 @@ const PrintQrCode = () => {
   const [valorVoucherCalc, setValorVoucherCalc] = useState<number | undefined>(undefined);
   const { captureAndPrint, loading } = useCaptureAndPrint();
   const [overlayVisible, setOverlayVisible] = useState(false);
-
   const { getItem } = useAsyncStorage()
 
   useEffect(() => {
     const logUser = async () => {
       const storedUser: UserStorage | null = await getItem('user');
       const storedEvent: EventStorage | null = await getItem('event');
-
-      if (storedUser?.id_impressora && storedEvent?.valorVoucher) {
+      console.log(storedEvent)
+      if (storedUser?.id_impressora && storedEvent?.produtos[1].valor) {
         setIdImpressora(storedUser.id_impressora)
-        setValorVoucher(storedEvent.valorVoucher)
+        setValorVoucher(storedEvent.produtos[1].valor)
         if(valorVoucher){
           const valorCalculado = valorVoucher * quantidade;
           const valorFormatado = valorCalculado.toLocaleString('pt-BR', {
@@ -123,6 +110,27 @@ const PrintQrCode = () => {
     });
   };
 
+  function uniqid(length: number) {
+    let hash = '';
+    while (hash.length < length) {
+      hash += Math.random().toString(36).substring(2);
+    }
+    return hash.substring(0, length);
+  }
+
+  const [inputValues, setInputValues] = useState<{ [key: number]: { quantidade: string, valor: number } }>({});
+
+  // Função para lidar com a mudança nos valores dos TextInput
+  const handleInputChange = (id_arte: number, quantidade: string, valor: number) => {
+    setInputValues(prevInputValues => ({
+      ...prevInputValues,
+      [id_arte]: { quantidade, valor }
+    }));
+    console.log("id_arte:", id_arte);
+    console.log("Quantidade:", quantidade);
+    console.log("Valor:", valor);
+  };
+
   return (
     <View>
       {overlayVisible && (
@@ -147,6 +155,8 @@ const PrintQrCode = () => {
           <TouchableOpacity onPress={() => changeQuantidade('add')}><Ionicons name="add-circle-outline" size={50} color="green" /></TouchableOpacity>
         </View>
 
+        <EventProducts  onInputChange={handleInputChange} />
+    
         <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center'}}>
           <TouchableOpacity
             onPress={() => {

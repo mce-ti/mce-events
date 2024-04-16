@@ -12,7 +12,13 @@ export type LoginResponse = {
     caucao: boolean
     data: string
     valorVoucher: number
-  }
+    produtos: Array<{
+      id_arte: number;
+      nome: string;
+      quantidade: number;
+      valor: number;
+    }>;
+  };
   usuario: {
     id: number
     nome: string

@@ -40,7 +40,7 @@ export const getMovements = async (request: GetMovementsRequest) => {
 
     return data
   } catch (error) {
-    console.log(error)
+    console.log('erro aqui', error)
     return []
   }
 }
