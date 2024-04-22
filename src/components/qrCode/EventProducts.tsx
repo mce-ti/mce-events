@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, TextInput } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import { View, Text, TextInput, TouchableOpacity, FlatList } from "react-native";
 import { EventStorage } from "src/storage/storage.types";
 import { useAsyncStorage } from "src/hooks";
 import { Divider } from "src/components"
+import { debounce } from 'lodash';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { styles } from './styles'
 
@@ -11,7 +13,7 @@ interface Props {
   resetQuantity: boolean
 }
 
-const EventProducts : React.FC<Props> = ({ onInputChange, resetQuantity }) => {
+const EventProducts: React.FC<Props> = ({ onInputChange, resetQuantity }) => {
   const [produtosEvento, setProdutosEvento] = useState<EventStorage["produtos"]>([]);
   const { getItem } = useAsyncStorage();
 
@@ -28,35 +30,48 @@ const EventProducts : React.FC<Props> = ({ onInputChange, resetQuantity }) => {
     logUser();
   }, [getItem]);
 
-  const handleQuantityChange = (id_arte: number, quantidade: string) => {
+  const handleQuantityChange = useCallback((id_arte: number, quantidade: string) => {
     const item = produtosEvento.find(item => item.id_arte === id_arte);
     if (item) {
-      const valor = item.valor; 
+      const valor = item.valor;
       onInputChange(id_arte, quantidade, valor);
     }
-  };
+  }, [onInputChange, produtosEvento]);
+  
+  const debouncedHandleQuantityChange = useCallback(debounce(handleQuantityChange, 300), [handleQuantityChange]);
+  
 
   useEffect(() => {
-    if(resetQuantity === true) {
+    if (resetQuantity === true) {
       setProdutosEvento([]);
-      resetQuantity = false;
     }
   }, [resetQuantity]);
 
+  // const changeQuantidade = (type: string) => {
+  //   setQuantidade((prevQuantidade : number) => {
+  //     if (type === 'add' && prevQuantidade < 5) return prevQuantidade + 1;
+  //     if (type === 'remove' && prevQuantidade > 1) return prevQuantidade - 1;
+  //     return prevQuantidade;
+  //   });
+  // };
+
   return (
-    <View style={{ width: '100%', marginBottom: 20 }}> 
-      <Text style={{ fontSize: 20, marginBottom: 40, fontWeight: '700' }}>Produtos disponíveis</Text>
+    <View>
       {produtosEvento.map((item, index) => (
         <View key={`stock-item-${index}`}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
-            <Text style={{ fontSize: 18, marginRight: 20 }}>{item.nome}</Text>
+            <Text style={{ fontSize: 18, marginRight: 20, width: '50%' }}>{item.nome}</Text>
 
-            <TextInput
-              keyboardType="numeric"
-              editable={true}
-              style={styles.inputQuantidade}
-              onChangeText={(text) => handleQuantityChange(item.id_arte, text)}
-            />
+            <View style={{ flex: 1, flexDirection: "row", justifyContent: 'center' }}>
+              {/* <TouchableOpacity onPress={() => changeQuantidade('remove')}><Ionicons name="remove-circle-outline" size={40} color="red" /></TouchableOpacity> */}
+              <TextInput
+                keyboardType="numeric"
+                editable={true}
+                style={styles.inputQuantidade}
+                onChangeText={(text) => debouncedHandleQuantityChange(item.id_arte, text)}
+              />
+              {/* <TouchableOpacity onPress={() => changeQuantidade('add')}><Ionicons name="add-circle-outline" size={40} color="green" /></TouchableOpacity> */}
+            </View>
           </View>
 
           <Divider space={10} />
