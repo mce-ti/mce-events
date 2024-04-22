@@ -64,8 +64,9 @@ const useLogin = ({ showAlert }: useLoginProps) => {
   })
 
   const verifyUserIsLogged = async () => {
+    setIsLoading(true)
     const user: UserStorage|null = await getItem('user')
-
+    
     await syncArts()
     await syncMovements()
     await syncOperators()
@@ -74,6 +75,7 @@ const useLogin = ({ showAlert }: useLoginProps) => {
     await syncQrCodes()
 
     user && login(user.id)
+    setIsLoading(false)
   }
 
   useEffect(() => {

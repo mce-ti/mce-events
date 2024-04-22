@@ -2,7 +2,7 @@ import { httpClient } from "../httpClient"
 
 import type { GetQrCodeResponse } from "./qrCode.types"
 
-export const syncQrCode = async (id_evento: number, codigo: string, quantidade: number, situacao: string, id_impressora?: number): Promise<GetQrCodeResponse> => {
+export const syncQrCode = async (id_evento: number, codigo: string, quantidade: number, situacao: string, id_impressora?: number, produtos?: object): Promise<GetQrCodeResponse> => {
   const formData = new FormData();
   
   formData.append('id_evento', id_evento.toString());
@@ -10,6 +10,7 @@ export const syncQrCode = async (id_evento: number, codigo: string, quantidade: 
   formData.append('quantidade', quantidade.toString());
   formData.append('situacao', situacao.toString());
   if(id_impressora) formData.append('id_impressora', id_impressora.toString());
+  if(produtos) formData.append('produtos', JSON.stringify(produtos));
 
   const config = {
     headers: {
@@ -18,10 +19,10 @@ export const syncQrCode = async (id_evento: number, codigo: string, quantidade: 
   };
 
   try {
-    const response = await httpClient.post('syncQrCode', formData, config);
+    const response = await httpClient.post('syncQrCode?v=' + Date.now(), formData, config);
  
     const data: GetQrCodeResponse = response.data
-
+    console.log(data)
     return data
   } catch (error) {
     console.log('erro na requisição', error)
@@ -31,7 +32,8 @@ export const syncQrCode = async (id_evento: number, codigo: string, quantidade: 
 }
 export const getQrcodes = async (id_evento: number, id_impressora: number): Promise<GetQrCodeResponse> => {
   try {
-    const response = await httpClient.get('getQrcodes/' + id_evento + '/' + id_impressora)
+    
+    const response = await httpClient.get('getQrcodes/' + id_evento + '/' + id_impressora + '?v=' + Date.now())
 
     const data: GetQrCodeResponse = response.data
 
@@ -45,7 +47,7 @@ export const getQrcodes = async (id_evento: number, id_impressora: number): Prom
 
 export const cancelQrCode = async (codigo: string): Promise<GetQrCodeResponse> => {
   try {
-    const response = await httpClient.get('cancelQrCode/' + codigo)
+    const response = await httpClient.get('cancelQrCode/' + codigo + '?v=' + Date.now())
 
     const data: GetQrCodeResponse = response.data
 

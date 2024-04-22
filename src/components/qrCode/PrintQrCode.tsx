@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, TextInput } from "react-native"
+import { View, Text, TouchableOpacity, TextInput, Alert } from "react-native"
 import ViewShot from 'react-native-view-shot';
 import { MyQRCode } from "./QrCode";
 import { useEffect, useRef, useState } from "react";
@@ -11,7 +11,7 @@ import { stringMd5 } from 'react-native-quick-md5';
 import { getQrCodesStorage } from "src/storage/storage";
 import { useAsyncStorage } from "src/hooks"
 import useCaptureAndPrint from './hooks/useCaptureAndPrint';
-import { EventProducts } from "./components/EventProducts";
+import { EventProducts } from "./EventProducts";
 import { styles } from './styles'
 import Spinner from "react-native-loading-spinner-overlay";
 
@@ -21,32 +21,23 @@ const PrintQrCode = () => {
   const addQrCodeStore = useQrCodeStore(state => state.addQrCode);
   const dateTime = new Date();
   const formattedDateTime = format(dateTime, 'dd/MM/yyyy HH:mm:ss');
-  const [timestamp, setTimestamp] = useState(Date.now());
-  const [code, setCode] = useState(uniqid(13) + "-" + stringMd5(timestamp.toString()));
-  const [quantidade, setQuantidade] = useState(1);
+  const [code, setCode] = useState('');
+  const [quantidadeVoucher, setQuantidadeVoucher] = useState(1);
+  const [quantitiesAndValues, setQuantitiesAndValues] = useState<{ [id_arte: number]: { quantidade: string; valor: number } }>({});
   const [id_impressora, setIdImpressora] = useState<number | undefined>(undefined);
-  const [valorVoucher, setValorVoucher] = useState<number | undefined>(undefined);
-  const [valorVoucherCalc, setValorVoucherCalc] = useState<number | undefined>(undefined);
+  const [valorVoucherCalc, setValorVoucherCalc] = useState<string | undefined>(undefined);
   const { captureAndPrint, loading } = useCaptureAndPrint();
   const [overlayVisible, setOverlayVisible] = useState(false);
+  const [resetQuantity, setResetQuantity] = useState(false);
   const { getItem } = useAsyncStorage()
 
   useEffect(() => {
     const logUser = async () => {
       const storedUser: UserStorage | null = await getItem('user');
       const storedEvent: EventStorage | null = await getItem('event');
-      console.log(storedEvent)
+
       if (storedUser?.id_impressora && storedEvent?.produtos[1].valor) {
         setIdImpressora(storedUser.id_impressora)
-        setValorVoucher(storedEvent.produtos[1].valor)
-        if(valorVoucher){
-          const valorCalculado = valorVoucher * quantidade;
-          const valorFormatado = valorCalculado.toLocaleString('pt-BR', {
-            style: 'currency',
-            currency: 'BRL'
-          });
-          setValorVoucherCalc(valorFormatado);
-        }
       }
     };
 
@@ -54,37 +45,71 @@ const PrintQrCode = () => {
   }, []);
 
   useEffect(() => {
-    if (valorVoucher !== undefined && quantidade !== undefined) {
-      const valorCalculado = valorVoucher * quantidade;
-      const valorFormatado = valorCalculado.toLocaleString('pt-BR', {
-        style: 'currency',
-        currency: 'BRL'
-      });
-      setValorVoucherCalc(valorFormatado);
-    }
-  }, [valorVoucher, quantidade]);
-
-  useEffect(() => {
     setOverlayVisible(loading);
   }, [loading]);
 
   const qrCodeData: QrCodeStorage = {
     codigo: code,
-    quantidade: quantidade,
+    quantidade: quantidadeVoucher,
     id_impressora: id_impressora,
     situacao: 'ativo'
   }
 
-  const updateCode = () => {
+  const updateValuesQrCode = async () => {
+    let valorTotal : number = 0;
+    let quantidadeTotal : number = 0;
+
+    Object.keys(quantitiesAndValues).forEach(idArte => {
+      const item = quantitiesAndValues[Number(idArte)];
+      const id = Number(idArte);
+      const quantidade = item.quantidade;
+      const valor = item.valor;
+
+      if(parseInt(quantidade) > 0) {
+        valorTotal += parseInt(quantidade) * valor;
+        quantidadeTotal += parseInt(quantidade);
+      }
+    });
+
+    if(quantidadeTotal > 0 && valorTotal > 0) {
+      const valorFormatado = valorTotal.toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+      });
+  
+      setValorVoucherCalc(valorFormatado);
+      setQuantidadeVoucher(quantidadeTotal);
+  
+      updateCode(quantidadeTotal);
+
+      return true;
+    } else {
+      Alert.alert(
+        'Ocorreu um erro!',
+        'Você precisa inserir quantidades válidas no(s) produto(s).',
+        [
+          {
+            text: 'ENTENDIDO',
+            style: 'cancel',
+          },
+        ],
+        { cancelable: false }
+      );
+      return false;
+    }
+  }
+
+  const updateCode = (quantidadeAtualizada ?: number) => {
     const newTimestamp = Date.now();
     const newCode = uniqid(13) + "-" + stringMd5(newTimestamp.toString());
     setCode(newCode);
 
     const updatedQrCodeData: QrCodeStorage = {
       codigo: newCode,
-      quantidade: quantidade,
+      quantidade: quantidadeAtualizada || quantidadeVoucher,
       id_impressora: id_impressora,
-      situacao: 'ativo'
+      situacao: 'ativo',
+      produtos: quantitiesAndValues 
     };
 
     addQrCodeStore(updatedQrCodeData);
@@ -95,19 +120,9 @@ const PrintQrCode = () => {
     removeItem('qrCodes')
   };
 
-  // console.log('use sync', qrCodes)
-
   const logQrcodes = async () => {
     const unSyncQrCodes = await getQrCodesStorage() || [];
     console.log(unSyncQrCodes);
-  };
-
-  const changeQuantidade = (type: string) => {
-    setQuantidade((prevQuantidade : number) => {
-      if (type === 'add' && prevQuantidade < 5) return prevQuantidade + 1;
-      if (type === 'remove' && prevQuantidade > 1) return prevQuantidade - 1;
-      return prevQuantidade;
-    });
   };
 
   function uniqid(length: number) {
@@ -118,17 +133,31 @@ const PrintQrCode = () => {
     return hash.substring(0, length);
   }
 
-  const [inputValues, setInputValues] = useState<{ [key: number]: { quantidade: string, valor: number } }>({});
+  const handleQuantityChange = (id_arte: number, quantidade: string, valor: number) => {
+    setQuantitiesAndValues(prevState => {
+      const updatedState = { ...prevState };
+  
+      if (quantidade.trim() !== '0' && quantidade.trim() !== '' && valor !== 0 && !isNaN(valor)) {
+        updatedState[id_arte] = { quantidade, valor };
+      } else {
+        delete updatedState[id_arte];
+      }
+  
+      console.log(updatedState);
+      return updatedState;
+    });
+  };
 
-  // Função para lidar com a mudança nos valores dos TextInput
-  const handleInputChange = (id_arte: number, quantidade: string, valor: number) => {
-    setInputValues(prevInputValues => ({
-      ...prevInputValues,
-      [id_arte]: { quantidade, valor }
-    }));
-    console.log("id_arte:", id_arte);
-    console.log("Quantidade:", quantidade);
-    console.log("Valor:", valor);
+  const handlePress = async () => {
+    const updateSuccess = await updateValuesQrCode();
+    
+    if (updateSuccess) {
+      await captureAndPrint(viewShotRef);
+      setResetQuantity(true);
+      setQuantitiesAndValues({});
+    } else {
+      console.log('Erro ao atualizar os valores do código QR.');
+    }
   };
 
   return (
@@ -137,50 +166,47 @@ const PrintQrCode = () => {
         <TouchableOpacity style={[styles.overlay, { zIndex: 100 }]} activeOpacity={1} />
       )}
       <View style={{ flex: 1, flexDirection: "column", marginBottom: 20 }}>
-        <View style={{ flex: 1, flexDirection: "row", justifyContent: 'center', alignItems: 'center', marginBottom: 30}}>
-          {/* <Text style={{ fontSize: 20, marginRight: 15, fontWeight: 'bold' }}>QUANTIDADE </Text> */}
+        {/* <View style={{ flex: 1, flexDirection: "row", justifyContent: 'center', alignItems: 'center', marginBottom: 30 }}>
           <TouchableOpacity onPress={() => changeQuantidade('remove')}><Ionicons name="remove-circle-outline" size={50} color="red" /></TouchableOpacity>
-          <TextInput 
-            keyboardType="numeric" 
+          <TextInput
+            keyboardType="numeric"
             editable={false}
-            style={styles.inputQuantidade} 
-            value={quantidade.toString()}  
-            onChangeText={(val) => {   
+            style={styles.inputQuantidade}
+            value={quantidade.toString()}
+            onChangeText={(val) => {
               const parsedValue = parseInt(val, 10);
               if (!isNaN(parsedValue) || val === '') { // Verifica se é um número válido ou se é uma string vazia
                 setQuantidade(isNaN(parsedValue) ? 0 : parsedValue); // Se for inválido, define como 0
-              } 
+              }
             }}
           />
           <TouchableOpacity onPress={() => changeQuantidade('add')}><Ionicons name="add-circle-outline" size={50} color="green" /></TouchableOpacity>
-        </View>
+        </View> */}
 
-        <EventProducts  onInputChange={handleInputChange} />
-    
-        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center'}}>
+        <EventProducts  onInputChange={handleQuantityChange} resetQuantity={resetQuantity} />
+
+        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center' }}>
           <TouchableOpacity
-            onPress={() => {
-              captureAndPrint(viewShotRef);
-              updateCode();
-            }}
-            style={styles.gerarQRcode}
+            onPress={handlePress}
             activeOpacity={0.7}
+            style={[styles.gerarQRcode, !Object.keys(quantitiesAndValues).length ? {opacity: 0.6}: null]}
+            disabled={!Object.keys(quantitiesAndValues).length}
           >
-            <Text style={styles.textButton}>GERAR QR CODE  <Ionicons name="qr-code" size={14} color="white" /> </Text>
+            <Text style={styles.textButton}>GERAR QR CODE  <Ionicons name="qr-code" size={14} color="white" /></Text>
           </TouchableOpacity>
         </View>
       </View>
-  
+
       {/* BOTOES PARA DEBUG */}
-      {/* <View style={styles.actBtns}>
+       {/*<View style={styles.actBtns}>
         <TouchableOpacity style={styles.print} onPress={useQrCodeStore(state => state.removeAllQrCodes)}><Ionicons name="remove" size={30} color="white" /></TouchableOpacity>
 
         <TouchableOpacity style={styles.print} onPress={logQrcodes}><Ionicons name="pin" size={30} color="white" /></TouchableOpacity>
 
         <TouchableOpacity style={styles.print} onPress={() => captureAndPrint(viewShotRef)}><Ionicons name="print" size={30} color="white" /></TouchableOpacity>
 
-        <TouchableOpacity style={styles.newVoucher} onPress={updateCode}><Ionicons name="add-circle-outline" size={30} color="white" /></TouchableOpacity>
-      </View> */}
+        <TouchableOpacity style={styles.newVoucher} onPress={updateCode}><Ionicons name="add-circle-outline" size={30} color="white" /></TouchableOpacity> 
+      </View>*/}
 
       <ViewShot ref={viewShotRef} style={{ backgroundColor: 'white', width: '100%', position: 'absolute', top: 10000 }}>
         <View style={styles.container}>

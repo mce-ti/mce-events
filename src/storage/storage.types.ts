@@ -74,4 +74,10 @@ export type QrCodeStorage = {
   data?: string
   situacao: string
   sync?: boolean
+  produtos?: {
+    [id_arte: number]: {
+      quantidade: string;
+      valor: number;
+    };
+  };
 }
