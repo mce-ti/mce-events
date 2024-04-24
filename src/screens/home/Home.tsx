@@ -4,7 +4,7 @@ import { Divider, Input } from "src/components"
 import { Operator } from "./components/Operator"
 import { formatDBDate } from "src/utils/date.utils"
 import { useHome } from './hooks/useHome'
-import { PrintQrCode } from "src/components"
+import { PrintQrCode, TakePicture } from "src/components"
 import { MaterialIcons, FontAwesome5 } from '@expo/vector-icons'
 
 import type { HomeStackRouteScreen } from "src/routes/routes.types"
@@ -50,14 +50,14 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
         setIdImpressora(storedUser.id_impressora)
       }
     };
-    
+
 
     logUser();
   }, []);
 
   const removeQrCode = async (codigo: string, sync?: boolean) => {
     let syncQr = false;
-  
+
     if (sync) syncQr = true;
 
     Alert.alert(
@@ -112,8 +112,8 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
                       name={item.nome}
                       color={item.cor}
                       localizacao={item?.localizacao}
-                      entry={() => navigation.navigate('ProductMovement', { id: item.id, name: item.nome, movementType: 'in', indice_estoque : stockItem.indice })}
-                      output={() => navigation.navigate('ProductMovement', { id: item.id, name: item.nome, movementType: 'out', indice_estoque : stockItem.indice })}
+                      entry={() => navigation.navigate('ProductMovement', { id: item.id, name: item.nome, movementType: 'in', indice_estoque: stockItem.indice })}
+                      output={() => navigation.navigate('ProductMovement', { id: item.id, name: item.nome, movementType: 'out', indice_estoque: stockItem.indice })}
                     />
                   )}
                   keyExtractor={(item, index) => index.toString()}
@@ -145,10 +145,23 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
 
           <Divider opacity={0} />
 
+          <TakePicture />
           <Text style={styles.eventName}>Ultimos registros</Text>
           {qrCodes.slice(0, 10).map((item, index) => (
             <View key={`stock-item-${item.codigo}`} style={{ marginTop: 10 }}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                {index == 0 && deletePermission && item.situacao != 'cancelado' &&
+                  <TouchableOpacity
+                    onPress={() => {
+                      removeQrCode(item.codigo, item.sync)
+                    }}
+                    activeOpacity={0.7}
+                    style={styles.cancelButton}
+                  >
+                    <MaterialIcons name="cancel" size={30} color="white" />
+                  </TouchableOpacity>
+                }
+                
                 <View>
                   <Text style={[styles.voucherCode, item.situacao === 'cancelado' ? { textDecorationLine: 'line-through' } : null]}>{item.codigo}</Text>
                   <Text style={[styles.eventDate, { fontSize: 10 }, item.situacao === 'cancelado' ? { textDecorationLine: 'line-through' } : null]}>{item.data}</Text>
@@ -160,22 +173,10 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
 
                 <View>
                   {item.sync ? (
-                    <MaterialIcons name="check-circle" size={20} color="#16a34a" />
+                    <MaterialIcons name="check-circle" size={20} color="#16a34a" style={{}}/>
                   ) : (
                     <FontAwesome5 name="exclamation-circle" size={20} color="orange" />
                   )}
-
-                  {index == 0 && deletePermission && item.situacao != 'cancelado' &&
-                    <TouchableOpacity
-                      onPress={() => {
-                        removeQrCode(item.codigo, item.sync)
-                      }}
-                      activeOpacity={0.7}
-                      style={{ marginTop: 10 }}
-                    >
-                      <MaterialIcons name="cancel" size={20} color="red" />
-                    </TouchableOpacity>
-                  }
                 </View>
 
               </View>
@@ -220,6 +221,14 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: 'center',
     paddingVertical: 5
+  },
+  cancelButton: {
+    height: '100%',
+    width: 50,
+    backgroundColor: '#ef4444',
+    paddingHorizontal: 10,
+    paddingVertical: 11,
+    borderRadius: 2
   }
 });
 
