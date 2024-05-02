@@ -45,11 +45,12 @@ export type ProductMovementStorage = {
   time: number
   responsible: string
   type: 'in' | 'out'
+  status: 'Limpo' | 'Sujo'
   quantity: number
   id_art: number
   id_operator: number
   name_operator: string
-  image?: string
+  image: string
   sync?: boolean
   date?: string
 }
@@ -81,3 +82,19 @@ export type QrCodeStorage = {
     };
   };
 }
+
+export type StockInfosResponse = {
+  estoque_limpo: { 
+    [id_arte: string] : { 
+      id_arte: number; 
+      nome: string; 
+      quantidade: number 
+    }[] 
+  };
+  estoque_inicial: { 
+    [id_arte: string]: { 
+      nome: string; 
+      quantidade: number 
+    }[] 
+  };
+};

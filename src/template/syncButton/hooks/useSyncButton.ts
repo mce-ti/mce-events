@@ -23,6 +23,7 @@ const useSyncButton = () => {
   const syncOperators = useOperatorsStore(state => state.syncOperators)
   const syncArts = useArtsStore(state => state.syncArts)
   const syncStock = useStockStore(state => state.syncStock)
+  const syncStockLimpos = useStockStore(state => state.syncStockLimpos)
   const sendStorageDataQrCodes = useQrCodeStore(state => state.sendStorageData)
 
   const anim = useRef(Animated.loop(
@@ -48,6 +49,7 @@ const useSyncButton = () => {
       await syncOperators()
       await syncArts()
       await syncStock()
+      await syncStockLimpos()
       await sendStorageDataQrCodes()
     } else {
       alert('Sem conexão com a internet')

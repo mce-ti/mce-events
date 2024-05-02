@@ -1,9 +1,23 @@
 import { httpClient } from "../httpClient"
-import { GetStockResponse, GetStockRelResponse } from "./stock.types"
+import { GetStockResponse, GetStockRelResponse, GetStockInfosResponse } from "./stock.types"
 
 export const getStock = async (id_evento: number): Promise<GetStockResponse> => {
   try {
     const response = await httpClient.get('getStock/' + id_evento)
+
+    const data: GetStockResponse = response.data
+
+    return data
+  } catch (error) {
+    console.log(error)
+
+    return []
+  }
+}
+
+export const getStockLimpos = async (id_evento: number): Promise<GetStockResponse> => {
+  try {
+    const response = await httpClient.get('getStockLimpos/' + id_evento)
 
     const data: GetStockResponse = response.data
 
@@ -21,6 +35,22 @@ export const getStockRel = async (id_evento: number): Promise<GetStockRelRespons
 
     const data: GetStockRelResponse = response.data
 
+    return data
+  } catch (error) {
+    console.log(error)
+
+    return []
+  }
+}
+
+export const getStockInfos = async (id_evento: number): Promise<GetStockInfosResponse> => {
+  try {
+    const response = await httpClient.get('getStockInfos/' + id_evento)
+
+    const data: GetStockInfosResponse = response.data
+
+    console.log(data);
+    
     return data
   } catch (error) {
     console.log(error)

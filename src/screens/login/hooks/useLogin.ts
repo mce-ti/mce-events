@@ -24,6 +24,7 @@ const useLogin = ({ showAlert }: useLoginProps) => {
   const syncOperators = useOperatorsStore(state => state.syncOperators)
   const syncArts = useArtsStore(state => state.syncArts)
   const syncStock = useStockStore(state => state.syncStock)
+  const syncStockLimpos = useStockStore(state => state.syncStockLimpos)
   const syncStockRel = useStockStore(state => state.syncStockRel)
   const syncQrCodes = useQrCodeStore(state => state.sync)
 
@@ -56,6 +57,7 @@ const useLogin = ({ showAlert }: useLoginProps) => {
       await syncMovements()
       await syncOperators()
       await syncStock()
+      await syncStockLimpos()
       await syncStockRel()
       await syncQrCodes()
 
@@ -71,6 +73,7 @@ const useLogin = ({ showAlert }: useLoginProps) => {
     await syncMovements()
     await syncOperators()
     await syncStock()
+    await syncStockLimpos()
     await syncStockRel()
     await syncQrCodes()
 

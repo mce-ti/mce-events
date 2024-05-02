@@ -41,6 +41,14 @@ export const getStockStorage = async () => {
   return stock
 }
 
+export const getStockLimposStorage = async () => {
+  const { getItem } = useAsyncStorage()
+
+  const stock: StockStorage = await getItem('stockLimpos') || []
+
+  return stock
+}
+
 export const getStockRelStorage = async () => {
   const { getItem } = useAsyncStorage()
 

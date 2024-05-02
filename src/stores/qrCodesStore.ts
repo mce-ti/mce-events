@@ -110,7 +110,7 @@ export const useQrCodeStore = create<QrCodesState>((set, get) => ({
 
       set(() => ({ qrCodes: newQrCodes }));
 
-      alert('Código cancelado com sucesso!')
+      alert('QR Code cancelado com sucesso!')
     }
   },
   sync: async () => {

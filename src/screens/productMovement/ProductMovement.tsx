@@ -1,6 +1,7 @@
-import { View, Text, TextInput } from "react-native"
+import { View, Text, TextInput, Image, TouchableOpacity } from "react-native"
 import { Button, Divider, Input } from "src/components"
 import { useProductMovement } from "./hooks/useProductMovement"
+import { AntDesign } from '@expo/vector-icons/'
 import { ArtOption } from "./components/ArtOption"
 // import Signature  from "./components/SignatureComponent"
 import { useAwesomeAlert } from "src/hooks"
@@ -16,7 +17,7 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
   const {
     arts,
     onQuantityChange,
-    pickImage,
+    catchPicture,
     formik: {
       values,
       handleChange,
@@ -40,19 +41,32 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
               currentValue={values.art}
               image={art.imagem}
               name={art.nome}
-              onTouch={v => console.log(values.quantityByArt)}
             />
 
-            <TextInput
-              placeholder="Quantidade"
-              style={styles.quantidade}
-              keyboardType="number-pad"
-              value={values.quantityByArt[art.id]?.toString()}
-              onChangeText={text => {
-                const quantity = text.trim() === '' ? undefined : parseInt(text);
-                setFieldValue(`quantityByArt.${art.id}`, quantity);
-              }}
-            />
+            <View style={{'flexDirection': 'row', 'justifyContent' : 'space-between'}}>
+              <TextInput
+                placeholder="Limpos"
+                style={styles.quantidade}
+                keyboardType="number-pad"
+                value={values.limposQuantityByArt[art.id]?.toString()}
+                onChangeText={text => {
+                  const limpos = text.trim() === '' ? undefined : parseInt(text);
+                  setFieldValue(`limposQuantityByArt.${art.id}`, limpos);
+                }}
+              />
+
+              <TextInput
+                placeholder="Sujos"
+                style={styles.quantidade}
+                keyboardType="number-pad"
+                value={values.sujosQuantityByArt[art.id]?.toString()}
+                onChangeText={text => {
+                  const sujos = text.trim() === '' ? undefined : parseInt(text);
+                  setFieldValue(`sujosQuantityByArt.${art.id}`, sujos);
+                }}
+              />
+            </View>
+
           </View>
         ))}
       </View>
@@ -67,7 +81,7 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
 
       <Divider opacity={0} />
 
-      {/* <TouchableOpacity style={styles.imageContainer} activeOpacity={.75} onPress={pickImage}>
+      <TouchableOpacity style={styles.imageContainer} activeOpacity={.75} onPress={catchPicture}>
         {values.image ? (
           <Image source={{ uri: values.image }} style={styles.image} />
         ) : (
@@ -78,7 +92,7 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
         )}
       </TouchableOpacity>
 
-      <Divider opacity={0} /> */}
+      <Divider opacity={0} />
 
       <View style={styles.actionsContainer}>
         <View style={styles.actionContent}>
@@ -95,8 +109,9 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
             color="green"
             onPress={submitForm}
             disabled={
-              !Object.values(values.quantityByArt).some(value => value !== undefined && value > 0) ||
-              !values.responsible
+              (!Object.values(values.sujosQuantityByArt).some(value => value !== undefined && value > 0) && !Object.values(values.limposQuantityByArt).some(value => value !== undefined && value > 0)) ||
+              !values.responsible ||
+              !values.image
             }
           />
         </View>

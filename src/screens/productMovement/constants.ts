@@ -1,5 +1,6 @@
 type FormMovementValues = {
-  quantityByArt: { [key: number]: number | undefined } // Um objeto onde a chave é o ID da arte e o valor é a quantidade associada
+  sujosQuantityByArt: { [key: number]: number | undefined }
+  limposQuantityByArt: { [key: number]: number | undefined }
   quantity: number | null
   responsible: string
   image: string
@@ -11,5 +12,6 @@ export const initialValues: FormMovementValues = {
   image: '',
   quantity: null,
   responsible: '',
-  quantityByArt: {}
+  sujosQuantityByArt: {},
+  limposQuantityByArt: {}
 }

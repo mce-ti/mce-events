@@ -8,6 +8,10 @@ export type HomeStackParams = {
     name: string
     indice_estoque: number
   }
+  InfosEstoque: {
+    id_estoque: number
+    nome_estoque: string
+  }
 }
 
 export type RootDrawerParams = {

@@ -145,21 +145,26 @@ const PrintQrCode = () => {
       const item = quantitiesAndValues[id_arte];
       const produto = produtosEvento.find(item => item.id_arte === id_arte);
       let quantidade = '0';
-      let quantidadeToCalc = 0;
-
+  
       if(item && (item.quantidade.trim())) {
         quantidade = item.quantidade;
       }
 
-      if (produto && (produto.valor !== 0 && !isNaN(produto.valor))) {
+      let quantidadeToCalc = parseInt(quantidade);
+
+      if (produto && (produto.valor !== 0 && !isNaN(produto.valor) || parseInt(quantidade) !== 0)) {
         const valor = produto.valor;
 
-        if (type === 'add' && parseInt(quantidade) < 5) quantidadeToCalc =  parseInt(quantidade) + 1;
-        if (type === 'remove' && parseInt(quantidade) > 1) quantidadeToCalc = parseInt(quantidade) - 1;
+        if (type === 'add' && parseInt(quantidade) < 5) quantidadeToCalc++;
+        else if (type === 'remove' && parseInt(quantidade) > 0) quantidadeToCalc--;
 
         quantidade = quantidadeToCalc.toString();
 
-        updatedState[id_arte] = { quantidade, valor };
+        if (quantidadeToCalc > 0) {
+          updatedState[id_arte] = { quantidade, valor };
+        } else {
+          delete updatedState[id_arte];
+        }
       } else {
         delete updatedState[id_arte];
       }

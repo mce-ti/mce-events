@@ -1,10 +1,9 @@
 import { StyleSheet, View, Text, FlatList, TouchableOpacity, Alert } from "react-native"
 import { Layout } from "src/template"
-import { Divider, Input } from "src/components"
+import { Divider, Input, PrintQrCode } from "src/components"
 import { Operator } from "./components/Operator"
 import { formatDBDate } from "src/utils/date.utils"
 import { useHome } from './hooks/useHome'
-import { PrintQrCode, TakePicture } from "src/components"
 import { MaterialIcons, FontAwesome5 } from '@expo/vector-icons'
 
 import type { HomeStackRouteScreen } from "src/routes/routes.types"
@@ -28,6 +27,8 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
   const [idImpressora, setIdImpressora] = useState<number | undefined>(undefined);
 
   const stock = useStockStore(state => state.stock)
+
+  const stockLimpos = useStockStore(state => state.stockLimpos)
 
   const qrCodes = useQrCodeStore(state => state.qrCodes).filter(({ id_impressora }) => id_impressora == idImpressora)
 
@@ -65,12 +66,12 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
       'Você tem certeza que deseja cancelar este cupom?',
       [
         {
-          text: 'Cancelar',
+          text: 'Não',
           onPress: () => console.log('Não cancelado'),
           style: 'cancel',
         },
         {
-          text: 'Confirmar',
+          text: 'Sim',
           onPress: () => removeLastQrCode(codigo, syncQr),
         },
       ],
@@ -103,7 +104,8 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
             scrollEnabled={false}
             renderItem={({ item: stockItem }) => (
               <React.Fragment>
-                <Text style={styles.estoque}>{stockItem.estoque}</Text>
+                <Text style={styles.estoque} onPress={() => navigation.navigate('InfosEstoque', { id_estoque : stockItem.indice, nome_estoque : stockItem.estoque })}>{stockItem.estoque}</Text>
+
                 <FlatList
                   data={operators.filter(({ nome, localizacao, indice_estoque }) => indice_estoque === stockItem.indice && (nome.toLowerCase().includes(searchValue.toLowerCase()) || localizacao?.toLowerCase().includes(searchValue.toLowerCase())))}
                   scrollEnabled={false}
@@ -125,7 +127,21 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
 
           <Divider opacity={0} />
 
-          <Text style={styles.eventName}>Estoque</Text>
+          <Text style={styles.stockName}>Estoque total limpo disponível</Text>
+          {stockLimpos.map(item => (
+            <View key={`stock-item-${item.id}`}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                <Text style={styles.eventLocal}>{item.nome}</Text>
+                <Text style={styles.eventDate}>{item.quantidade}</Text>
+              </View>
+
+              <Divider opacity={.1} space={2.5} />
+            </View>
+          ))}
+
+          <Divider opacity={0} />
+
+          <Text style={styles.stockName}>Estoque total inicial</Text>
           {stock.map(item => (
             <View key={`stock-item-${item.id}`}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -145,7 +161,10 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
 
           <Divider opacity={0} />
 
-          <TakePicture />
+          {/* <TouchableOpacity onPress={catchPicture}>
+            <Text>SHOOT</Text>
+          </TouchableOpacity> */}
+
           <Text style={styles.eventName}>Ultimos registros</Text>
           {qrCodes.slice(0, 10).map((item, index) => (
             <View key={`stock-item-${item.codigo}`} style={{ marginTop: 10 }}>
@@ -161,7 +180,7 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
                     <MaterialIcons name="cancel" size={30} color="white" />
                   </TouchableOpacity>
                 }
-                
+
                 <View>
                   <Text style={[styles.voucherCode, item.situacao === 'cancelado' ? { textDecorationLine: 'line-through' } : null]}>{item.codigo}</Text>
                   <Text style={[styles.eventDate, { fontSize: 10 }, item.situacao === 'cancelado' ? { textDecorationLine: 'line-through' } : null]}>{item.data}</Text>
@@ -173,7 +192,7 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
 
                 <View>
                   {item.sync ? (
-                    <MaterialIcons name="check-circle" size={20} color="#16a34a" style={{}}/>
+                    <MaterialIcons name="check-circle" size={20} color="#16a34a" style={{}} />
                   ) : (
                     <FontAwesome5 name="exclamation-circle" size={20} color="orange" />
                   )}
@@ -194,6 +213,12 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "600",
     color: '#172554'
+  },
+  stockName: {
+    fontSize: 18,
+    fontWeight: "500",
+    color: '#172554',
+    marginBottom: 10
   },
   eventLocal: {
     color: '#4b5563',
