@@ -11,6 +11,7 @@ export type HomeStackParams = {
   InfosEstoque: {
     id_estoque: number
     nome_estoque: string
+    data: string
   }
 }
 

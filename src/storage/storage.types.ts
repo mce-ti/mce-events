@@ -83,7 +83,7 @@ export type QrCodeStorage = {
   };
 }
 
-export type StockInfosResponse = {
+export type StockInfosStorage = {
   estoque_limpo: { 
     [id_arte: string] : { 
       id_arte: number; 

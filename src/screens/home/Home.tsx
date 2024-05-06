@@ -104,7 +104,7 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
             scrollEnabled={false}
             renderItem={({ item: stockItem }) => (
               <React.Fragment>
-                <Text style={styles.estoque} onPress={() => navigation.navigate('InfosEstoque', { id_estoque : stockItem.indice, nome_estoque : stockItem.estoque })}>{stockItem.estoque}</Text>
+                <Text style={styles.estoque} onPress={() => navigation.navigate('InfosEstoque', { id_estoque : stockItem.indice, nome_estoque : stockItem.estoque, data: formatDBDate(useEvent?.data) })}>{stockItem.estoque}</Text>
 
                 <FlatList
                   data={operators.filter(({ nome, localizacao, indice_estoque }) => indice_estoque === stockItem.indice && (nome.toLowerCase().includes(searchValue.toLowerCase()) || localizacao?.toLowerCase().includes(searchValue.toLowerCase())))}

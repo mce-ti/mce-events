@@ -48,8 +48,6 @@ export const getStockInfos = async (id_evento: number): Promise<GetStockInfosRes
     const response = await httpClient.get('getStockInfos/' + id_evento)
 
     const data: GetStockInfosResponse = response.data
-
-    console.log(data);
     
     return data
   } catch (error) {
