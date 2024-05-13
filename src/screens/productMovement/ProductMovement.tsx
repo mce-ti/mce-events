@@ -46,7 +46,7 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
             <View style={{'flexDirection': 'row', 'justifyContent' : 'space-between'}}>
               <TextInput
                 placeholder="Limpos"
-                style={styles.quantidade}
+                style={[styles.quantidade, route.params.movementType === 'in' ? { width: 173 } : { width: 80 }]}
                 keyboardType="number-pad"
                 value={values.limposQuantityByArt[art.id]?.toString()}
                 onChangeText={text => {
@@ -55,16 +55,18 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
                 }}
               />
 
-              <TextInput
-                placeholder="Sujos"
-                style={styles.quantidade}
-                keyboardType="number-pad"
-                value={values.sujosQuantityByArt[art.id]?.toString()}
-                onChangeText={text => {
-                  const sujos = text.trim() === '' ? undefined : parseInt(text);
-                  setFieldValue(`sujosQuantityByArt.${art.id}`, sujos);
-                }}
-              />
+              { route.params.movementType === 'out' &&
+                <TextInput
+                  placeholder="Sujos"
+                  style={[styles.quantidade, { width: 80 }]}
+                  keyboardType="number-pad"
+                  value={values.sujosQuantityByArt[art.id]?.toString()}
+                  onChangeText={text => {
+                    const sujos = text.trim() === '' ? undefined : parseInt(text);
+                    setFieldValue(`sujosQuantityByArt.${art.id}`, sujos);
+                  }}
+                />
+              }
             </View>
 
           </View>

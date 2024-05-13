@@ -25,6 +25,7 @@ const useSyncButton = () => {
   const syncStock = useStockStore(state => state.syncStock)
   const syncStockLimpos = useStockStore(state => state.syncStockLimpos)
   const sendStorageDataQrCodes = useQrCodeStore(state => state.sendStorageData)
+  const syncStockInfos = useStockStore(state => state.syncStockInfos)
 
   const anim = useRef(Animated.loop(
     Animated.timing(spinAnimation,
@@ -37,7 +38,7 @@ const useSyncButton = () => {
   )).current
 
   const sync = async () => {
-    if (isSyncing || !hasSync) return;
+    if (isSyncing) return;
 
     anim.start()
     setIsSyncing(true)
@@ -50,6 +51,8 @@ const useSyncButton = () => {
       await syncArts()
       await syncStock()
       await syncStockLimpos()
+      await syncStockInfos()
+      
       await sendStorageDataQrCodes()
     } else {
       alert('Sem conexão com a internet')
