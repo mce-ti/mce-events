@@ -1,4 +1,6 @@
-import { StyleSheet } from "react-native"
+import { Dimensions, StyleSheet } from "react-native"
+
+const { width: screenWidth } = Dimensions.get('window');
 
 export const styles = StyleSheet.create({
   title: {
@@ -40,6 +42,9 @@ export const styles = StyleSheet.create({
   },
   actionContent: {
     flex: 1
+  },
+  productCard: {
+    maxWidth: screenWidth * 0.50 - 30,
   },
   quantidade: {
     borderColor: '#a1a1a1',

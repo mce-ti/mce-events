@@ -55,11 +55,11 @@ export const RootTab: React.FC<RootTabProps> = ({ qrUser }) => (
         let iconName;
         
         if (route.name === 'HomeStackRoutes') {
-          iconName = focused ? 'ios-home' : 'ios-home-outline';
+          iconName = focused ? 'home' : 'home-outline';
         } else if (route.name === 'MovementHistory') {
-          iconName = focused ? 'ios-list' : 'ios-list-outline';
+          iconName = focused ? 'list' : 'list-outline';
         } else if (route.name === 'QrCodesHistory') {
-          iconName = focused ? 'ios-qr-code' : 'ios-qr-code-outline';
+          iconName = focused ? 'qr-code' : 'qr-code-outline';
         }
         return <Ionicons name={iconName} size={size} color={color} />;
       },

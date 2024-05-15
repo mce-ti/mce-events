@@ -35,7 +35,7 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
 
       <View style={styles.optionsContainer}>
         {arts.map(art => (
-          <View key={`art-${art.id}`}>
+          <View key={`art-${art.id}`} style={styles.productCard}>
             <ArtOption
               id={art.id}
               currentValue={values.art}
@@ -43,10 +43,10 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
               name={art.nome}
             />
 
-            <View style={{'flexDirection': 'row', 'justifyContent' : 'space-between'}}>
+            <View style={{'flexDirection': 'row', 'justifyContent' : 'space-between', 'width' : '100%'}}>
               <TextInput
                 placeholder="Limpos"
-                style={[styles.quantidade, route.params.movementType === 'in' ? { width: 173 } : { width: 80 }]}
+                style={[styles.quantidade, route.params.movementType === 'in' ? { width: '100%' } : { width: '48%' }]}
                 keyboardType="number-pad"
                 value={values.limposQuantityByArt[art.id]?.toString()}
                 onChangeText={text => {
@@ -58,7 +58,7 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
               { route.params.movementType === 'out' &&
                 <TextInput
                   placeholder="Sujos"
-                  style={[styles.quantidade, { width: 80 }]}
+                  style={[styles.quantidade, { width: '48%' }]}
                   keyboardType="number-pad"
                   value={values.sujosQuantityByArt[art.id]?.toString()}
                   onChangeText={text => {
