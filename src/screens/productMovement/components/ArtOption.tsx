@@ -34,13 +34,13 @@ const styles = StyleSheet.create({
     gap: 5,
     borderWidth: 4,
     borderRadius: 2,
-    minWidth: '40%',
+    minWidth: '50%',
     maxWidth: '100%',
-    backgroundColor: '#e5e7eb'
+    backgroundColor: '#e5e7eb',
   },
   image: {
     resizeMode: 'cover',
-    minHeight: 100,
+    minHeight: 135,
     width: '100%'
   },
   name: {

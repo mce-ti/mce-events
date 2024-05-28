@@ -31,6 +31,7 @@ export const useArtsStore = create<ArtsState>(set => ({
         newArts.push({
           id: art.id,
           nome: art.nome,
+          medida: art.medida,
           quantidade: art.quantidade,
           valor: art.valor,
           imagem: await downloadImage(art.imagem, `img-${art.id}`)

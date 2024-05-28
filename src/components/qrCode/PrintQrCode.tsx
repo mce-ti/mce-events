@@ -248,10 +248,11 @@ const PrintQrCode = () => {
           </View>
 
           <View style={styles.containerTexts}>
-            <Text style={styles.textDeafault}>1. Leia o QR Code com seu celular</Text>
-            <Text style={styles.textDeafault}>2. Entre na página web</Text>
-            <Text style={styles.textDeafault}>3. Preencha os seus dados Pix</Text>
-            <Text style={styles.textDeafault}>4. Receba a sua caução de volta em até 48h</Text>
+            <Text style={[{marginBottom: 5}, styles.textDefault]}>Este cupom é válido durante 7 dias e estará disponível em até 48h após a impressão.</Text>
+            <Text style={[{marginBottom: 2}, styles.textDefault]}>1. Leia o QR Code com seu celular</Text>
+            <Text style={[{marginBottom: 2}, styles.textDefault]}>2. Entre na página web</Text>
+            <Text style={[{marginBottom: 2}, styles.textDefault]}>3. Preencha os seus dados Pix</Text>
+            <Text style={[{marginBottom: 2}, styles.textDefault]}>4. Receba a sua caução de volta em até 48h</Text>
           </View>
 
           <View style={{ width: 320, marginBottom: 5 }}>

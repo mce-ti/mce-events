@@ -50,9 +50,8 @@ export const styles = StyleSheet.create({
     marginLeft: 10,
     paddingTop: 15
   },
-  textDeafault: {
+  textDefault: {
     fontSize: 15,
-    marginBottom: 2,
     fontWeight: '500'
   },
   ctnData: {

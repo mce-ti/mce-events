@@ -1,16 +1,12 @@
 import { httpClient } from "../httpClient"
 
-import type { GetQrCodeResponse } from "./qrCode.types"
+import type { GetQrCodeResponse, PutQrCodeResponse } from "./qrCode.types"
 
-export const syncQrCode = async (id_evento: number, codigo: string, quantidade: number, situacao: string, id_impressora?: number, produtos?: object): Promise<GetQrCodeResponse> => {
+export const syncQrCode = async (id_evento: number, qrCodes: Array<{codigo: string, quantidade: number, situacao: string, id_impressora?: number, produtos?: object}>): Promise<PutQrCodeResponse> => {
   const formData = new FormData();
-  
+
   formData.append('id_evento', id_evento.toString());
-  formData.append('codigo', codigo.toString());
-  formData.append('quantidade', quantidade.toString());
-  formData.append('situacao', situacao.toString());
-  if(id_impressora) formData.append('id_impressora', id_impressora.toString());
-  if(produtos) formData.append('produtos', JSON.stringify(produtos));
+  formData.append('qrCodes', JSON.stringify(qrCodes));
 
   const config = {
     headers: {
@@ -21,9 +17,9 @@ export const syncQrCode = async (id_evento: number, codigo: string, quantidade: 
   try {
     const response = await httpClient.post('syncQrCode?v=' + Date.now(), formData, config);
  
-    const data: GetQrCodeResponse = response.data
-    console.log(data)
-    return data
+    const data: PutQrCodeResponse = response.data
+    console.log('retorno', data)
+    return data;
   } catch (error) {
     console.log('erro na requisição', error)
 

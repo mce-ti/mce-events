@@ -28,7 +28,6 @@ const useLogin = ({ showAlert }: useLoginProps) => {
   const syncStockRel = useStockStore(state => state.syncStockRel)
   const syncStockInfos = useStockStore(state => state.syncStockInfos)
   const syncQrCodes = useQrCodeStore(state => state.sync)
-  
 
   const formik = useFormik({
     initialValues: {

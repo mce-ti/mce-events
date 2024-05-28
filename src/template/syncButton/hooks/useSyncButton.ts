@@ -1,10 +1,19 @@
 import { useState, useRef, useEffect } from "react"
-import { Animated } from "react-native"
+import { Alert, Animated } from "react-native"
+
+import { useAsyncStorage } from "src/hooks"
+import { apiAuth } from "src/services/api"
+import { UserStorage } from "src/storage/storage.types"
 
 import { useMovementStore, useOperatorsStore, useQrCodeStore } from "src/stores"
 import { useArtsStore } from "src/stores/artsStore"
 import { useStockStore } from "src/stores/stockStore"
 import { hasNetwork } from "src/utils/net"
+
+interface LoginRequest {
+  username: string;
+  password: string;
+}
 
 const useSyncButton = () => {
   const [isSyncing, setIsSyncing] = useState(false)
@@ -27,6 +36,8 @@ const useSyncButton = () => {
   const sendStorageDataQrCodes = useQrCodeStore(state => state.sendStorageData)
   const syncStockInfos = useStockStore(state => state.syncStockInfos)
 
+  const { getItem, removeItem } = useAsyncStorage()
+
   const anim = useRef(Animated.loop(
     Animated.timing(spinAnimation,
       {
@@ -46,6 +57,29 @@ const useSyncButton = () => {
     const hasNet = await hasNetwork()
 
     if (hasNet) {
+      const user: UserStorage|null = await getItem('user')
+      
+      if(user) {
+        const dataApiUser: LoginRequest = {username : user.login, password : user.senha}
+
+        const response = await apiAuth.login(dataApiUser)
+
+        if ('message' in response) {
+          Alert.alert(
+            'Houve um problema!',
+            'Parece que suas credencias de acesso estão desatualizadas. Tente fazer login novamente',
+            [],
+            { cancelable: false }
+          );
+
+          removeItem('user');
+  
+          anim.reset();
+          setIsSyncing(false);
+          return;
+        }
+      } 
+      
       await sendStorageData()
       await syncOperators()
       await syncArts()

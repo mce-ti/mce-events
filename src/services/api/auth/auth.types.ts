@@ -23,6 +23,7 @@ export type LoginResponse = {
     id: number
     nome: string
     login: string
+    senha: string
     nivel: string
     data: string
   }

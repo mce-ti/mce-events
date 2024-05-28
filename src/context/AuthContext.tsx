@@ -1,7 +1,6 @@
 import { createContext, useState, useContext } from 'react'
 import { useAsyncStorage } from 'src/hooks'
 
-import { apiOperators } from 'src/services/api'
 import { getEventStorage } from 'src/storage/storage'
 
 import type { ReactNode } from 'react'

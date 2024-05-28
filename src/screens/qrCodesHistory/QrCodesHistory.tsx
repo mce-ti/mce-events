@@ -33,7 +33,7 @@ const QrCodesHistory = ({ navigation }: RootDrawerScreen<'QrCodesHistory'>) => {
 
   return (
     <Layout>
-      <Text style={styles.title}>Histórico - QR Codes</Text>
+      <Text style={styles.title}>Histórico - QR Codes ({qrCodes.length})</Text>
 
       <Divider opacity={0} />
 

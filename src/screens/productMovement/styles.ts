@@ -13,8 +13,7 @@ export const styles = StyleSheet.create({
     color: '#172554'
   },
   optionsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: 'column',
     gap: 20,
   },
   imageContainer: {
@@ -44,7 +43,8 @@ export const styles = StyleSheet.create({
     flex: 1
   },
   productCard: {
-    maxWidth: screenWidth * 0.50 - 30,
+    maxWidth: 260,
+    margin: 'auto',
   },
   quantidade: {
     borderColor: '#a1a1a1',

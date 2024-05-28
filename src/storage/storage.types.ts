@@ -18,6 +18,7 @@ export type UserStorage = {
   nome: string
   id_impressora: number
   login: string
+  senha: string
   nivel: string
   data: string
 }
@@ -34,6 +35,7 @@ export type ArtStorage = {
   id: number
   imagem: string
   nome: string
+  medida?: string
   quantidade: number
   valor: number
 }
