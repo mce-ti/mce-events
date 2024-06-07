@@ -1,16 +1,19 @@
-import { getEventStorage } from 'src/storage/storage'
+import { getEventStorage } from 'src/storage/storage';
 
-import * as ImagePicker from 'expo-image-picker'
-import * as MediaLibrary from 'expo-media-library'
+import * as ImagePicker from 'expo-image-picker';
+import * as MediaLibrary from 'expo-media-library';
 
-import type { HomeStackRouteScreen } from 'src/routes/routes.types'
-import type { AwesomeAlertProps } from 'src/hooks/useAwesomeAlert'
+import type { HomeStackRouteScreen } from 'src/routes/routes.types';
+import type { AwesomeAlertProps } from 'src/hooks/useAwesomeAlert';
 
-import { useFormik } from 'formik'
-import { initialValues } from '../constants'
-import { getPermission } from 'src/utils/permissions'
-import { useMovementStore } from 'src/stores'
-import { useArtsStore } from 'src/stores/artsStore'
+import { useFormik } from 'formik';
+import { initialValues } from '../constants';
+import { getPermission } from 'src/utils/permissions';
+import { useMovementStore, useStockStore } from 'src/stores';
+import { useArtsStore } from 'src/stores/artsStore';
+import { StockStorage } from 'src/storage/storage.types';
+import { useAsyncStorage } from 'src/hooks';
+import { Alert } from 'react-native';
 
 type useProductMovementPrps = {
   showAlert: (arg0: AwesomeAlertProps) => void
@@ -20,6 +23,7 @@ const useProductMovement = ({ navigation, route: { params }, showAlert }: usePro
   const arts = useArtsStore(state => state.arts)
 
   const addProductMovement = useMovementStore(state => state.addProductMovement)
+  const handleStockQuantity = useStockStore(state => state.handleStockQuantity)
 
   const formik = useFormik({
     initialValues,
@@ -51,7 +55,47 @@ const useProductMovement = ({ navigation, route: { params }, showAlert }: usePro
             const quantity = values.limposQuantityByArt[artId];
       
             if (typeof quantity === 'number' && !isNaN(quantity) && quantity > 0) {
-    
+              const { getItem } = useAsyncStorage();
+              let stock: StockStorage | null = await getItem('stockLimpos');
+
+              if(!stock) {
+                Alert.alert(
+                  'Houve um problema!',
+                  'Ocorreu algum problema ao processar as quantidades do seu estoque. Por favor, veirifique sua conexão com a internet e tente reiniciar o aplicativo!',
+                  [
+                    {
+                      text: 'Entendi'
+                    },
+                  ],
+                  { cancelable: false }
+                );
+                return;
+              };
+
+              console.log('stock', stock)
+
+              let totalLimpo = stock.find(item => item.id === parseInt(artId))?.quantidade;
+
+              console.log('totalLimpo', totalLimpo)
+
+              if(typeof totalLimpo === 'undefined') {
+                totalLimpo = 0;
+              }
+
+              if(totalLimpo || totalLimpo === 0 && (totalLimpo < quantity)) {
+                Alert.alert(
+                  'Houve um problema!',
+                  'Parece que o seu estoque não tem a quantidade que você quer movimentar.',
+                  [
+                    {
+                      text: 'Entendi'
+                    },
+                  ],
+                  { cancelable: false }
+                );
+                return;
+              }
+              
               await addProductMovement({
                 id_evento: event.id,
                 indice_estoque: params.indice_estoque,
@@ -64,6 +108,12 @@ const useProductMovement = ({ navigation, route: { params }, showAlert }: usePro
                 quantity: quantity,
                 responsible: values.responsible,
                 type: params.movementType
+              });
+
+              await handleStockQuantity({
+                id_arte: parseInt(artId),
+                quantidade: quantity,
+                tipo : params.movementType
               });
             }
           }

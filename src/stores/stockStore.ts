@@ -3,7 +3,7 @@ import { create } from "zustand"
 import { useAsyncStorage } from "src/hooks"
 import { apiStock } from "src/services/api"
 import { getEventStorage, getStockStorage, getStockLimposStorage, getStockRelStorage, getStockInfosStorage } from "src/storage/storage"
-import { StockStorage, StockRelStorage, StockInfosStorage } from "src/storage/storage.types"
+import { StockStorage, StockRelStorage, StockInfosStorage, handleStockQuantity } from "src/storage/storage.types"
 import { hasNetwork } from "src/utils/net"
 
 type StockState = {
@@ -15,6 +15,7 @@ type StockState = {
   syncStockLimpos: () => Promise<void>
   syncStockRel: () => Promise<void>
   syncStockInfos: () => Promise<void>
+  handleStockQuantity: (data: handleStockQuantity) => Promise<void>
 }
 
 export const useStockStore = create<StockState>(set => ({
@@ -139,6 +140,42 @@ export const useStockStore = create<StockState>(set => ({
       };
 
       set(() => ({ stockInfos: convertedStockInfos }));
+    }
+  },
+  handleStockQuantity: async (data: handleStockQuantity) => {
+    const { getItem, setItem, removeItem } = useAsyncStorage();
+
+    let stock: StockStorage | null = await getItem('stockLimpos');
+    
+    if (!stock) return; 
+    
+    const dataToUpdate = data; 
+    let quantidadeNew = 0;
+    let quantidadeAtual = stock.find(item => item.id === dataToUpdate.id_arte)?.quantidade || 0;
+
+    if(dataToUpdate.tipo == 'in') {
+      quantidadeNew = quantidadeAtual - dataToUpdate.quantidade;
+    } else if(dataToUpdate.tipo == 'out') {
+      quantidadeNew = quantidadeAtual + dataToUpdate.quantidade;
+    }
+
+    const updatedItem = {
+      id_arte: stock.find(item => item.id === dataToUpdate.id_arte)?.id,
+      nome: stock.find(item => item.id === dataToUpdate.id_arte)?.nome,
+      
+      quantidade: quantidadeNew,
+    };
+    
+    const updatedStock = stock.map(item => (item.id === dataToUpdate.id_arte ? updatedItem : item)) as StockStorage;
+
+    if(updatedStock) {
+      removeItem('stockLimpos')
+      console.log(updatedStock)
+      await setItem('stockLimpos', updatedStock);
+
+      set(() => ({ stockLimpos: updatedStock }));
+    } else {
+      console.log('houve um problema')
     }
   }
 }))
