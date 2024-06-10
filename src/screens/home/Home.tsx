@@ -20,7 +20,6 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
   } = useHome({ navigation, route })
 
   const stock = useStockStore(state => state.stock)
-
   const stockLimpos = useStockStore(state => state.stockLimpos)
 
   return (

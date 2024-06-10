@@ -9,6 +9,7 @@ import { useAuth } from 'src/context/AuthContext'
 import { useMovementStore, useOperatorsStore, useQrCodeStore } from 'src/stores'
 import { useArtsStore } from 'src/stores/artsStore'
 import { useStockStore } from 'src/stores/stockStore'
+import { hasNetwork } from "src/utils/net"
 
 type useLoginProps = {
   showAlert: (arg0: AwesomeAlertProps) => void
@@ -21,6 +22,7 @@ const useLogin = ({ showAlert }: useLoginProps) => {
   const { login } = useAuth()
 
   const syncMovements = useMovementStore(state => state.sync)
+  const calculateTotalStock = useMovementStore(state => state.calculateTotalStock)
   const syncOperators = useOperatorsStore(state => state.syncOperators)
   const syncArts = useArtsStore(state => state.syncArts)
   const syncStock = useStockStore(state => state.syncStock)
@@ -28,6 +30,7 @@ const useLogin = ({ showAlert }: useLoginProps) => {
   const syncStockRel = useStockStore(state => state.syncStockRel)
   const syncStockInfos = useStockStore(state => state.syncStockInfos)
   const syncQrCodes = useQrCodeStore(state => state.sync)
+ 
 
   const formik = useFormik({
     initialValues: {
@@ -62,6 +65,7 @@ const useLogin = ({ showAlert }: useLoginProps) => {
       await syncStockRel()
       await syncStockInfos()
       await syncQrCodes()
+      await calculateTotalStock();
 
       login(response.usuario.id)
     }
@@ -70,15 +74,16 @@ const useLogin = ({ showAlert }: useLoginProps) => {
   const verifyUserIsLogged = async () => {
     setIsLoading(true)
     const user: UserStorage|null = await getItem('user')
-    
+  
     await syncArts()
-    await syncMovements()
     await syncOperators()
+    await syncMovements()
     await syncStock()
     await syncStockLimpos()
     await syncStockRel()
     await syncStockInfos()
     await syncQrCodes()
+    await calculateTotalStock();
 
     user && login(user.id)
     setIsLoading(false)

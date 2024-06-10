@@ -16,6 +16,7 @@ type StockState = {
   syncStockRel: () => Promise<void>
   syncStockInfos: () => Promise<void>
   handleStockQuantity: (data: handleStockQuantity) => Promise<void>
+  setStockLimpos: (value: number) => void
 }
 
 export const useStockStore = create<StockState>(set => ({
@@ -146,6 +147,7 @@ export const useStockStore = create<StockState>(set => ({
     const { getItem, setItem, removeItem } = useAsyncStorage();
 
     let stock: StockStorage | null = await getItem('stockLimpos');
+    let stockInfos: StockInfosStorage | null = await getItem('stockInfos');
     
     if (!stock) return; 
     
@@ -154,28 +156,36 @@ export const useStockStore = create<StockState>(set => ({
     let quantidadeAtual = stock.find(item => item.id === dataToUpdate.id_arte)?.quantidade || 0;
 
     if(dataToUpdate.tipo == 'in') {
+      if(!stockInfos) return;
+
+      const estoqueInicial = stockInfos.estoque_inicial[dataToUpdate.id_arte];
+
       quantidadeNew = quantidadeAtual - dataToUpdate.quantidade;
+
     } else if(dataToUpdate.tipo == 'out') {
       quantidadeNew = quantidadeAtual + dataToUpdate.quantidade;
-    }
 
-    const updatedItem = {
-      id_arte: stock.find(item => item.id === dataToUpdate.id_arte)?.id,
-      nome: stock.find(item => item.id === dataToUpdate.id_arte)?.nome,
+      const updatedItem = {
+        id_arte: stock.find(item => item.id === dataToUpdate.id_arte)?.id,
+        nome: stock.find(item => item.id === dataToUpdate.id_arte)?.nome,
+        
+        quantidade: quantidadeNew,
+      };
       
-      quantidade: quantidadeNew,
-    };
-    
-    const updatedStock = stock.map(item => (item.id === dataToUpdate.id_arte ? updatedItem : item)) as StockStorage;
-
-    if(updatedStock) {
-      removeItem('stockLimpos')
-      console.log(updatedStock)
-      await setItem('stockLimpos', updatedStock);
-
-      set(() => ({ stockLimpos: updatedStock }));
-    } else {
-      console.log('houve um problema')
+      const updatedStock = stock.map(item => (item.id === dataToUpdate.id_arte ? updatedItem : item)) as StockStorage;
+  
+      if(updatedStock) {
+        removeItem('stockLimpos')
+        
+        await setItem('stockLimpos', updatedStock);
+  
+        set(() => ({ stockLimpos: updatedStock }));
+      } else {
+        console.log('houve um problema')
+      }
     }
-  }
+  },
+  setStockLimpos: (newQuantity: number) => set(state => ({
+    stockLimpos: state.stockLimpos.map(item => ({ ...item, quantidade: newQuantity }))
+  }))
 }))

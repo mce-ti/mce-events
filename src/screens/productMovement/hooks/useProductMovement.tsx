@@ -14,6 +14,7 @@ import { useArtsStore } from 'src/stores/artsStore';
 import { StockStorage } from 'src/storage/storage.types';
 import { useAsyncStorage } from 'src/hooks';
 import { Alert } from 'react-native';
+import { calcInitialStockQuantity, ItemStock } from '../../../utils/stock.utils';
 
 type useProductMovementPrps = {
   showAlert: (arg0: AwesomeAlertProps) => void
@@ -24,6 +25,7 @@ const useProductMovement = ({ navigation, route: { params }, showAlert }: usePro
 
   const addProductMovement = useMovementStore(state => state.addProductMovement)
   const handleStockQuantity = useStockStore(state => state.handleStockQuantity)
+  const stockInfos = useStockStore(state => state.stockInfos);
 
   const formik = useFormik({
     initialValues,
@@ -51,14 +53,17 @@ const useProductMovement = ({ navigation, route: { params }, showAlert }: usePro
         const uriAsset = albumAssets.assets.find(albumAsset => albumAsset.filename === asset.filename)?.uri
 
         if (uriAsset) {
+          const estoqueInicial: ItemStock[] = stockInfos.estoque_inicial[params.indice_estoque];
+
           for (const artId in values.limposQuantityByArt) {
             const quantity = values.limposQuantityByArt[artId];
       
             if (typeof quantity === 'number' && !isNaN(quantity) && quantity > 0) {
               const { getItem } = useAsyncStorage();
-              let stock: StockStorage | null = await getItem('stockLimpos');
+              let stockLimpos: StockStorage | null = await getItem('stockLimpos');
+              const stock: StockStorage | null = await getItem('stock');
 
-              if(!stock) {
+              if(!stockLimpos || !stock) {
                 Alert.alert(
                   'Houve um problema!',
                   'Ocorreu algum problema ao processar as quantidades do seu estoque. Por favor, veirifique sua conexão com a internet e tente reiniciar o aplicativo!',
@@ -72,17 +77,27 @@ const useProductMovement = ({ navigation, route: { params }, showAlert }: usePro
                 return;
               };
 
-              console.log('stock', stock)
-
-              let totalLimpo = stock.find(item => item.id === parseInt(artId))?.quantidade;
-
-              console.log('totalLimpo', totalLimpo)
+              let totalLimpo = stockLimpos.find(item => item.id === parseInt(artId))?.quantidade;
 
               if(typeof totalLimpo === 'undefined') {
                 totalLimpo = 0;
               }
 
-              if(totalLimpo || totalLimpo === 0 && (totalLimpo < quantity)) {
+              if(params.movementType == "in" && (totalLimpo || totalLimpo === 0) && (totalLimpo < quantity)) {
+                Alert.alert(
+                  'Houve um problema!',
+                  'Parece que o seu estoque não tem a quantidade que você quer movimentar.',
+                  [
+                    {
+                      text: 'Entendi'
+                    },
+                  ],
+                  { cancelable: false }
+                );
+                return;
+              }
+
+              if(params.movementType == "out" && !calcInitialStockQuantity(estoqueInicial, quantity)) {
                 Alert.alert(
                   'Houve um problema!',
                   'Parece que o seu estoque não tem a quantidade que você quer movimentar.',
@@ -122,6 +137,20 @@ const useProductMovement = ({ navigation, route: { params }, showAlert }: usePro
             const quantity = values.sujosQuantityByArt[artId];
       
             if (typeof quantity === 'number' && !isNaN(quantity) && quantity > 0) {
+
+              if(params.movementType == "out" && !calcInitialStockQuantity(estoqueInicial, quantity)) {
+                Alert.alert(
+                  'Houve um problema!',
+                  'Parece que o seu estoque não tem a quantidade que você quer movimentar.',
+                  [
+                    {
+                      text: 'Entendi'
+                    },
+                  ],
+                  { cancelable: false }
+                );
+                return;
+              }
     
               await addProductMovement({
                 id_evento: event.id,
