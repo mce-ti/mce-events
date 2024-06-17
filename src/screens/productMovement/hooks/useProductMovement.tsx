@@ -126,6 +126,7 @@ const useProductMovement = ({ navigation, route: { params }, showAlert }: usePro
               });
 
               await handleStockQuantity({
+                indice_estoque: params.indice_estoque,
                 id_arte: parseInt(artId),
                 quantidade: quantity,
                 tipo : params.movementType

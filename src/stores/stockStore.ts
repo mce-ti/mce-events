@@ -155,14 +155,37 @@ export const useStockStore = create<StockState>(set => ({
     let quantidadeNew = 0;
     let quantidadeAtual = stock.find(item => item.id === dataToUpdate.id_arte)?.quantidade || 0;
 
-    if(dataToUpdate.tipo == 'in') {
-      if(!stockInfos) return;
+    if (dataToUpdate.tipo === 'in') {
+      if (!stockInfos) return;
+  
+      const estoqueLimpoArray = stockInfos.estoque_limpo[dataToUpdate.id_arte];
 
-      const estoqueInicial = stockInfos.estoque_inicial[dataToUpdate.id_arte];
-
-      quantidadeNew = quantidadeAtual - dataToUpdate.quantidade;
-
-    } else if(dataToUpdate.tipo == 'out') {
+      if (estoqueLimpoArray) {
+        const updatedEstoqueLimpoArray = estoqueLimpoArray.map(item => {
+          return {
+            ...item,
+            quantidade: item.quantidade - dataToUpdate.quantidade
+          };
+        });
+  
+        const updatedEstoqueLimpo = {
+          ...stockInfos.estoque_limpo,
+          [dataToUpdate.id_arte]: updatedEstoqueLimpoArray
+        };
+  
+        set(state => ({
+          stockInfos: {
+            ...state.stockInfos,
+            estoque_limpo: updatedEstoqueLimpo
+          }
+        }));
+  
+        await setItem('stockInfos', {
+          ...stockInfos,
+          estoque_limpo: updatedEstoqueLimpo
+        });
+      }
+    } else if(dataToUpdate.tipo === 'out') {
       quantidadeNew = quantidadeAtual + dataToUpdate.quantidade;
 
       const updatedItem = {

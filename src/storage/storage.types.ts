@@ -102,6 +102,7 @@ export type StockInfosStorage = {
 };
 
 export type handleStockQuantity = {
+  indice_estoque: number
   id_arte: number
   quantidade: number
   tipo: string

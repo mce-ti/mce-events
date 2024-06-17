@@ -14,6 +14,7 @@ type MovementSate = {
   sync: () => Promise<void>
   sendStorageData: () => Promise<void>
   calculateTotalStock: () => Promise<void>
+  calculateTotalSubStock: () => Promise<void>
 }
 
 export const useMovementStore = create<MovementSate>((set, get) => ({
@@ -107,10 +108,25 @@ export const useMovementStore = create<MovementSate>((set, get) => ({
     const stockStore = useStockStore.getState();
     const currentStock = stockStore.stockLimpos;
 
-    const unSyncMovements = (await getMovementsStorage() || []).filter(({ sync }) => !sync);
+    const unSyncMovements = (await getMovementsStorage() || []).filter(({ sync, status, type }) => !sync && status === 'Limpo' && type === 'out');
   
     const unSyncTotal = unSyncMovements.reduce((acc, movement) => {
-      return acc + (movement.type === 'out' ? movement.quantity : -movement.quantity);
+      return acc + movement.quantity;
+    }, 0)
+
+    const totalStock = currentStock.reduce((acc, item) => acc + item.quantidade, 0);
+    const updatedStockLimpos = totalStock + unSyncTotal;
+
+    stockStore.setStockLimpos(updatedStockLimpos);
+  },
+  calculateTotalSubStock: async () => {
+    const stockStore = useStockStore.getState();
+    const currentStock = stockStore.stockLimpos;
+
+    const unSyncMovements = (await getMovementsStorage() || []).filter(({ sync, status, type }) => !sync && status === 'Limpo' && type === 'out');
+  
+    const unSyncTotal = unSyncMovements.reduce((acc, movement) => {
+      return acc + movement.quantity;
     }, 0)
 
     const totalStock = currentStock.reduce((acc, item) => acc + item.quantidade, 0);
