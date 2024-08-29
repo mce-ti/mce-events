@@ -1,4 +1,5 @@
 import { View, Text, TextInput, Image, TouchableOpacity } from "react-native"
+import { useState } from "react"
 import { Button, Divider, Input } from "src/components"
 import { useProductMovement } from "./hooks/useProductMovement"
 import { AntDesign } from '@expo/vector-icons/'
@@ -9,6 +10,7 @@ import { Layout } from "src/template"
 import { styles } from "./styles"
 
 import type { HomeStackRouteScreen } from "src/routes/routes.types"
+import SignatureComponent from "./components/SignatureComponent"
 
 const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMovement'>) => {
 
@@ -25,6 +27,12 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
       submitForm,
     }
   } = useProductMovement({ navigation, route, showAlert })
+
+  const [signature, setSignature] = useState<string | null>(null);
+
+  const handleSignatureOK = (signature: string) => {
+    setSignature(signature);
+  };
 
   return (
     <Layout onLogoPress={() => navigation.goBack()}>
@@ -83,7 +91,7 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
 
       <Divider opacity={0} />
 
-      <TouchableOpacity style={styles.imageContainer} activeOpacity={.75} onPress={catchPicture}>
+      {/* <TouchableOpacity style={styles.imageContainer} activeOpacity={.75} onPress={catchPicture}>
         {values.image ? (
           <Image source={{ uri: values.image }} style={styles.image} />
         ) : (
@@ -92,7 +100,9 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
             <AntDesign name="picture" size={120} color={'#0005'} />
           </>
         )}
-      </TouchableOpacity>
+      </TouchableOpacity> */}
+
+      <SignatureComponent text="Assine Aqui" onOK={handleSignatureOK} />
 
       <Divider opacity={0} />
 
@@ -113,7 +123,7 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
             disabled={
               (!Object.values(values.sujosQuantityByArt).some(value => value !== undefined && value > 0) && !Object.values(values.limposQuantityByArt).some(value => value !== undefined && value > 0)) ||
               !values.responsible ||
-              !values.image
+              !handleSignatureOK
             }
           />
         </View>

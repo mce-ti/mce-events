@@ -4,6 +4,7 @@ type FormMovementValues = {
   quantity: number | null
   responsible: string
   image: string
+  signature: string
   art: number | null
 }
 
