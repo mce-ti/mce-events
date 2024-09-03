@@ -6,6 +6,7 @@ export type HomeStackParams = {
     id: number
     movementType: 'in' | 'out'
     name: string
+    responsavel?: string | null
     indice_estoque: number
   }
   InfosEstoque: {

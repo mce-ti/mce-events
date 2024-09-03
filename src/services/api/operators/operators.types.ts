@@ -3,5 +3,6 @@ export type GetOperatorsResponse = {
   nome: string
   localizacao: string
   cor: string
+  responsavel: string
   indice_estoque: number
 }[]

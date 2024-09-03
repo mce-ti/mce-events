@@ -22,6 +22,8 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
   const stock = useStockStore(state => state.stock)
   const stockLimpos = useStockStore(state => state.stockLimpos)
 
+  console.log(operators)
+
   return (
     <Layout>
       <View>
@@ -42,15 +44,15 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
             <Text style={styles.estoque} onPress={() => navigation.navigate('InfosEstoque', { id_estoque: stockItem.indice, nome_estoque: stockItem.estoque, data: formatDBDate(useEvent?.data) })}>{stockItem.estoque}</Text>
 
             <FlatList
-              data={operators.filter(({ nome, localizacao, indice_estoque }) => indice_estoque === stockItem.indice && (nome.toLowerCase().includes(searchValue.toLowerCase()) || localizacao?.toLowerCase().includes(searchValue.toLowerCase())))}
+              data={operators}
               scrollEnabled={false}
               renderItem={({ item }) => (
                 <Operator
                   name={item.nome}
                   color={item.cor}
                   localizacao={item?.localizacao}
-                  entry={() => navigation.navigate('ProductMovement', { id: item.id, name: item.nome, movementType: 'in', indice_estoque: stockItem.indice })}
-                  output={() => navigation.navigate('ProductMovement', { id: item.id, name: item.nome, movementType: 'out', indice_estoque: stockItem.indice })}
+                  entry={() => navigation.navigate('ProductMovement', { id: item.id, name: item.nome, responsavel: item.responsavel, movementType: 'in', indice_estoque: stockItem.indice })}
+                  output={() => navigation.navigate('ProductMovement', { id: item.id, name: item.nome, responsavel: item.responsavel, movementType: 'out', indice_estoque: stockItem.indice })}
                 />
               )}
               keyExtractor={(item, index) => index.toString()}

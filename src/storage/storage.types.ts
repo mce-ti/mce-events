@@ -28,6 +28,7 @@ export type OperatorStorage = {
   nome: string
   localizacao: string | null
   cor: string | null
+  responsavel: string | null
   indice_estoque: number | null
 }
 

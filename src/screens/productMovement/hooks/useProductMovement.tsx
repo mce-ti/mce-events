@@ -33,7 +33,7 @@ const useProductMovement = ({ navigation, route: { params }, showAlert }: usePro
 
       const event = await getEventStorage()
 
-      const hasAllValues = (values.signature && values.responsible && params.id && params.indice_estoque && event && (Object.values(values.limposQuantityByArt) || Object.values(values.sujosQuantityByArt)))
+      const hasAllValues = (values.responsible && params.id && params.indice_estoque && event && Object.values(values.limposQuantityByArt))
 
       if (!hasAllValues) {
         showAlert({

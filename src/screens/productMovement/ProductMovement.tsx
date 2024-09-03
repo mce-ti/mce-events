@@ -109,7 +109,7 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
       <Divider opacity={0} space={10} />
 
       <Input
-        placeholder="Responsável"
+        placeholder={route?.params?.movementType === 'out' ? 'Devolvido por' : 'Recebido por' }
         value={values.responsible}
         onChangeText={handleChange('responsible')}
       />
@@ -145,11 +145,18 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
             label="Salvar"
             color="green"
             onPress={submitForm}
+
             disabled={
-              (!Object.values(values.sujosQuantityByArt).some(value => value !== undefined && value > 0) && !Object.values(values.limposQuantityByArt).some(value => value !== undefined && value > 0)) ||
-              !values.responsible ||
-              !handleSignatureOK ||
-              !values.signature
+              route?.params?.movementType === 'out'
+                ? (
+                  !Object.values(values.limposQuantityByArt).some(value => value !== undefined) ||
+                  !values.responsible ||
+                  !values.sujos
+                )
+                : (
+                  !Object.values(values.limposQuantityByArt).some(value => value !== undefined && value > 0) ||
+                  !values.responsible
+                )
             }
           />
         </View>

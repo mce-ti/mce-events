@@ -43,7 +43,7 @@ const SignatureComponent: React.FC<Props> = ({ onOK, onClear, setScrollEnabled }
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 15 }}>
           <Text style={styles.title}>Assine abaixo:</Text>
           <TouchableOpacity style={styles.button} onPress={handleClear}>
-            <MaterialIcons name="loop" size={16} color="#fff" />
+            <MaterialIcons name="delete" size={16} color="#fff" />
           </TouchableOpacity>
         </View>
      
