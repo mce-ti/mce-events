@@ -52,6 +52,7 @@ export const useMovementStore = create<MovementSate>((set, get) => ({
           id_art: movement.id_arte,
           id_operator: movement.id_operador,
           image: '',
+          assinatura: movement.assinatura,
           name_operator: movement.nome_operador,
           status: movement.status,
           quantity: movement.quantidade,
@@ -95,7 +96,8 @@ export const useMovementStore = create<MovementSate>((set, get) => ({
         caucao: event?.caucao ? 'Sim' : 'Não',
         id_arte: movement.id_art,
         responsavel: movement.responsible,
-        foto: await readFile(movement.image),
+        assinatura: movement.assinatura,
+        // foto: await readFile(movement.image),
         app_time: movement.time
       })
 

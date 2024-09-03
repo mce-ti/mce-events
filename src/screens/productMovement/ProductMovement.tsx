@@ -1,5 +1,5 @@
 import { View, Text, TextInput, Image, TouchableOpacity } from "react-native"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button, Divider, Input } from "src/components"
 import { useProductMovement } from "./hooks/useProductMovement"
 import { AntDesign } from '@expo/vector-icons/'
@@ -28,10 +28,17 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
     }
   } = useProductMovement({ navigation, route, showAlert })
 
-  const [signature, setSignature] = useState<string | null>(null);
+  useEffect(() => {
+    setFieldValue('signature', null);
+  }, []);
 
   const handleSignatureOK = (signature: string) => {
-    setSignature(signature);
+    if (signature) setFieldValue('signature', signature);
+  };
+
+  const handleClearSignature = () => {
+    setFieldValue('signature', null);
+    // console.log('null', values.signature ? 'sim' : 'nao')
   };
 
   return (
@@ -51,10 +58,10 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
               name={art.nome + ' - ' + art.medida}
             />
 
-            <View style={{'flexDirection': 'row', 'justifyContent' : 'space-between', 'width' : '100%'}}>
+            <View style={{ 'flexDirection': 'row', 'justifyContent': 'space-between', 'width': '100%' }}>
               <TextInput
                 placeholder="Limpos"
-                style={[styles.quantidade, route.params.movementType === 'in' ? { width: '100%' } : { width: '48%' }]}
+                style={[styles.quantidade, { width: '100%' }]}
                 keyboardType="number-pad"
                 value={values.limposQuantityByArt[art.id]?.toString()}
                 onChangeText={text => {
@@ -63,10 +70,10 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
                 }}
               />
 
-              { route.params.movementType === 'out' &&
+              {/* { route.params.movementType === 'out' &&
                 <TextInput
                   placeholder="Sujos"
-                  style={[styles.quantidade, { width: '48%' }]}
+                  style={[styles.quantidade, { width: '100%' }]}
                   keyboardType="number-pad"
                   value={values.sujosQuantityByArt[art.id]?.toString()}
                   onChangeText={text => {
@@ -74,12 +81,30 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
                     setFieldValue(`sujosQuantityByArt.${art.id}`, sujos);
                   }}
                 />
-              }
+              } */}
             </View>
 
           </View>
         ))}
       </View>
+
+      <Divider opacity={0} space={10} />
+
+      {route?.params?.movementType === 'out' ? (
+        <Input
+          placeholder="Sujos"
+          value={values.sujos?.toString() || ''}
+          keyboardType="numeric"
+          maxLength={10} // Opcional
+          onChangeText={(text) => {
+            const numericText = text.replace(/[^0-9]/g, '');
+            setFieldValue('sujos', numericText);
+          }}
+        />
+      ) : (
+        // Componente ou conteúdo que você quer renderizar no else
+        <Text style={{ display: 'none' }}></Text>
+      )}
 
       <Divider opacity={0} space={10} />
 
@@ -102,7 +127,7 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
         )}
       </TouchableOpacity> */}
 
-      <SignatureComponent text="Assine Aqui" onOK={handleSignatureOK} />
+      <SignatureComponent onOK={handleSignatureOK} onClear={handleClearSignature} />
 
       <Divider opacity={0} />
 
@@ -123,7 +148,8 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
             disabled={
               (!Object.values(values.sujosQuantityByArt).some(value => value !== undefined && value > 0) && !Object.values(values.limposQuantityByArt).some(value => value !== undefined && value > 0)) ||
               !values.responsible ||
-              !handleSignatureOK
+              !handleSignatureOK ||
+              !values.signature
             }
           />
         </View>

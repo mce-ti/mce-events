@@ -52,7 +52,8 @@ export type ProductMovementStorage = {
   id_art: number
   id_operator: number
   name_operator: string
-  image: string
+  image?: string
+  assinatura: string
   sync?: boolean
   date?: string
 }

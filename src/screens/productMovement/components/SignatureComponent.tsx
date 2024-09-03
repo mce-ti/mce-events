@@ -1,28 +1,27 @@
 import React, { useRef, useState } from 'react';
-import { View, Text, StyleSheet, Image, Alert, Button } from 'react-native';
+import { View, Text, StyleSheet, Image, Alert, Button, TouchableOpacity } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons'
 import SignatureScreen, {
   SignatureViewRef,
 } from "react-native-signature-canvas";
 
 interface Props {
-  text: string;
   onOK: (signature: string) => void;
+  onClear: () => void;
   setScrollEnabled?: (enabled: boolean) => void; // Novo prop
 }
 
-const SignatureComponent: React.FC<Props> = ({ text, onOK, setScrollEnabled }) => {
-  const [signature, setSignature] = useState<string | null>(null);
-
+const SignatureComponent: React.FC<Props> = ({ onOK, onClear, setScrollEnabled }) => {
   const ref = useRef<SignatureViewRef>(null);
 
   const handleSignature = (signature: string) => {
-    Alert.alert("Assinatura Capturada", "Sua assinatura foi salva.");
     onOK(signature);
-    setSignature(signature)
+    // Alert.alert("Assinatura Capturada", "Sua assinatura foi salva.");
   };
 
   const handleClear = () => {
-    if(ref.current) ref.current.clearSignature();
+    if (ref.current) ref.current.clearSignature();
+    if (onClear) onClear();
   };
 
   const handleBegin = () => {
@@ -34,24 +33,25 @@ const SignatureComponent: React.FC<Props> = ({ text, onOK, setScrollEnabled }) =
   const handleEnd = () => {
     if (setScrollEnabled) {
       setScrollEnabled(true); // Reativa o scroll ao terminar de desenhar
-      ref.current?.readSignature();
     }
+    ref.current?.readSignature();
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <Text>Assine no espaço abaixo:</Text>
-          <Button title="Limpar" color="#dc2626" onPress={handleClear} />
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 15 }}>
+          <Text style={styles.title}>Assine abaixo:</Text>
+          <TouchableOpacity style={styles.button} onPress={handleClear}>
+            <MaterialIcons name="loop" size={16} color="#fff" />
+          </TouchableOpacity>
         </View>
-
+     
         <SignatureScreen
           ref={ref}
           onBegin={handleBegin}
           onEnd={handleEnd}
           onOK={handleSignature}
-          descriptionText={text}
         />
 
         {/* {signature && (
@@ -64,6 +64,8 @@ const SignatureComponent: React.FC<Props> = ({ text, onOK, setScrollEnabled }) =
           </View>
         )} */}
       </View>
+
+
     </View>
   );
 };
@@ -71,25 +73,31 @@ const SignatureComponent: React.FC<Props> = ({ text, onOK, setScrollEnabled }) =
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
     width: "100%"
   },
   content: {
     flex: 1,
-    alignItems: 'center',
     width: "100%",
-    height: 250,
+    height: 200,
   },
   title: {
-    color: "#fff",
-    fontSize: 25,
-    marginBottom: 30
+    color: "#000",
+    fontSize: 14,
+    marginBottom: 10,
+    textAlign: 'left'
+  },
+  button: {
+    width: 40, // Defina a largura aqui
+    paddingVertical: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 5,
+    backgroundColor: '#dc2626'
   },
   signatureImage: {
     marginTop: 20,
     width: 300,
-    height: 250,
+    height: 200,
     borderWidth: 1,
     borderColor: '#fff',
   },

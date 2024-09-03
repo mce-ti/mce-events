@@ -8,12 +8,13 @@ export type SyncMovementsRequest = {
   caucao: 'Sim' | 'Não',
   id_arte: number
   responsavel: string
-  foto: {
+  foto?: {
     base64: string
     type: string
     name: string
     uri: string
   }
+  assinatura?: string
   app_time: number | string
 }
 
@@ -33,4 +34,5 @@ export type GetMovementsResponse = {
   app_time: number
   responsavel: string
   data: string
+  assinatura: string
 }[]

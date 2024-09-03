@@ -5,13 +5,16 @@ type FormMovementValues = {
   responsible: string
   image: string
   signature: string
+  sujos: number | null
   art: number | null
 }
 
 export const initialValues: FormMovementValues = {
   art: null,
   image: '',
+  signature: '',
   quantity: null,
+  sujos: null,
   responsible: '',
   sujosQuantityByArt: {},
   limposQuantityByArt: {}

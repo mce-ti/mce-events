@@ -6,16 +6,16 @@ export const syncMovement = async ({ foto, ...request }: SyncMovementsRequest) =
 
   const formData = new FormData()
 
-  formData.append('file', {
-    uri: foto.uri,
-    type: foto.type,
-    name: foto.name
-  } as any)
+  // formData.append('file', {
+  //   uri: foto.uri,
+  //   type: foto.type,
+  //   name: foto.name
+  // } as any)
 
   for (const key in request) {
     const value = request[key as keyof typeof request]
-    
-    formData.append(key, value.toString())
+
+    if(value)   formData.append(key, value.toString())
   }
 
   try {

@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react"
 import { Alert, Animated } from "react-native"
+import { useAuth } from "src/context/AuthContext"
 
 import { useAsyncStorage } from "src/hooks"
 import { apiAuth } from "src/services/api"
@@ -38,6 +39,8 @@ const useSyncButton = () => {
 
   const { getItem, removeItem } = useAsyncStorage()
 
+  const { logout } = useAuth();
+
   const anim = useRef(Animated.loop(
     Animated.timing(spinAnimation,
       {
@@ -68,7 +71,14 @@ const useSyncButton = () => {
           Alert.alert(
             'Houve um problema!',
             'Parece que suas credencias de acesso estão desatualizadas. Tente fazer login novamente',
-            [],
+            [
+              {
+                text: 'Entendi',
+                onPress: () => {
+                  logout();
+                }
+              },
+            ],
             { cancelable: false }
           );
 
@@ -76,7 +86,6 @@ const useSyncButton = () => {
   
           anim.reset();
           setIsSyncing(false);
-          return;
         }
       } 
       

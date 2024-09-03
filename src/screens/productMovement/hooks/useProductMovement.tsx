@@ -33,7 +33,7 @@ const useProductMovement = ({ navigation, route: { params }, showAlert }: usePro
 
       const event = await getEventStorage()
 
-      const hasAllValues = (values.image && values.responsible && params.id && params.indice_estoque && event && (Object.values(values.limposQuantityByArt) || Object.values(values.sujosQuantityByArt)))
+      const hasAllValues = (values.signature && values.responsible && params.id && params.indice_estoque && event && (Object.values(values.limposQuantityByArt) || Object.values(values.sujosQuantityByArt)))
 
       if (!hasAllValues) {
         showAlert({
@@ -45,150 +45,134 @@ const useProductMovement = ({ navigation, route: { params }, showAlert }: usePro
         return
       }
 
-      if (await getPermission('MediaLibrary')) {
-        const asset = await MediaLibrary.createAssetAsync(values.image)
-        const album = await MediaLibrary.createAlbumAsync('mceEvents', asset, false)
-        const albumAssets = await MediaLibrary.getAssetsAsync({ album })
+      // if (await getPermission('MediaLibrary')) {
+        // const asset = await MediaLibrary.createAssetAsync(values.image)
+        // const album = await MediaLibrary.createAlbumAsync('mceEvents', asset, false)
+        // const albumAssets = await MediaLibrary.getAssetsAsync({ album })
 
-        const uriAsset = albumAssets.assets.find(albumAsset => albumAsset.filename === asset.filename)?.uri
+        // const uriAsset = albumAssets.assets.find(albumAsset => albumAsset.filename === asset.filename)?.uri
 
-        if (uriAsset) {
-          const estoqueInicial: ItemStock[] = stockInfos.estoque_inicial[params.indice_estoque];
+        // if (uriAsset) {
 
-          for (const artId in values.limposQuantityByArt) {
-            const quantity = values.limposQuantityByArt[artId];
-      
-            if (typeof quantity === 'number' && !isNaN(quantity) && quantity > 0) {
-              const { getItem } = useAsyncStorage();
-              let stockLimpos: StockStorage | null = await getItem('stockLimpos');
-              const stock: StockStorage | null = await getItem('stock');
+        const estoqueInicial: ItemStock[] = stockInfos.estoque_inicial[params.indice_estoque];
+        const sujos = values.sujos !== null ? values.sujos : 0;
+        const art = arts[0];
 
-              if(!stockLimpos || !stock) {
-                Alert.alert(
-                  'Houve um problema!',
-                  'Ocorreu algum problema ao processar as quantidades do seu estoque. Por favor, veirifique sua conexão com a internet e tente reiniciar o aplicativo!',
-                  [
-                    {
-                      text: 'Entendi'
-                    },
-                  ],
-                  { cancelable: false }
-                );
-                return;
-              };
-
-              let totalLimpo = stockLimpos.find(item => item.id === parseInt(artId))?.quantidade;
-
-              if(typeof totalLimpo === 'undefined') {
-                totalLimpo = 0;
-              }
-
-              if(params.movementType == "in" && (totalLimpo || totalLimpo === 0) && (totalLimpo < quantity)) {
-                Alert.alert(
-                  'Houve um problema!',
-                  'Parece que o seu estoque não tem a quantidade que você quer movimentar.',
-                  [
-                    {
-                      text: 'Entendi'
-                    },
-                  ],
-                  { cancelable: false }
-                );
-                return;
-              }
-
-              if(params.movementType == "out" && !calcInitialStockQuantity(estoqueInicial, quantity)) {
-                Alert.alert(
-                  'Houve um problema!',
-                  'Parece que o seu estoque não tem a quantidade que você quer movimentar.',
-                  [
-                    {
-                      text: 'Entendi'
-                    },
-                  ],
-                  { cancelable: false }
-                );
-                return;
-              }
-              
-              await addProductMovement({
-                id_evento: event.id,
-                indice_estoque: params.indice_estoque,
-                time: new Date().getTime(),
-                id_art: parseInt(artId),
-                id_operator: params.id,
-                name_operator: params.name,
-                image: uriAsset,
-                status: 'Limpo',
-                quantity: quantity,
-                responsible: values.responsible,
-                type: params.movementType
-              });
-
-              await handleStockQuantity({
-                indice_estoque: params.indice_estoque,
-                id_arte: parseInt(artId),
-                quantidade: quantity,
-                tipo : params.movementType
-              });
-            }
-          }
-
-          for (const artId in values.sujosQuantityByArt) {
-            const quantity = values.sujosQuantityByArt[artId];
-      
-            if (typeof quantity === 'number' && !isNaN(quantity) && quantity > 0) {
-
-              if(params.movementType == "out" && !calcInitialStockQuantity(estoqueInicial, quantity)) {
-                Alert.alert(
-                  'Houve um problema!',
-                  'Parece que o seu estoque não tem a quantidade que você quer movimentar.',
-                  [
-                    {
-                      text: 'Entendi'
-                    },
-                  ],
-                  { cancelable: false }
-                );
-                return;
-              }
+        for (const artId in values.limposQuantityByArt) {
+          const quantity = values.limposQuantityByArt[artId];
     
-              await addProductMovement({
-                id_evento: event.id,
-                indice_estoque: params.indice_estoque,
-                time: new Date().getTime(),
-                id_art: parseInt(artId),
-                id_operator: params.id,
-                name_operator: params.name,
-                image: uriAsset,
-                status: 'Sujo',
-                quantity: quantity,
-                responsible: values.responsible,
-                type: params.movementType
-              });
+          if (typeof quantity === 'number' && !isNaN(quantity) && quantity > 0) {
+            const { getItem } = useAsyncStorage();
+            let stockLimpos: StockStorage | null = await getItem('stockLimpos');
+            const stock: StockStorage | null = await getItem('stock');
+
+            if(!stockLimpos || !stock) {
+              Alert.alert(
+                'Houve um problema!',
+                'Ocorreu algum problema ao processar as quantidades do seu estoque. Por favor, veirifique sua conexão com a internet e tente reiniciar o aplicativo!',
+                [
+                  {
+                    text: 'Entendi'
+                  },
+                ],
+                { cancelable: false }
+              );
+              return;
+            };
+
+            let totalLimpo = stockLimpos.find(item => item.id === parseInt(artId))?.quantidade;
+
+            if(typeof totalLimpo === 'undefined') {
+              totalLimpo = 0;
             }
+
+            if(params.movementType == "in" && (totalLimpo || totalLimpo === 0) && (totalLimpo < quantity)) {
+              Alert.alert(
+                'Houve um problema!',
+                'Parece que o seu estoque não tem a quantidade que você quer movimentar.',
+                [
+                  {
+                    text: 'Entendi'
+                  },
+                ],
+                { cancelable: false }
+              );
+              return;
+            }
+
+            if(params.movementType == "out" && !calcInitialStockQuantity(estoqueInicial, quantity)) {
+              Alert.alert(
+                'Houve um problema!',
+                'Parece que o seu estoque não tem a quantidade que você quer movimentar.',
+                [
+                  {
+                    text: 'Entendi'
+                  },
+                ],
+                { cancelable: false }
+              );
+              return;
+            }
+            
+            await addProductMovement({
+              id_evento: event.id,
+              indice_estoque: params.indice_estoque,
+              time: new Date().getTime(),
+              id_art: parseInt(artId),
+              id_operator: params.id,
+              name_operator: params.name,
+              // image: uriAsset,
+              assinatura: values.signature,
+              status: 'Limpo',
+              quantity: quantity,
+              responsible: values.responsible,
+              type: params.movementType
+            });
+
+            await handleStockQuantity({
+              indice_estoque: params.indice_estoque,
+              id_arte: parseInt(artId),
+              quantidade: quantity,
+              tipo : params.movementType
+            });
           }
-
-          showAlert({
-            show: true,
-            title: 'Sucesso',
-            message: 'Registros salvos no dispositivo.',
-            onConfirm: () => {
-              navigation.goBack()
-            }
-          })
-
-          return
         }
-      }
+    
+        if (sujos && sujos > 0) {
+          await addProductMovement({
+            id_evento: event.id,
+            indice_estoque: params.indice_estoque,
+            time: new Date().getTime(),
+            id_art: art.id,
+            id_operator: params.id,
+            name_operator: params.name,
+            // image: uriAsset,
+            assinatura: values.signature,
+            status: 'Sujo',
+            quantity: sujos,
+            responsible: values.responsible,
+            type: params.movementType
+          });
+        }
 
-      showAlert({
-        show: true,
-        title: 'Atenção',
-        message: 'Falha ao salvar a imagem, verifique as permições do aplicativo.',
-      })
+        showAlert({
+          show: true,
+          title: 'Sucesso',
+          message: 'Registros salvos no dispositivo.',
+          onConfirm: () => {
+            navigation.goBack()
+          }
+        })
 
-      return
+        return
+
+      // showAlert({
+      //   show: true,
+      //   title: 'Atenção',
+      //   message: 'Falha ao salvar a imagem, verifique as permições do aplicativo.',
+      // })
+
+      // return
     }
   })
 
