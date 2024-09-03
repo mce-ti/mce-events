@@ -1,7 +1,7 @@
 import { createStackNavigator } from '@react-navigation/stack'
 import { createDrawerNavigator } from '@react-navigation/drawer'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Home, Login, MovementHistory, QrCodesHistory,  ProductMovement, InfosEstoque } from '../screens'
+import { Home, Login, MovementHistory, QrCodesHistory,  ProductMovement, InfosEstoque, PrintRecibo } from '../screens'
 
 import { CustomDrawerContent } from './CustomDrawerContent'
 
@@ -23,6 +23,7 @@ const HomeStackRoutes = () => (
     <HomeStack.Screen name="Home" component={Home} />
     <HomeStack.Screen name="ProductMovement" component={ProductMovement} />
     <HomeStack.Screen name="InfosEstoque" component={InfosEstoque} />
+    <HomeStack.Screen name="PrintRecibo" component={PrintRecibo} />
   </HomeStack.Navigator>
 )
 

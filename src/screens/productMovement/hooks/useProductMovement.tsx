@@ -15,10 +15,17 @@ import { StockStorage } from 'src/storage/storage.types';
 import { useAsyncStorage } from 'src/hooks';
 import { Alert } from 'react-native';
 import { calcInitialStockQuantity, ItemStock } from '../../../utils/stock.utils';
+import { useEffect, useState } from 'react';
 
 type useProductMovementPrps = {
   showAlert: (arg0: AwesomeAlertProps) => void
 } & HomeStackRouteScreen<'ProductMovement'>
+
+type Produto = {
+  id: number;
+  id_arte: number;
+  quantidade: number;
+};
 
 const useProductMovement = ({ navigation, route: { params }, showAlert }: useProductMovementPrps) => {
   const arts = useArtsStore(state => state.arts)
@@ -26,6 +33,18 @@ const useProductMovement = ({ navigation, route: { params }, showAlert }: usePro
   const addProductMovement = useMovementStore(state => state.addProductMovement)
   const handleStockQuantity = useStockStore(state => state.handleStockQuantity)
   const stockInfos = useStockStore(state => state.stockInfos);
+
+  // const [produtos, setProdutos] = useState<Produto[]>([]);
+  // const [totalItemsToAdd, setTotalItemsToAdd] = useState(0);
+  // let counterId = 0;
+
+  // const addProduto = (artId:number, quantity:number) => {
+  //   setProdutos(prevProdutos => [
+  //     ...prevProdutos, 
+  //     { id: counterId, id_arte: artId, quantidade: quantity }
+  //   ]);
+  //   counterId++;
+  // };
 
   const formik = useFormik({
     initialValues,
@@ -44,135 +63,136 @@ const useProductMovement = ({ navigation, route: { params }, showAlert }: usePro
 
         return
       }
+      
+      let itemsToAdd = 0;
+      const estoqueInicial: ItemStock[] = stockInfos.estoque_inicial[params.indice_estoque];
+      const sujos = values.sujos !== null ? values.sujos : 0;
+      const art = arts[0];
 
-      // if (await getPermission('MediaLibrary')) {
-        // const asset = await MediaLibrary.createAssetAsync(values.image)
-        // const album = await MediaLibrary.createAlbumAsync('mceEvents', asset, false)
-        // const albumAssets = await MediaLibrary.getAssetsAsync({ album })
+      for (const artId in values.limposQuantityByArt) {
+        const quantity = values.limposQuantityByArt[artId];
 
-        // const uriAsset = albumAssets.assets.find(albumAsset => albumAsset.filename === asset.filename)?.uri
+        if (typeof quantity === 'number' && !isNaN(quantity) && quantity > 0) {
+          const { getItem } = useAsyncStorage();
+          let stockLimpos: StockStorage | null = await getItem('stockLimpos');
+          const stock: StockStorage | null = await getItem('stock');
 
-        // if (uriAsset) {
+          if (!stockLimpos || !stock) {
+            Alert.alert(
+              'Houve um problema!',
+              'Ocorreu algum problema ao processar as quantidades do seu estoque. Por favor, veirifique sua conexão com a internet e tente reiniciar o aplicativo!',
+              [
+                {
+                  text: 'Entendi'
+                },
+              ],
+              { cancelable: false }
+            );
+            return;
+          };
 
-        const estoqueInicial: ItemStock[] = stockInfos.estoque_inicial[params.indice_estoque];
-        const sujos = values.sujos !== null ? values.sujos : 0;
-        const art = arts[0];
+          let totalLimpo = stockLimpos.find(item => item.id === parseInt(artId))?.quantidade;
 
-        for (const artId in values.limposQuantityByArt) {
-          const quantity = values.limposQuantityByArt[artId];
-    
-          if (typeof quantity === 'number' && !isNaN(quantity) && quantity > 0) {
-            const { getItem } = useAsyncStorage();
-            let stockLimpos: StockStorage | null = await getItem('stockLimpos');
-            const stock: StockStorage | null = await getItem('stock');
-
-            if(!stockLimpos || !stock) {
-              Alert.alert(
-                'Houve um problema!',
-                'Ocorreu algum problema ao processar as quantidades do seu estoque. Por favor, veirifique sua conexão com a internet e tente reiniciar o aplicativo!',
-                [
-                  {
-                    text: 'Entendi'
-                  },
-                ],
-                { cancelable: false }
-              );
-              return;
-            };
-
-            let totalLimpo = stockLimpos.find(item => item.id === parseInt(artId))?.quantidade;
-
-            if(typeof totalLimpo === 'undefined') {
-              totalLimpo = 0;
-            }
-
-            if(params.movementType == "in" && (totalLimpo || totalLimpo === 0) && (totalLimpo < quantity)) {
-              Alert.alert(
-                'Houve um problema!',
-                'Parece que o seu estoque não tem a quantidade que você quer movimentar.',
-                [
-                  {
-                    text: 'Entendi'
-                  },
-                ],
-                { cancelable: false }
-              );
-              return;
-            }
-
-            if(params.movementType == "out" && !calcInitialStockQuantity(estoqueInicial, quantity)) {
-              Alert.alert(
-                'Houve um problema!',
-                'Parece que o seu estoque não tem a quantidade que você quer movimentar.',
-                [
-                  {
-                    text: 'Entendi'
-                  },
-                ],
-                { cancelable: false }
-              );
-              return;
-            }
-            
-            await addProductMovement({
-              id_evento: event.id,
-              indice_estoque: params.indice_estoque,
-              time: new Date().getTime(),
-              id_art: parseInt(artId),
-              id_operator: params.id,
-              name_operator: params.name,
-              // image: uriAsset,
-              assinatura: values.signature,
-              status: 'Limpo',
-              quantity: quantity,
-              responsible: values.responsible,
-              type: params.movementType
-            });
-
-            await handleStockQuantity({
-              indice_estoque: params.indice_estoque,
-              id_arte: parseInt(artId),
-              quantidade: quantity,
-              tipo : params.movementType
-            });
+          if (typeof totalLimpo === 'undefined') {
+            totalLimpo = 0;
           }
-        }
+
+          if (params.movementType == "in" && (totalLimpo || totalLimpo === 0) && (totalLimpo < quantity)) {
+            Alert.alert(
+              'Houve um problema!',
+              'Parece que o seu estoque não tem a quantidade que você quer movimentar.',
+              [
+                {
+                  text: 'Entendi'
+                },
+              ],
+              { cancelable: false }
+            );
+            return;
+          }
+
+          if (params.movementType == "out" && !calcInitialStockQuantity(estoqueInicial, quantity)) {
+            Alert.alert(
+              'Houve um problema!',
+              'Parece que o seu estoque não tem a quantidade que você quer movimentar.',
+              [
+                {
+                  text: 'Entendi'
+                },
+              ],
+              { cancelable: false }
+            );
+            return;
+          }
     
-        if (sujos && sujos > 0) {
           await addProductMovement({
             id_evento: event.id,
             indice_estoque: params.indice_estoque,
             time: new Date().getTime(),
-            id_art: art.id,
+            id_art: parseInt(artId),
             id_operator: params.id,
             name_operator: params.name,
             // image: uriAsset,
             assinatura: values.signature,
-            status: 'Sujo',
-            quantity: sujos,
+            status: 'Limpo',
+            quantity: quantity,
             responsible: values.responsible,
             type: params.movementType
           });
+          // itemsToAdd++;
+          // addProduto(parseInt(artId), quantity);
+
+          await handleStockQuantity({
+            indice_estoque: params.indice_estoque,
+            id_arte: parseInt(artId),
+            quantidade: quantity,
+            tipo: params.movementType
+          });
         }
+      }
 
-        showAlert({
-          show: true,
-          title: 'Sucesso',
-          message: 'Registros salvos no dispositivo.',
-          onConfirm: () => {
-            navigation.goBack()
-          }
-        })
+      if (sujos && sujos > 0) {
+        await addProductMovement({
+          id_evento: event.id,
+          indice_estoque: params.indice_estoque,
+          time: new Date().getTime(),
+          id_art: art.id,
+          id_operator: params.id,
+          name_operator: params.name,
+          // image: uriAsset,
+          assinatura: values.signature,
+          status: 'Sujo',
+          quantity: sujos,
+          responsible: values.responsible,
+          type: params.movementType
+        });
 
-        return
+        // itemsToAdd++;
+        // addProduto(art.id, sujos);
+      }
 
-      // showAlert({
-      //   show: true,
-      //   title: 'Atenção',
-      //   message: 'Falha ao salvar a imagem, verifique as permições do aplicativo.',
-      // })
+      // setTotalItemsToAdd(itemsToAdd);
 
-      // return
+      showAlert({
+        show: true,
+        title: 'Sucesso',
+        message: 'Registros salvos no dispositivo.',
+        onConfirm: () => {
+          navigation.goBack()
+          // navigation.navigate('PrintRecibo', {
+          //   produtos: produtos,
+          //   movementType: params.movementType,
+          //   indiceStock: params.indice_estoque,
+          //   operador: 'pendente',
+          //   reponsavel: formik.values.responsible,
+          //   reponsavel_pdv: 'pendente',
+          //   assinatura: formik.values.signature,
+          // });
+        }
+      })
+
+      return
+
     }
   })
 
@@ -184,7 +204,7 @@ const useProductMovement = ({ navigation, route: { params }, showAlert }: usePro
     formik.setFieldValue('quantity', parseInt(newValue))
   }
 
-  
+
   const catchPicture = async () => {
     const result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,

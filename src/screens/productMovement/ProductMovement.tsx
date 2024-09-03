@@ -30,6 +30,7 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
 
   useEffect(() => {
     setFieldValue('signature', null);
+    if(route.params.responsavel) setFieldValue('responsible', route.params.responsavel);
   }, []);
 
   const handleSignatureOK = (signature: string) => {
@@ -108,8 +109,10 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
 
       <Divider opacity={0} space={10} />
 
+      <Text style={styles.label}>{route?.params?.movementType === 'out' ? 'Devolvido por:' : 'Recebido por:'}</Text>
+
       <Input
-        placeholder={route?.params?.movementType === 'out' ? 'Devolvido por' : 'Recebido por' }
+        placeholder={route?.params?.movementType === 'out' ? 'Devolvido por' : 'Recebido por'}
         value={values.responsible}
         onChangeText={handleChange('responsible')}
       />

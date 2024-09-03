@@ -53,5 +53,9 @@ export const styles = StyleSheet.create({
     padding: 3,
     paddingHorizontal: 8,
     marginTop: 5,
+  },
+  label : {
+    fontSize: 13,
+    marginBottom: 5
   }
 })

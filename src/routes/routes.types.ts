@@ -1,5 +1,12 @@
 import type { NavigationProp, RouteProp } from '@react-navigation/native'
 
+
+type Produto = {
+  id: number;
+  id_arte: number;
+  quantidade: number;
+};
+
 export type HomeStackParams = {
   Home: undefined
   ProductMovement: {
@@ -13,6 +20,15 @@ export type HomeStackParams = {
     id_estoque: number
     nome_estoque: string
     data: string
+  }
+  PrintRecibo: {
+    produtos: Produto[]
+    movementType: 'in' | 'out'
+    indiceStock: number
+    operador?: string
+    reponsavel: string
+    reponsavel_pdv: string
+    assinatura?: string
   }
 }
 

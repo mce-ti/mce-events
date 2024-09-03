@@ -22,8 +22,6 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
   const stock = useStockStore(state => state.stock)
   const stockLimpos = useStockStore(state => state.stockLimpos)
 
-  console.log(operators)
-
   return (
     <Layout>
       <View>
@@ -44,7 +42,7 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
             <Text style={styles.estoque} onPress={() => navigation.navigate('InfosEstoque', { id_estoque: stockItem.indice, nome_estoque: stockItem.estoque, data: formatDBDate(useEvent?.data) })}>{stockItem.estoque}</Text>
 
             <FlatList
-              data={operators}
+             data={operators.filter(({ nome, localizacao, indice_estoque }) => indice_estoque === stockItem.indice && (nome.toLowerCase().includes(searchValue.toLowerCase()) || localizacao?.toLowerCase().includes(searchValue.toLowerCase())))}
               scrollEnabled={false}
               renderItem={({ item }) => (
                 <Operator
