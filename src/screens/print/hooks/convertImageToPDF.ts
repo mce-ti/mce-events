@@ -23,7 +23,6 @@ const convertImageToPDF = async (uriImg: string) => {
             }
             img {
               height: 90%;
-              padding: 10px;
             }
           </style>
         </head>

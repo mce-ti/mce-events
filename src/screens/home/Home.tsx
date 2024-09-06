@@ -63,8 +63,8 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
       <Divider opacity={0} />
 
       <Text style={styles.stockName}>Estoque total limpo disponível</Text>
-      {stockLimpos.map(item => (
-        <View key={`stock-item-${item.id}`}>
+      {stockLimpos.map((item, index) => (
+        <View key={index}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <Text style={styles.eventLocal}>{item.nome}</Text>
             <Text style={styles.eventDate}>{item.quantidade}</Text>
@@ -77,8 +77,8 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
       <Divider opacity={0} />
 
       <Text style={styles.stockName}>Estoque total inicial</Text>
-      {stock.map(item => (
-        <View key={`stock-item-${item.id}`}>
+      {stock.map((item, index) => (
+        <View key={index}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <Text style={styles.eventLocal}>{item.nome}</Text>
             <Text style={styles.eventDate}>{item.quantidade}</Text>

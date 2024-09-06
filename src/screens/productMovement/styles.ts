@@ -43,8 +43,14 @@ export const styles = StyleSheet.create({
     flex: 1
   },
   productCard: {
-    maxWidth: 260,
-    margin: 'auto',
+    padding: 10,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 3,
   },
   quantidade: {
     borderColor: '#a1a1a1',
@@ -53,9 +59,29 @@ export const styles = StyleSheet.create({
     padding: 3,
     paddingHorizontal: 8,
     marginTop: 5,
+
   },
   label : {
     fontSize: 13,
     marginBottom: 5
-  }
+  },
+  optionContentSujos: {
+    width: "100%",
+    height: 188,
+    borderColor: '#e5e7eb', 
+    backgroundColor: '#e5e7eb',
+    padding: 5
+  },
+  imageSujos: {
+    resizeMode: 'cover',
+    maxHeight: 150,
+    width: '100%',
+  },
+  nameSujos: {
+    fontWeight: '600',
+    color: '#172554',
+    letterSpacing: .5,
+    marginBottom: 10,
+    textAlign: 'center'
+  },
 })

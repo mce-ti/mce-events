@@ -3,7 +3,7 @@ export type SyncMovementsRequest = {
   indice_estoque: number
   id_operador: number
   controle: 'Entrada' | 'Saída',
-  status: 'Limpo' | 'Sujo'
+  status: string
   quantidade: number
   caucao: 'Sim' | 'Não',
   id_arte: number
@@ -23,7 +23,7 @@ export type GetMovementsRequest = {
 }
 
 export type GetMovementsResponse = {
-  status: "Limpo" | "Sujo"
+  status: string
   id: number
   id_operador: number
   indice_estoque: number

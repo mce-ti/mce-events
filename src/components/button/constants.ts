@@ -8,11 +8,11 @@ export const colors = {
     text: { color: 'white' }
   },
   green: {
-    container: { backgroundColor: '#16a34a' },
+    container: { backgroundColor: '#198754' },
     text: { color: 'white' }
   },
   gray: {
-    container: { backgroundColor: '#374151' },
-    text: { color: 'white' }
+    container: { backgroundColor: '#fff', borderColor: '#a1a1a1', borderWidth: 1 },
+    text: { color: 'black' }
   }
 }

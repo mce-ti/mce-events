@@ -5,6 +5,7 @@ type Produto = {
   id: number;
   id_arte: number;
   quantidade: number;
+  sujos?: boolean;
 };
 
 export type HomeStackParams = {
@@ -28,6 +29,7 @@ export type HomeStackParams = {
     operador?: string
     reponsavel: string
     reponsavel_pdv: string
+    pdv: string
     assinatura?: string
   }
 }

@@ -48,13 +48,13 @@ export type ProductMovementStorage = {
   time: number
   responsible: string
   type: 'in' | 'out'
-  status: 'Limpo' | 'Sujo'
+  status: string
   quantity: number
   id_art: number
   id_operator: number
   name_operator: string
   image?: string
-  assinatura: string
+  assinatura?: string
   sync?: boolean
   date?: string
 }

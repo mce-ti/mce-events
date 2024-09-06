@@ -1,3 +1,5 @@
+import { format } from "date-fns"
+
 export function formatDBDate(date: string|null|undefined): string {
   if (!date) return ''
 
@@ -35,4 +37,11 @@ export function formatTimeToDateTime(time: number|string|null|undefined): string
   const result = `${d}/${m}/${y} ${hour}:${min}:${sec}`
 
   return result
+}
+
+export function currentDateTime(): string {
+  const dateTime = new Date();
+  const formattedDateTime = format(dateTime, 'dd/MM/yyyy HH:mm:ss');
+
+  return formattedDateTime;
 }

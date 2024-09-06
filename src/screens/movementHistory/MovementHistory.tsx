@@ -27,9 +27,9 @@ const MovementHistory = ({ navigation }: RootDrawerScreen<'MovementHistory'>) =>
       <View>
         <View style={styles.thead}>
           <Text style={[styles.th, { flex: 1 }]}>Bar</Text>
-          <Text style={[styles.th, { width: 90, textAlign: 'center' }]}>Tipo</Text>
-          <Text style={[styles.th, { width: 70, textAlign: 'right' }]}>Qntd.</Text>
-          <Text style={[styles.th, { width: 70, textAlign: 'center' }]}>Sinc.</Text>
+          <Text style={[styles.th, { width: 100, textAlign: 'center' }]}>Tipo</Text>
+          <Text style={[styles.th, { width: 65, textAlign: 'right' }]}>Qntd.</Text>
+          <Text style={[styles.th, { width: 65, textAlign: 'center' }]}>Sinc.</Text>
         </View>
 
         {movements.map((movement, idx) => (
@@ -44,14 +44,15 @@ const MovementHistory = ({ navigation }: RootDrawerScreen<'MovementHistory'>) =>
             <View style={[styles.td, { flex: 1, flexDirection: 'column' }]}>
               <Text style={styles.text}>{movement.name_operator || '-'}</Text>
               <Text style={[styles.text, { fontSize: 10 }]}>{movement.date ? formatDBDateTime(movement.date) : formatTimeToDateTime(movement.time)}</Text>
+              <Text style={[styles.text, { fontSize: 10 }]}>{movement.status}</Text>
             </View>
-            <View style={[styles.td, { width: 90 }]}>
+            <View style={[styles.td, { width: 100 }]}>
               <Text style={[styles.typeTag, movement.type === 'in' ? styles.typeTagIn : styles.typeTagOut]}>{movement.type === 'in' ? 'Entrada' : 'Saída'}</Text>
             </View>
-            <View style={[styles.td, { width: 70, justifyContent: 'flex-end' }]}>
+            <View style={[styles.td, { width: 65, justifyContent: 'flex-end' }]}>
               <Text style={styles.text}>{movement.quantity}</Text>
             </View>
-            <View style={[styles.td, { width: 70, alignItems: 'center', justifyContent: 'center' }]}>
+            <View style={[styles.td, { width: 65, alignItems: 'center', justifyContent: 'center' }]}>
               {movement.sync ? (
                 <MaterialIcons name="check-circle" size={20} color="#16a34a" />
               ) : (

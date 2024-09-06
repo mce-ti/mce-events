@@ -29,7 +29,6 @@ const ArtOption = ({ id, image, currentValue, onTouch, name }: ArtOptionProps) =
 
 const styles = StyleSheet.create({
   optionContent: {
-    flex: 1,
     alignItems: 'center',
     gap: 5,
     borderWidth: 4,

@@ -8,10 +8,10 @@ import SignatureScreen, {
 interface Props {
   onOK: (signature: string) => void;
   onClear: () => void;
-  setScrollEnabled?: (enabled: boolean) => void; // Novo prop
+  // setScrollEnabled?: (enabled: boolean) => void; // Novo prop
 }
 
-const SignatureComponent: React.FC<Props> = ({ onOK, onClear, setScrollEnabled }) => {
+const SignatureComponent: React.FC<Props> = ({ onOK, onClear }) => {
   const ref = useRef<SignatureViewRef>(null);
 
   const handleSignature = (signature: string) => {
@@ -24,16 +24,16 @@ const SignatureComponent: React.FC<Props> = ({ onOK, onClear, setScrollEnabled }
     if (onClear) onClear();
   };
 
-  const handleBegin = () => {
-    if (setScrollEnabled) {
-      setScrollEnabled(false); // Desativa o scroll ao começar a desenhar
-    }
-  };
+  // const handleBegin = () => {
+  //   if (setScrollEnabled) {
+  //     setScrollEnabled(false); // Desativa o scroll ao começar a desenhar
+  //   }
+  // };
 
   const handleEnd = () => {
-    if (setScrollEnabled) {
-      setScrollEnabled(true); // Reativa o scroll ao terminar de desenhar
-    }
+    // if (setScrollEnabled) {
+    //   setScrollEnabled(true); // Reativa o scroll ao terminar de desenhar
+    // }
     ref.current?.readSignature();
   };
 
@@ -49,9 +49,13 @@ const SignatureComponent: React.FC<Props> = ({ onOK, onClear, setScrollEnabled }
      
         <SignatureScreen
           ref={ref}
-          onBegin={handleBegin}
+          // onBegin={handleBegin}
           onEnd={handleEnd}
           onOK={handleSignature}
+          webStyle={`.m-signature-pad { max-width: 100%; width: 100%; height: 300px; }`} 
+          penColor="black"
+          minWidth={1}
+          maxWidth={1}
         />
 
         {/* {signature && (

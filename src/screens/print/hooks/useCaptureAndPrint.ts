@@ -3,7 +3,7 @@ import ViewShot from 'react-native-view-shot';
 import * as Print from 'expo-print';
 import { convertImageToPDF } from './convertImageToPDF';
 
-const useCaptureAndPrint = () => {
+const useCaptureAndPrint = (onPrintComplete: () => void) => {
   const [loading, setLoading] = useState(false);
 
   const captureAndPrint = async (viewShotRef: React.RefObject<ViewShot>) => {
@@ -20,7 +20,8 @@ const useCaptureAndPrint = () => {
         if (uri) {
           const uriPDF = await convertImageToPDF(uri);
           await Print.printAsync({ uri: uriPDF });
-          console.log('Screenshot captured:', uriPDF);
+
+          onPrintComplete();
         }
       } else {
         console.warn('ViewShot ref is not defined or capture() function is missing');

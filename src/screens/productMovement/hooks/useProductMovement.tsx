@@ -25,6 +25,7 @@ type Produto = {
   id: number;
   id_arte: number;
   quantidade: number;
+  sujos?: boolean;
 };
 
 const useProductMovement = ({ navigation, route: { params }, showAlert }: useProductMovementPrps) => {
@@ -34,17 +35,46 @@ const useProductMovement = ({ navigation, route: { params }, showAlert }: usePro
   const handleStockQuantity = useStockStore(state => state.handleStockQuantity)
   const stockInfos = useStockStore(state => state.stockInfos);
 
-  // const [produtos, setProdutos] = useState<Produto[]>([]);
-  // const [totalItemsToAdd, setTotalItemsToAdd] = useState(0);
-  // let counterId = 0;
+  const [produtos, setProdutos] = useState<Produto[]>([]);
+  const [totalItemsToAdd, setTotalItemsToAdd] = useState(0);
 
-  // const addProduto = (artId:number, quantity:number) => {
-  //   setProdutos(prevProdutos => [
-  //     ...prevProdutos, 
-  //     { id: counterId, id_arte: artId, quantidade: quantity }
-  //   ]);
-  //   counterId++;
-  // };
+  let counterId = 0;
+
+  const addProduto = async (artId: number, quantity: number, sujos?: boolean) => {
+    setProdutos(prevProdutos => [
+      ...prevProdutos, 
+      { id: counterId, id_arte: artId, quantidade: quantity, sujos: sujos }
+    ]);
+    counterId++;
+  };
+
+  useEffect(() => {
+    // console.log('totalItens: ', totalItemsToAdd)
+    // console.log('produtos: ', produtos.length)
+    if (produtos.length > 0 && totalItemsToAdd == produtos.length) {
+      // console.log('Produtos atualizados:', produtos);
+
+      if(produtos.length) {
+        showAlert({
+          show: true,
+          title: 'Sucesso',
+          message: 'Registros salvos no dispositivo.',
+          onConfirm: () => {
+            navigation.navigate('PrintRecibo', {
+              produtos: produtos,
+              movementType: params.movementType,
+              indiceStock: params.indice_estoque,
+              operador: 'pendente',
+              reponsavel: formik.values.responsible,
+              reponsavel_pdv: formik.values.responsible_pdv,
+              pdv: formik.values.pdv,
+              assinatura: formik.values.signature,
+            });
+          }
+        })
+      }
+    }
+  }, [produtos, totalItemsToAdd]);
 
   const formik = useFormik({
     initialValues,
@@ -139,8 +169,9 @@ const useProductMovement = ({ navigation, route: { params }, showAlert }: usePro
             responsible: values.responsible,
             type: params.movementType
           });
-          // itemsToAdd++;
-          // addProduto(parseInt(artId), quantity);
+
+          await addProduto(parseInt(artId), quantity);
+          itemsToAdd++;
 
           await handleStockQuantity({
             indice_estoque: params.indice_estoque,
@@ -167,32 +198,11 @@ const useProductMovement = ({ navigation, route: { params }, showAlert }: usePro
           type: params.movementType
         });
 
-        // itemsToAdd++;
-        // addProduto(art.id, sujos);
+        await addProduto(art.id, sujos, true);
+        itemsToAdd++;
       }
 
-      // setTotalItemsToAdd(itemsToAdd);
-
-      showAlert({
-        show: true,
-        title: 'Sucesso',
-        message: 'Registros salvos no dispositivo.',
-        onConfirm: () => {
-          navigation.goBack()
-          // navigation.navigate('PrintRecibo', {
-          //   produtos: produtos,
-          //   movementType: params.movementType,
-          //   indiceStock: params.indice_estoque,
-          //   operador: 'pendente',
-          //   reponsavel: formik.values.responsible,
-          //   reponsavel_pdv: 'pendente',
-          //   assinatura: formik.values.signature,
-          // });
-        }
-      })
-
-      return
-
+      setTotalItemsToAdd(itemsToAdd);
     }
   })
 
@@ -228,6 +238,7 @@ const useProductMovement = ({ navigation, route: { params }, showAlert }: usePro
     arts,
     onQuantityChange,
     catchPicture,
+    addProduto,
   }
 }
 

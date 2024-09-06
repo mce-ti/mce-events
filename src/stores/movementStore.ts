@@ -38,6 +38,7 @@ export const useMovementStore = create<MovementSate>((set, get) => ({
       const { removeItem, setItem } = useAsyncStorage()
   
       const dbMovements = await apiMovements.getMovements({ id_evento: event.id })
+      // console.log(dbMovements)
       const unSyncMovements = (await getMovementsStorage() || []).filter(({ sync }) => !sync)
   
       const newMovements: ProductMovementStorage[] = []
@@ -52,7 +53,7 @@ export const useMovementStore = create<MovementSate>((set, get) => ({
           id_art: movement.id_arte,
           id_operator: movement.id_operador,
           image: '',
-          assinatura: movement.assinatura,
+          // assinatura: movement.assinatura,
           name_operator: movement.nome_operador,
           status: movement.status,
           quantity: movement.quantidade,

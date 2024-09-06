@@ -13,7 +13,7 @@ type LayoutProps = {
 }
 
 const Layout = ({ children, onLogoPress }: LayoutProps) => {
-  const [scrollEnabled, setScrollEnabled] = useState(true);
+  // const [scrollEnabled, setScrollEnabled] = useState(true);
 
   return (
     <View style={styles.container}>
@@ -31,12 +31,10 @@ const Layout = ({ children, onLogoPress }: LayoutProps) => {
         </View>
       </View>
 
-      <ScrollView scrollEnabled={scrollEnabled}>
+      <ScrollView>
         <SafeAreaView style={styles.content}>
           {React.Children.map(children, child =>
-            React.cloneElement(child as React.ReactElement<any>, {
-              setScrollEnabled,
-            })
+            React.cloneElement(child as React.ReactElement<any>)
           )}
         </SafeAreaView>
       </ScrollView>
