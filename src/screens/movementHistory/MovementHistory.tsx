@@ -47,7 +47,7 @@ const MovementHistory = ({ navigation }: RootDrawerScreen<'MovementHistory'>) =>
               <Text style={[styles.text, { fontSize: 10 }]}>{movement.status}</Text>
             </View>
             <View style={[styles.td, { width: 100 }]}>
-              <Text style={[styles.typeTag, movement.type === 'in' ? styles.typeTagIn : styles.typeTagOut]}>{movement.type === 'in' ? 'Entrada' : 'Saída'}</Text>
+              <Text style={[styles.typeTag, movement.type === 'in' ? styles.typeTagIn : styles.typeTagOut]}>{movement.type === 'in' ? 'Entrega' : 'Devol.'}</Text>
             </View>
             <View style={[styles.td, { width: 65, justifyContent: 'flex-end' }]}>
               <Text style={styles.text}>{movement.quantity}</Text>

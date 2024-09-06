@@ -6,6 +6,18 @@ import { getEventStorage, getStockStorage, getStockLimposStorage, getStockRelSto
 import { StockStorage, StockRelStorage, StockInfosStorage, handleStockQuantity } from "src/storage/storage.types"
 import { hasNetwork } from "src/utils/net"
 
+type StockItem = {
+  id: number;
+  nome: string;
+  quantidade: number;
+};
+
+type StockItemInfo = {
+  id_arte: number;
+  nome: string;
+  quantidade: number;
+};
+
 type StockState = {
   stock: StockStorage,
   stockLimpos: StockStorage,
@@ -16,7 +28,8 @@ type StockState = {
   syncStockRel: () => Promise<void>
   syncStockInfos: () => Promise<void>
   handleStockQuantity: (data: handleStockQuantity) => Promise<void>
-  setStockLimpos: (value: number) => void
+  setStockLimpos: (value: StockItem[]) => void;
+  setStockInfos: (value: StockItemInfo[]) => void;
 }
 
 export const useStockStore = create<StockState>(set => ({
@@ -208,7 +221,29 @@ export const useStockStore = create<StockState>(set => ({
       }
     }
   },
-  setStockLimpos: (newQuantity: number) => set(state => ({
-    stockLimpos: state.stockLimpos.map(item => ({ ...item, quantidade: newQuantity }))
+  setStockLimpos: (updatedStock: { id: number; quantidade: number }[]) => set(state => ({
+    stockLimpos: state.stockLimpos.map(item => {
+      const updatedItem = updatedStock.find(updated => updated.id === item.id);
+      return updatedItem ? { ...item, quantidade: updatedItem.quantidade } : item;
+    })
+  })),
+  setStockInfos: (updatedStock: { id_arte: number; quantidade: number }[]) => set(state => ({
+    stockInfos: {
+      ...state.stockInfos,
+      estoque_limpo: Object.keys(state.stockInfos.estoque_limpo).reduce((acc, key) => {
+        // Obtenha o array de itens associado à chave
+        const itemsArray = state.stockInfos.estoque_limpo[key];
+  
+        // Atualize cada item no array se ele estiver em updatedStock
+        const updatedArray = itemsArray.map(item => {
+          const updatedItem = updatedStock.find(updated => updated.id_arte === item.id_arte);
+          return updatedItem ? { ...item, quantidade: updatedItem.quantidade } : item;
+        });
+  
+        // Adiciona o array atualizado ao acumulador
+        acc[key] = updatedArray;
+        return acc;
+      }, {} as { [id_arte: string]: { id_arte: number; nome: string; quantidade: number }[] })
+    }
   }))
 }))

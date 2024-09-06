@@ -32,11 +32,13 @@ const useProductMovement = ({ navigation, route: { params }, showAlert }: usePro
   const arts = useArtsStore(state => state.arts)
 
   const addProductMovement = useMovementStore(state => state.addProductMovement)
+  const calculateTotalSubStock = useMovementStore(state => state.calculateTotalSubStock)
   const handleStockQuantity = useStockStore(state => state.handleStockQuantity)
   const stockInfos = useStockStore(state => state.stockInfos);
 
   const [produtos, setProdutos] = useState<Produto[]>([]);
   const [totalItemsToAdd, setTotalItemsToAdd] = useState(0);
+  
 
   let counterId = 0;
 
@@ -59,7 +61,8 @@ const useProductMovement = ({ navigation, route: { params }, showAlert }: usePro
           show: true,
           title: 'Sucesso',
           message: 'Registros salvos no dispositivo.',
-          onConfirm: () => {
+          onConfirm: async () => {
+            if(params.movementType == "in") await calculateTotalSubStock()
             navigation.navigate('PrintRecibo', {
               produtos: produtos,
               movementType: params.movementType,

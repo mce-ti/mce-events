@@ -109,32 +109,40 @@ export const useMovementStore = create<MovementSate>((set, get) => ({
   },
   calculateTotalStock: async () => {
     const stockStore = useStockStore.getState();
-    const currentStock = stockStore.stockLimpos;
-
-    const unSyncMovements = (await getMovementsStorage() || []).filter(({ sync, status, type }) => !sync && status === 'Limpo' && type === 'out');
+    let currentStock = stockStore.stockLimpos;
   
-    const unSyncTotal = unSyncMovements.reduce((acc, movement) => {
-      return acc + movement.quantity;
-    }, 0)
+    // Obtenha os movimentos não sincronizados de saída ("out") e status 'Limpo'
+    const unSyncMovements = (await getMovementsStorage() || [])
+      .filter(({ sync, status, type }) => !sync && status === 'Limpo' && type === 'out');
+  
+    // Atualiza as quantidades no currentStock com base nos movimentos não sincronizados
+    unSyncMovements.forEach((movement) => {
+      const itemIndex = currentStock.findIndex(item => item.id === movement.id_art);
+      
+      if (itemIndex !== -1) {
+        currentStock[itemIndex].quantidade += movement.quantity;
+      }
+    });
 
-    const totalStock = currentStock.reduce((acc, item) => acc + item.quantidade, 0);
-    const updatedStockLimpos = totalStock + unSyncTotal;
-
-    stockStore.setStockLimpos(updatedStockLimpos);
+    stockStore.setStockLimpos(currentStock);
   },
   calculateTotalSubStock: async () => {
     const stockStore = useStockStore.getState();
-    const currentStock = stockStore.stockLimpos;
+    let currentStock = null;
+    const unSyncMovements = (await getMovementsStorage() || []).filter(({ sync, status, type }) => !sync && status === 'Limpo' && type === 'in');
 
-    const unSyncMovements = (await getMovementsStorage() || []).filter(({ sync, status, type }) => !sync && status === 'Limpo' && type === 'out');
-  
-    const unSyncTotal = unSyncMovements.reduce((acc, movement) => {
-      return acc + movement.quantity;
-    }, 0)
+    // console.log(unSyncMovements)
 
-    const totalStock = currentStock.reduce((acc, item) => acc + item.quantidade, 0);
-    const updatedStockLimpos = totalStock + unSyncTotal;
+    unSyncMovements.forEach((movement) => {
+      currentStock = stockStore.stockInfos.estoque_limpo[movement.indice_estoque];
 
-    stockStore.setStockLimpos(updatedStockLimpos);
+      const itemIndex = currentStock.findIndex(item => item.id_arte === movement.id_art);
+      
+      if (itemIndex !== -1) {
+        currentStock[itemIndex].quantidade -= movement.quantity;
+      }
+    });
+
+    if(currentStock) stockStore.setStockInfos(currentStock);
   }
 }))

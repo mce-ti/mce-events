@@ -23,6 +23,7 @@ const useLogin = ({ showAlert }: useLoginProps) => {
 
   const syncMovements = useMovementStore(state => state.sync)
   const calculateTotalStock = useMovementStore(state => state.calculateTotalStock)
+  const calculateTotalSubStock = useMovementStore(state => state.calculateTotalSubStock)
   const syncOperators = useOperatorsStore(state => state.syncOperators)
   const syncArts = useArtsStore(state => state.syncArts)
   const syncStock = useStockStore(state => state.syncStock)
@@ -66,6 +67,7 @@ const useLogin = ({ showAlert }: useLoginProps) => {
       await syncStockInfos()
       await syncQrCodes()
       await calculateTotalStock();
+      await calculateTotalSubStock();
 
       login(response.usuario.id)
     }
@@ -84,6 +86,7 @@ const useLogin = ({ showAlert }: useLoginProps) => {
     await syncStockInfos()
     await syncQrCodes()
     await calculateTotalStock();
+    await calculateTotalSubStock();
 
     user && login(user.id)
     setIsLoading(false)
