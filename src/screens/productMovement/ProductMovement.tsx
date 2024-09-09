@@ -13,6 +13,7 @@ import type { HomeStackRouteScreen } from "src/routes/routes.types"
 import SignatureComponent from "./components/SignatureComponent"
 
 import copoSujosImage from '../../../assets/copos-sujos.jpg';
+import { useStockStore } from "src/stores/stockStore"
 
 const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMovement'>) => {
 
@@ -27,6 +28,11 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
       submitForm,
     }
   } = useProductMovement({ navigation, route, showAlert })
+
+  const stockInfos = useStockStore(state => state.stockInfos);
+  const stockLimpos = useStockStore(state => state.stockLimpos);
+  const estoqueLimpo = stockInfos.estoque_limpo[route.params.indice_estoque];
+
   const [step, setStep] = useState(1);
 
   useEffect(() => {
@@ -34,8 +40,9 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
     if (route.params.responsavel) {
       setFieldValue('responsible', route.params.responsavel);
       setFieldValue('responsible_pdv', route.params.responsavel);
-      setFieldValue('pdv', route.params.name);
     }
+
+    setFieldValue('pdv', route.params.name);
   }, []);
 
   const handleSignatureOK = (signature: string) => {
@@ -68,7 +75,7 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
                   id={art.id}
                   currentValue={values.art}
                   image={art.imagem}
-                  name={art.nome + ' - ' + art.medida}
+                  name={art.medida ? art.nome + ' - ' + art.medida : art.nome}
                 />
 
                 <View style={{ 'flexDirection': 'row', 'justifyContent': 'space-between', 'width': '100%' }}>

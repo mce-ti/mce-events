@@ -66,13 +66,13 @@ const PrintRecibo = ({ navigation, route }: HomeStackRouteScreen<'PrintRecibo'>)
           if (item.sujos === true) {
             return (
               <View key={index}>
-                <Text style={styles.produto}>- Copos sujos: {item.quantidade} und. ({formatBRL(art.valor)} / {formatBRL(art.valor * item.quantidade)})</Text>
+                <Text style={styles.produto}>- Copos sujos: {item.quantidade} und. {art.valor ? (formatBRL(art.valor) + '/' + formatBRL(art.valor * item.quantidade)) : ''}</Text>
               </View>
             );
           } else {
             return (
               <View key={index}>
-                <Text style={styles.produto}>- {art.nome}: {item.quantidade} und. ({formatBRL(art.valor)} / {formatBRL(art.valor * item.quantidade)})</Text>
+                <Text style={styles.produto}>- {art.nome}: {item.quantidade} und. {art.valor ? (formatBRL(art.valor) + '/' + formatBRL(art.valor * item.quantidade)) : ''}</Text>
               </View>
             );
           }

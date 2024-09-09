@@ -5,7 +5,7 @@ import { LoginRequest, LoginResponse } from "./auth.types"
 
 export const login = async ({ username, password }: LoginRequest): Promise<LoginResponse> => {
   try {
-    const response = await httpClient.post('auth', { username, password })
+    const response = await httpClient.post('auth', { username, password, appName: 'estoque' })
 
     const data:LoginResponse = response.data
    

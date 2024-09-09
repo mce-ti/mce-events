@@ -28,7 +28,7 @@ const MovementHistory = ({ navigation }: RootDrawerScreen<'MovementHistory'>) =>
         <View style={styles.thead}>
           <Text style={[styles.th, { flex: 1 }]}>Bar</Text>
           <Text style={[styles.th, { width: 100, textAlign: 'center' }]}>Tipo</Text>
-          <Text style={[styles.th, { width: 65, textAlign: 'right' }]}>Qntd.</Text>
+          <Text style={[styles.th, { width: 68, textAlign: 'right' }]}>Qntd.</Text>
           <Text style={[styles.th, { width: 65, textAlign: 'center' }]}>Sinc.</Text>
         </View>
 
@@ -49,7 +49,7 @@ const MovementHistory = ({ navigation }: RootDrawerScreen<'MovementHistory'>) =>
             <View style={[styles.td, { width: 100 }]}>
               <Text style={[styles.typeTag, movement.type === 'in' ? styles.typeTagIn : styles.typeTagOut]}>{movement.type === 'in' ? 'Entrega' : 'Devol.'}</Text>
             </View>
-            <View style={[styles.td, { width: 65, justifyContent: 'flex-end' }]}>
+            <View style={[styles.td, { width: 68, justifyContent: 'flex-end' }]}>
               <Text style={styles.text}>{movement.quantity}</Text>
             </View>
             <View style={[styles.td, { width: 65, alignItems: 'center', justifyContent: 'center' }]}>
