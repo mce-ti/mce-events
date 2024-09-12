@@ -12,7 +12,11 @@ const useHome = ({ navigation }: HomeStackRouteScreen<'Home'> ) => {
   const [searchValue, setSearchValue] = useState<string>('')
 
   const operators = useOperatorsStore(state => state.operators)
+  const stock = useStockStore(state => state.stock)
+  const stockInfos = useStockStore(state => state.stockInfos);
   const stockRel = useStockStore(state => state.stockRel)
+  const stockLimpos = useStockStore(state => state.stockLimpos)
+  const stockLimpoTotal = stockInfos.estoque_limpo[1];
 
   const { getItem } = useAsyncStorage()
 
@@ -39,7 +43,9 @@ const useHome = ({ navigation }: HomeStackRouteScreen<'Home'> ) => {
 
   return {
     operators,
+    stock,
     stockRel,
+    stockLimpoTotal,
     useEvent,
     searchValue,
     setSearchValue

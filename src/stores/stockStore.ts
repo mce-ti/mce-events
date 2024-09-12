@@ -16,6 +16,7 @@ type StockItemInfo = {
   id_arte: number;
   nome: string;
   quantidade: number;
+  quantidade_inicial: number
 };
 
 type StockState = {
@@ -243,7 +244,7 @@ export const useStockStore = create<StockState>(set => ({
         // Adiciona o array atualizado ao acumulador
         acc[key] = updatedArray;
         return acc;
-      }, {} as { [id_arte: string]: { id_arte: number; nome: string; quantidade: number }[] })
+      }, {} as { [id_arte: string]: { id_arte: number; nome: string; quantidade: number, quantidade_inicial: number }[] })
     }
   }))
 }))

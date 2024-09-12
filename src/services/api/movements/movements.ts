@@ -20,7 +20,7 @@ export const syncMovement = async ({ foto, ...request }: SyncMovementsRequest) =
 
   try {
     const response = await httpClient.post(
-      'syncMovement',
+      'syncMovement?v=' + Date.now(),
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' }
     })

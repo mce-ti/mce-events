@@ -5,9 +5,12 @@ import { useAsyncStorage } from 'src/hooks'
 import type { EventStorage } from 'src/storage/storage.types'
 import type { HomeStackRouteScreen } from 'src/routes/routes.types'
 import { useArtsStore } from 'src/stores/artsStore'
-import { useStockStore } from 'src/stores'
+import { useMovementStore, useStockStore } from 'src/stores'
 
 const useRecibo = ({ navigation }: HomeStackRouteScreen<'PrintRecibo'> ) => {
+  
+  const calculateTotalSubStock = useMovementStore(state => state.calculateTotalSubStock)
+
   const [useEvent, setEvent] = useState<EventStorage|null>(null)
   const arts = useArtsStore(state => state.arts);
   const stockRel = useStockStore(state => state.stockRel)
@@ -16,6 +19,8 @@ const useRecibo = ({ navigation }: HomeStackRouteScreen<'PrintRecibo'> ) => {
 
   const loadInfos = async () => {
     const eventStorage: EventStorage|null = await getItem('event')
+
+    // await calculateTotalSubStock();
 
     setEvent(eventStorage)
   }

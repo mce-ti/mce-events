@@ -3,7 +3,7 @@ import { GetStockResponse, GetStockRelResponse, GetStockInfosResponse } from "./
 
 export const getStock = async (id_evento: number): Promise<GetStockResponse> => {
   try {
-    const response = await httpClient.get('getStock/' + id_evento)
+    const response = await httpClient.get('getStock/' + id_evento + '?v=' + Date.now())
 
     const data: GetStockResponse = response.data
 
@@ -17,7 +17,7 @@ export const getStock = async (id_evento: number): Promise<GetStockResponse> => 
 
 export const getStockLimpos = async (id_evento: number): Promise<GetStockResponse> => {
   try {
-    const response = await httpClient.get('getStockLimpos/' + id_evento)
+    const response = await httpClient.get('getStockLimpos/' + id_evento + '?v=' + Date.now())
 
     const data: GetStockResponse = response.data
 
@@ -31,7 +31,7 @@ export const getStockLimpos = async (id_evento: number): Promise<GetStockRespons
 
 export const getStockRel = async (id_evento: number): Promise<GetStockRelResponse> => {
   try {
-    const response = await httpClient.get('getStockRel/' + id_evento)
+    const response = await httpClient.get('getStockRel/' + id_evento + '?v=' + Date.now())
 
     const data: GetStockRelResponse = response.data
 
@@ -45,7 +45,7 @@ export const getStockRel = async (id_evento: number): Promise<GetStockRelRespons
 
 export const getStockInfos = async (id_evento: number): Promise<GetStockInfosResponse> => {
   try {
-    const response = await httpClient.get('getStockInfos/' + id_evento)
+    const response = await httpClient.get('getStockInfos/' + id_evento + '?v=' + Date.now())
 
     const data: GetStockInfosResponse = response.data
     

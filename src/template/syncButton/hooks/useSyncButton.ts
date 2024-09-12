@@ -25,10 +25,6 @@ const useSyncButton = () => {
   const sendStorageData = useMovementStore(state => state.sendStorageData)
   
   let hasSync = !!movements.filter(({ sync }) => !sync).length
-
-  const qrCodes = useQrCodeStore(state => state.qrCodes)
-
-  if(qrCodes.length) hasSync = !!qrCodes.filter(({ sync }) => !sync).length
  
   const syncOperators = useOperatorsStore(state => state.syncOperators)
   const syncArts = useArtsStore(state => state.syncArts)
@@ -52,7 +48,9 @@ const useSyncButton = () => {
   )).current
 
   const sync = async () => {
-    if (isSyncing) return;
+    hasSync = !!movements.filter(({ sync }) => !sync).length
+
+    if (isSyncing || !hasSync) return;
 
     anim.start()
     setIsSyncing(true)

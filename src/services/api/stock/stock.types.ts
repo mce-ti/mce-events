@@ -15,6 +15,7 @@ export type GetStockInfosResponse = {
       id_arte: number; 
       nome: string; 
       quantidade: number 
+      quantidade_inicial: number
     }[] 
   };
   estoque_inicial: { 

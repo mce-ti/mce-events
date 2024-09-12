@@ -55,8 +55,8 @@ const PrintRecibo = ({ navigation, route }: HomeStackRouteScreen<'PrintRecibo'>)
 
         <Text style={styles.title}>{params.movementType == 'out' ? 'Recibo de Devolução:' : 'Recibo de Entrega'}</Text>
 
-        <Text style={styles.responsavel}>PDV: <Text style={styles.bold}>{params.pdv}</Text></Text>
-        <Text style={styles.responsavel}>Responsável: <Text style={styles.bold}>{params.reponsavel_pdv}</Text></Text>
+        <Text style={styles.responsavel}>{params.pdv ? 'PDV:' : ''} <Text style={styles.bold}>{params.pdv}</Text></Text>
+        <Text style={styles.responsavel}>{params.reponsavel_pdv ? 'Responsável:' : ''} <Text style={styles.bold}>{params.reponsavel_pdv}</Text></Text>
 
         {params.produtos.map((item, index) => {
           const art = arts.find(art => art.id === item.id_arte);

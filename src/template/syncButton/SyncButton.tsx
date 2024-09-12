@@ -9,12 +9,12 @@ import { hasNetwork } from "src/utils/net"
 const SyncButton = () => {
   const { hasSync, isSyncing, rotate, sync } = useSyncButton()
 
-  // useInterval(async () => {
-  //   const isConnected = await hasNetwork();
-  //   if (isConnected) {
-  //     sync();
-  //   }
-  // }, 300000);
+  useInterval(async () => {
+    const isConnected = await hasNetwork();
+    if (isConnected) {
+      sync();
+    }
+  }, 300000);
 
   return (
     <TouchableOpacity style={styles.container} onPress={sync}>

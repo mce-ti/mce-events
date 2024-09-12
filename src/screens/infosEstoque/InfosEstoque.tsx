@@ -27,7 +27,7 @@ const InfosEstoque = ({ navigation, route }: HomeStackRouteScreen<'InfosEstoque'
 
   return (
     <Layout onLogoPress={() => navigation.goBack()}>
-      <Text style={styles.eventName}>Evento App - {route.params.data}</Text>
+      <Text style={styles.eventName}>{route.params.nome_evento} - {route.params.data}</Text>
       <Text style={styles.stockName}>{route.params.nome_estoque}</Text>
 
       <Divider space={20} />

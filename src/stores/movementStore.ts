@@ -128,21 +128,29 @@ export const useMovementStore = create<MovementSate>((set, get) => ({
   },
   calculateTotalSubStock: async () => {
     const stockStore = useStockStore.getState();
-    let currentStock = null;
-    const unSyncMovements = (await getMovementsStorage() || []).filter(({ sync, status, type }) => !sync && status === 'Limpo' && type === 'in');
+    const unSyncMovements = (await getMovementsStorage() || []).filter(({ sync, status }) => !sync && status === 'Limpo');
+    let finalCalcStock;
 
-    // console.log(unSyncMovements)
+    Object.keys(stockStore.stockInfos.estoque_limpo).forEach((indice_estoque) => {
+      const currentStock = stockStore.stockInfos.estoque_limpo[indice_estoque];
+  
+      currentStock.forEach(item => {
+        const movimentosDoItem = unSyncMovements.filter(movement => movement.id_art === item.id_arte);
+  
+        item.quantidade = item.quantidade_inicial;
+  
+        movimentosDoItem.forEach(movement => {
+          if (movement.type === 'in') {
+            item.quantidade -= movement.quantity; 
+          } else if (movement.type === 'out') {
+            item.quantidade += movement.quantity; 
+          }
+        });
+      });
 
-    unSyncMovements.forEach((movement) => {
-      currentStock = stockStore.stockInfos.estoque_limpo[movement.indice_estoque];
-
-      const itemIndex = currentStock.findIndex(item => item.id_arte === movement.id_art);
-      
-      if (itemIndex !== -1) {
-        currentStock[itemIndex].quantidade -= movement.quantity;
-      }
+      finalCalcStock = currentStock;
     });
 
-    if(currentStock) stockStore.setStockInfos(currentStock);
+    if(finalCalcStock) stockStore.setStockInfos(finalCalcStock);
   }
 }))

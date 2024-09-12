@@ -1,26 +1,24 @@
 import { StyleSheet, View, Text, FlatList } from "react-native"
 import { Layout } from "src/template"
-import { Divider} from "src/components"
+import { Divider, Input} from "src/components"
 import { Operator } from "./components/Operator"
 import { formatDBDate } from "src/utils/date.utils"
 import { useHome } from './hooks/useHome'
 
 import type { HomeStackRouteScreen } from "src/routes/routes.types"
-import { useStockStore } from "src/stores/stockStore"
 import React from "react"
 
 const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
 
   const {
     operators,
+    stock,
     stockRel,
+    stockLimpoTotal,
     useEvent,
     searchValue,
     setSearchValue
   } = useHome({ navigation, route })
-
-  const stock = useStockStore(state => state.stock)
-  const stockLimpos = useStockStore(state => state.stockLimpos)
 
   return (
     <Layout>
@@ -34,12 +32,18 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
 
       <Divider space={10} />
 
+      <Input
+        placeholder="Buscar bares..."
+        value={searchValue}
+        onChangeText={setSearchValue}
+      />
+      
       <FlatList
-        data={stockRel.filter(({ estoque }) => estoque.toLowerCase().includes(searchValue.toLowerCase()))}
+        data={stockRel}
         scrollEnabled={false}
         renderItem={({ item: stockItem }) => (
           <React.Fragment>
-            <Text style={styles.estoque} onPress={() => navigation.navigate('InfosEstoque', { id_estoque: stockItem.indice, nome_estoque: stockItem.estoque, data: formatDBDate(useEvent?.data) })}>{stockItem.estoque}</Text>
+            <Text style={styles.estoque} onPress={() => navigation.navigate('InfosEstoque', { id_estoque: stockItem.indice, nome_estoque: stockItem.estoque, nome_evento: useEvent?.nome, data: formatDBDate(useEvent?.data) })}>{stockItem.estoque}</Text>
 
             <FlatList
              data={operators.filter(({ nome, localizacao, indice_estoque }) => indice_estoque === stockItem.indice && (nome.toLowerCase().includes(searchValue.toLowerCase()) || localizacao?.toLowerCase().includes(searchValue.toLowerCase())))}
@@ -60,19 +64,25 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
         keyExtractor={(item, index) => index.toString()}
       />
 
-      <Divider opacity={0} />
+      { stockRel.length === 1 ? (   
+          <View>
+            <Divider opacity={0} />
+            <Text style={styles.stockName}>Estoque total limpo disponível</Text>
+            {stockLimpoTotal.map((item, index) => (
+              <View key={index}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                  <Text style={styles.eventLocal}>{item.nome}</Text>
+                  <Text style={styles.eventDate}>{item.quantidade}</Text>
+                </View>
 
-      <Text style={styles.stockName}>Estoque total limpo disponível</Text>
-      {stockLimpos.map((item, index) => (
-        <View key={index}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Text style={styles.eventLocal}>{item.nome}</Text>
-            <Text style={styles.eventDate}>{item.quantidade}</Text>
+                <Divider opacity={.1} space={2.5} />
+              </View>
+            ))}
           </View>
-
-          <Divider opacity={.1} space={2.5} />
-        </View>
-      ))}
+        ) : (
+          <Text style={{display : 'none'}}></Text>
+        )
+      }
 
       <Divider opacity={0} />
 

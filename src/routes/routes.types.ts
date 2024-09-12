@@ -20,6 +20,7 @@ export type HomeStackParams = {
   InfosEstoque: {
     id_estoque: number
     nome_estoque: string
+    nome_evento?: string
     data: string
   }
   PrintRecibo: {

@@ -1,4 +1,4 @@
-import { View, Text, TextInput, Image, TouchableOpacity } from "react-native"
+import { View, Text, TextInput, Image, TouchableOpacity, Alert } from "react-native"
 import { useEffect, useState } from "react"
 import { Button, Divider, Input } from "src/components"
 import { useProductMovement } from "./hooks/useProductMovement"
@@ -13,7 +13,6 @@ import type { HomeStackRouteScreen } from "src/routes/routes.types"
 import SignatureComponent from "./components/SignatureComponent"
 
 import copoSujosImage from '../../../assets/copos-sujos.jpg';
-import { useStockStore } from "src/stores/stockStore"
 
 const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMovement'>) => {
 
@@ -21,6 +20,8 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
 
   const {
     arts,
+    getQuantity,
+    isLoading,
     formik: {
       values,
       handleChange,
@@ -28,10 +29,6 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
       submitForm,
     }
   } = useProductMovement({ navigation, route, showAlert })
-
-  const stockInfos = useStockStore(state => state.stockInfos);
-  const stockLimpos = useStockStore(state => state.stockLimpos);
-  const estoqueLimpo = stockInfos.estoque_limpo[route.params.indice_estoque];
 
   const [step, setStep] = useState(1);
 
@@ -77,16 +74,33 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
                   image={art.imagem}
                   name={art.medida ? art.nome + ' - ' + art.medida : art.nome}
                 />
-
+                
                 <View style={{ 'flexDirection': 'row', 'justifyContent': 'space-between', 'width': '100%' }}>
                   <TextInput
-                    placeholder="Limpos"
+                    placeholder={route.params.movementType === 'in' ? 'Limpos - Disponível: ' + getQuantity(art.id) : 'Limpos' }
                     style={[styles.quantidade, { width: '100%' }]}
                     keyboardType="number-pad"
                     value={values.limposQuantityByArt[art.id]?.toString()}
                     onChangeText={text => {
                       const limpos = text.trim() === '' ? undefined : parseInt(text);
-                      setFieldValue(`limposQuantityByArt.${art.id}`, limpos);
+
+                      const quantidadeDisponivel = getQuantity(art.id);
+
+                      if (route.params.movementType === 'in' && limpos !== undefined && limpos > quantidadeDisponivel) {
+                        Alert.alert(
+                          'Houve um problema!',
+                          'O valor inserido é maior que o disponível em estoque.',
+                          [
+                            {
+                              text: 'Entendi'
+                            },
+                          ],
+                          { cancelable: false }
+                        );
+                        setFieldValue(`limposQuantityByArt.${art.id}`, ''); 
+                      } else {
+                        setFieldValue(`limposQuantityByArt.${art.id}`, limpos); 
+                      }
                     }}
                   />
                 </View>
@@ -187,6 +201,8 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
                 label="Salvar"
                 color="green"
                 onPress={submitForm}
+                disabled={isLoading}
+                loading={isLoading}
               />
             </View>
           </View>
