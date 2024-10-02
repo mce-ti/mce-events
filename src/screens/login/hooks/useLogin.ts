@@ -6,7 +6,7 @@ import type { UserStorage } from 'src/storage/storage.types'
 
 import { useFormik } from 'formik'
 import { useAuth } from 'src/context/AuthContext'
-import { useMovementStore, useOperatorsStore, useQrCodeStore } from 'src/stores'
+import { useMovementStore, useOperatorsStore } from 'src/stores'
 import { useArtsStore } from 'src/stores/artsStore'
 import { useStockStore } from 'src/stores/stockStore'
 import { hasNetwork } from "src/utils/net"
@@ -30,9 +30,7 @@ const useLogin = ({ showAlert }: useLoginProps) => {
   const syncStockLimpos = useStockStore(state => state.syncStockLimpos)
   const syncStockRel = useStockStore(state => state.syncStockRel)
   const syncStockInfos = useStockStore(state => state.syncStockInfos)
-  const syncQrCodes = useQrCodeStore(state => state.sync)
  
-
   const formik = useFormik({
     initialValues: {
       username: '',
@@ -65,7 +63,6 @@ const useLogin = ({ showAlert }: useLoginProps) => {
       await syncStockLimpos()
       await syncStockRel()
       await syncStockInfos()
-      await syncQrCodes()
       await calculateTotalStock();
       await calculateTotalSubStock();
 
@@ -84,7 +81,6 @@ const useLogin = ({ showAlert }: useLoginProps) => {
     await syncStockLimpos()
     await syncStockRel()
     await syncStockInfos()
-    await syncQrCodes()
     await calculateTotalStock();
     await calculateTotalSubStock();
 

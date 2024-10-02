@@ -2,33 +2,28 @@ import { httpClient } from "../httpClient"
 
 import type { GetMovementsRequest, GetMovementsResponse, SyncMovementsRequest } from './movements.types'
 
-export const syncMovement = async ({ foto, ...request }: SyncMovementsRequest) => {
+export const syncMovement = async (id_evento: number, movements: Array<{id_operador: number, indice_estoque: number, controle: string, status: string, quantidade: number, caucao: string, id_arte: number, responsavel: string, assinatura: string, app_time: number }>): Promise<SyncMovementsRequest> => {
 
   const formData = new FormData()
 
-  // formData.append('file', {
-  //   uri: foto.uri,
-  //   type: foto.type,
-  //   name: foto.name
-  // } as any)
+  formData.append('id_evento', id_evento.toString());
+  formData.append('movements', JSON.stringify(movements));
 
-  for (const key in request) {
-    const value = request[key as keyof typeof request]
-
-    if(value) formData.append(key, value.toString())
-  }
+  const config = {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  };
 
   try {
-    const response = await httpClient.post(
-      'syncMovement?v=' + Date.now(),
-      formData,
-      { headers: { 'Content-Type': 'multipart/form-data' }
-    })
+    const response = await httpClient.post('syncMovement?v=' + Date.now(), formData, config);
 
-    return !!response.data?.status
+    const data: SyncMovementsRequest = response.data;
+console.log(data)
+    return data;
   } catch (error) {
     console.log(error)
-    return false
+    return []
   }
 }
 
@@ -40,7 +35,12 @@ export const getMovements = async (request: GetMovementsRequest) => {
     // console.log(data)
     return data
   } catch (error) {
-    console.log('erro aqui', error)
-    return []
+    console.log(error)
+
+    return {
+      status: 'error',
+      message: 'An error occurred',
+      data: []
+    };
   }
 }

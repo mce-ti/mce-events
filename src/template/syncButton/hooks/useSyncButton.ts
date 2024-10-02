@@ -6,7 +6,7 @@ import { useAsyncStorage } from "src/hooks"
 import { apiAuth } from "src/services/api"
 import { UserStorage } from "src/storage/storage.types"
 
-import { useMovementStore, useOperatorsStore, useQrCodeStore } from "src/stores"
+import { useMovementStore, useOperatorsStore } from "src/stores"
 import { useArtsStore } from "src/stores/artsStore"
 import { useStockStore } from "src/stores/stockStore"
 import { hasNetwork } from "src/utils/net"
@@ -30,7 +30,6 @@ const useSyncButton = () => {
   const syncArts = useArtsStore(state => state.syncArts)
   const syncStock = useStockStore(state => state.syncStock)
   const syncStockLimpos = useStockStore(state => state.syncStockLimpos)
-  const sendStorageDataQrCodes = useQrCodeStore(state => state.sendStorageData)
   const syncStockInfos = useStockStore(state => state.syncStockInfos)
 
   const { getItem, removeItem } = useAsyncStorage()
@@ -93,8 +92,6 @@ const useSyncButton = () => {
       await syncStock()
       await syncStockLimpos()
       await syncStockInfos()
-      
-      await sendStorageDataQrCodes()
     } else {
       alert('Sem conexão com a internet')
     }

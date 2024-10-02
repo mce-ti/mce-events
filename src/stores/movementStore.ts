@@ -7,6 +7,7 @@ import { useAsyncStorage } from 'src/hooks'
 import { ProductMovementStorage } from 'src/storage/storage.types'
 import { hasNetwork } from 'src/utils/net'
 import { useStockStore } from './stockStore'
+import { Alert } from 'react-native'
 
 type MovementSate = {
   movements: ProductMovementStorage[]
@@ -37,15 +38,20 @@ export const useMovementStore = create<MovementSate>((set, get) => ({
     if (await hasNetwork()) {
       const { removeItem, setItem } = useAsyncStorage()
   
-      const dbMovements = await apiMovements.getMovements({ id_evento: event.id })
-      // console.log(dbMovements)
+      let dbMovements = await apiMovements.getMovements({ id_evento: event.id })
       const unSyncMovements = (await getMovementsStorage() || []).filter(({ sync }) => !sync)
+
+      if(dbMovements.status == 'error') {
+        dbMovements = await apiMovements.getMovements({ id_evento: event.id })
+
+        if(dbMovements.status == 'error') return;
+      };
   
       const newMovements: ProductMovementStorage[] = []
   
       await removeItem('movements')
   
-      for (const movement of dbMovements) {
+      for (const movement of dbMovements.data) {
         newMovements.push({
           id: movement.id,
           id_evento: event.id,
@@ -81,31 +87,48 @@ export const useMovementStore = create<MovementSate>((set, get) => ({
   sendStorageData: async () => {
     const event = await getEventStorage()
     const unSyncMovements = (await getMovementsStorage() || []).filter(({ sync }) => !sync)
+    let filteredMovements = [];
 
     if (!event || !unSyncMovements.length) return
 
     const { removeItem } = useAsyncStorage()
 
     for (const movement of unSyncMovements) {
-      await apiMovements.syncMovement({
-        id_evento: event.id,
-        id_operador: movement.id_operator,
-        indice_estoque: movement.indice_estoque,
-        controle: movement.type === 'in' ? 'Entrada' : 'Saída',
-        status: movement.status,
-        quantidade: movement.quantity,
-        caucao: event?.caucao ? 'Sim' : 'Não',
-        id_arte: movement.id_art,
-        responsavel: movement.responsible,
-        assinatura: movement.assinatura,
-        // foto: await readFile(movement.image),
-        app_time: movement.time
-      })
-
-      removeItem('movements')
+      if(!movement.sync) {
+        filteredMovements.push({
+          id_operador: movement.id_operator,
+          indice_estoque: movement.indice_estoque,
+          controle: movement.type === 'in' ? 'Entrada' : 'Saída',
+          status: movement.status,
+          quantidade: movement.quantity,
+          caucao: event?.caucao ? 'Sim' : 'Não',
+          id_arte: movement.id_art,
+          responsavel: movement.responsible,
+          assinatura: movement.assinatura ? movement.assinatura : '',
+          app_time: movement.time
+        });
+      }
     }
-    
-    await get().sync()
+
+    if(filteredMovements.length){
+      const sendData = await apiMovements.syncMovement(event.id, filteredMovements);
+
+      if(Array.isArray(sendData) && sendData.length === 0) {
+        Alert.alert(
+          'Houve um problema!',
+          'Tivemos um problema ao enviar os dados ao servidor, por favor tente novamente mais tarde!',
+          [
+            {
+              text: 'Entendi'
+            },
+          ],
+          { cancelable: false }
+        );
+      } else {
+        removeItem('movements')
+        await get().sync()
+      }
+    }
   },
   calculateTotalStock: async () => {
     const stockStore = useStockStore.getState();
