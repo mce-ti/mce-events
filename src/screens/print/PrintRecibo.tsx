@@ -17,11 +17,24 @@ const PrintRecibo = ({ navigation, route }: HomeStackRouteScreen<'PrintRecibo'>)
   const {
     useEvent,
     arts,
-    stockRel
+    stockRel,
+    hasSujos,
+    quantitySujos
   } = useRecibo({ navigation, route })
 
   const handlePrintComplete = () => {
-    navigation.navigate('Home');
+    if(hasSujos) {
+      navigation.navigate('PrintEtiqueta', {
+        indiceStock: params.indiceStock,
+        quantidade: quantitySujos ? quantitySujos : 0,
+        reponsavel: params.reponsavel,
+        reponsavel_pdv: params.reponsavel_pdv,
+        pdv: params.pdv,
+        assinatura: params.assinatura,
+      });
+    } else {
+      navigation.navigate('Home');
+    }
   };
 
   const viewShotRef = useRef<ViewShot>(null);
@@ -38,7 +51,18 @@ const PrintRecibo = ({ navigation, route }: HomeStackRouteScreen<'PrintRecibo'>)
   };
 
   const handleNoPrint = async () => {
-    navigation.navigate('Home');
+    if(hasSujos) {
+      navigation.navigate('PrintEtiqueta', {
+        indiceStock: params.indiceStock,
+        quantidade: quantitySujos ? quantitySujos : 0,
+        reponsavel: params.reponsavel,
+        reponsavel_pdv: params.reponsavel_pdv,
+        pdv: params.pdv,
+        assinatura: params.assinatura,
+      });
+    } else {
+      navigation.navigate('Home');
+    }
   };
 
   return (

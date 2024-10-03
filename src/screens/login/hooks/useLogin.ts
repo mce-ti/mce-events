@@ -10,6 +10,7 @@ import { useMovementStore, useOperatorsStore } from 'src/stores'
 import { useArtsStore } from 'src/stores/artsStore'
 import { useStockStore } from 'src/stores/stockStore'
 import { hasNetwork } from "src/utils/net"
+import { Linking } from 'react-native'
 
 type useLoginProps = {
   showAlert: (arg0: AwesomeAlertProps) => void
@@ -87,6 +88,22 @@ const useLogin = ({ showAlert }: useLoginProps) => {
     user && login(user.id)
     setIsLoading(false)
   }
+
+  const handlePress = () => {
+    // A URL para a qual você deseja redirecionar
+    const url = 'https://www.example.com';
+
+    // Verifica se a URL pode ser aberta
+    Linking.canOpenURL(url)
+      .then((supported) => {
+        if (supported) {
+          Linking.openURL(url); // Abre a URL no navegador
+        } else {
+          console.log("URL inválida: " + url);
+        }
+      })
+      .catch((err) => console.error("Erro ao abrir o link:", err));
+  };
 
   useEffect(() => {
     verifyUserIsLogged()

@@ -33,6 +33,14 @@ export type HomeStackParams = {
     pdv: string
     assinatura?: string
   }
+  PrintEtiqueta: {
+    indiceStock: number
+    quantidade: number
+    reponsavel: string
+    reponsavel_pdv: string
+    pdv: string
+    assinatura?: string
+  }
 }
 
 export type RootDrawerParams = {

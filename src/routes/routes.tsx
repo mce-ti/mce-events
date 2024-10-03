@@ -1,7 +1,7 @@
 import { createStackNavigator } from '@react-navigation/stack'
 import { createDrawerNavigator } from '@react-navigation/drawer'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Home, Login, MovementHistory, QrCodesHistory,  ProductMovement, InfosEstoque, PrintRecibo } from '../screens'
+import { Home, Login, MovementHistory,  ProductMovement, InfosEstoque, PrintRecibo, PrintEtiqueta } from '../screens'
 
 import { CustomDrawerContent } from './CustomDrawerContent'
 
@@ -24,25 +24,9 @@ const HomeStackRoutes = () => (
     <HomeStack.Screen name="ProductMovement" component={ProductMovement} />
     <HomeStack.Screen name="InfosEstoque" component={InfosEstoque} />
     <HomeStack.Screen name="PrintRecibo" component={PrintRecibo} />
+    <HomeStack.Screen name="PrintEtiqueta" component={PrintEtiqueta} />
   </HomeStack.Navigator>
 )
-
-// interface RootDrawerProps {
-//   qrUser?: boolean;
-// }
-
-// export const RootDrawer: React.FC<RootDrawerProps> = ({qrUser}) => (
-//   <Drawer.Navigator
-//     screenOptions={{ headerShown: false, swipeEdgeWidth: 5 }}
-//     drawerContent={CustomDrawerContent}
-//     initialRouteName='HomeStackRoutes'
-//   >
-//     <Drawer.Screen name="HomeStackRoutes" options={{ drawerLabel: 'Início' }} component={HomeStackRoutes} />
-//     {!qrUser && <Drawer.Screen name="MovementHistory" options={{ drawerLabel: 'Histórico' }} component={MovementHistory} />}
-//     {qrUser && <Drawer.Screen name="QrCodesHistory" options={{ drawerLabel: 'Histórico Qr-Codes' }} component={QrCodesHistory} />}
- 
-//   </Drawer.Navigator>
-// )
 
 interface RootTabProps {
   qrUser?: boolean;
@@ -81,8 +65,7 @@ export const RootTab: React.FC<RootTabProps> = ({ qrUser }) => (
     })}
   >
     <Tab.Screen name="HomeStackRoutes" options={{ tabBarLabel: 'Início' }} component={HomeStackRoutes} />
-    {!qrUser && <Tab.Screen name="MovementHistory" options={{ tabBarLabel: 'Histórico' }} component={MovementHistory} />}
-    {qrUser && <Tab.Screen name="QrCodesHistory" options={{ tabBarLabel: 'Histórico' }} component={QrCodesHistory} />}
+    <Tab.Screen name="MovementHistory" options={{ tabBarLabel: 'Histórico' }} component={MovementHistory} />
   </Tab.Navigator>
 );
 
