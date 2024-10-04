@@ -89,15 +89,13 @@ const useLogin = ({ showAlert }: useLoginProps) => {
     setIsLoading(false)
   }
 
-  const handlePress = () => {
-    // A URL para a qual você deseja redirecionar
-    const url = 'https://www.example.com';
+  const openDownloadLink = () => {
+    const url = 'https://www.meucopoeco.com.br/app/eventos-mce.apk';
 
-    // Verifica se a URL pode ser aberta
     Linking.canOpenURL(url)
       .then((supported) => {
         if (supported) {
-          Linking.openURL(url); // Abre a URL no navegador
+          Linking.openURL(url);
         } else {
           console.log("URL inválida: " + url);
         }
@@ -111,7 +109,8 @@ const useLogin = ({ showAlert }: useLoginProps) => {
 
   return {
     isLoading,
-    formik
+    formik,
+    openDownloadLink
   }
 }
 

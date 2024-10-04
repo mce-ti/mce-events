@@ -6,7 +6,7 @@ import { convertImageToPDF } from './convertImageToPDF';
 const useCaptureAndPrint = (onPrintComplete: () => void) => {
   const [loading, setLoading] = useState(false);
 
-  const captureAndPrint = async (viewShotRef: React.RefObject<ViewShot>) => {
+  const captureAndPrint = async (viewShotRef: React.RefObject<ViewShot>, origem: string) => {
     if (!viewShotRef.current) {
       console.warn('ViewShot ref is not defined');
       return;
@@ -18,7 +18,7 @@ const useCaptureAndPrint = (onPrintComplete: () => void) => {
       if (viewShotRef.current && typeof viewShotRef.current.capture === 'function') {
         const uri = await viewShotRef.current.capture();
         if (uri) {
-          const uriPDF = await convertImageToPDF(uri);
+          const uriPDF = await convertImageToPDF(uri, origem);
           await Print.printAsync({ uri: uriPDF });
 
           onPrintComplete();

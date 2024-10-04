@@ -47,7 +47,7 @@ const PrintRecibo = ({ navigation, route }: HomeStackRouteScreen<'PrintRecibo'>)
   }, [loading]);
 
   const handlePrint = async () => {
-    await captureAndPrint(viewShotRef);
+    await captureAndPrint(viewShotRef, 'recibo');
   };
 
   const handleNoPrint = async () => {

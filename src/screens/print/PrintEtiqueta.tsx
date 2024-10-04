@@ -6,7 +6,7 @@ import Spinner from "react-native-loading-spinner-overlay";
 import useCaptureAndPrint from "./hooks/useCaptureAndPrint";
 import { useEffect, useRef, useState } from "react";
 import { useEtiqueta } from "./hooks/useEtiqueta";
-import { currentDateTime } from "src/utils/date.utils";
+import { currentDateTime, formatDBDate } from "src/utils/date.utils";
 import LogoMceBlack from "../../../assets/mce-black-logo.svg";
 
 const PrintEtiqueta = ({ navigation, route }: HomeStackRouteScreen<'PrintEtiqueta'>) => {
@@ -14,7 +14,9 @@ const PrintEtiqueta = ({ navigation, route }: HomeStackRouteScreen<'PrintEtiquet
   const { params } = route;
 
   const {
-    volumes
+    useEvent,
+    volumes,
+    sobras
   } = useEtiqueta({ navigation, route })
 
   const handlePrintComplete = () => {
@@ -30,7 +32,7 @@ const PrintEtiqueta = ({ navigation, route }: HomeStackRouteScreen<'PrintEtiquet
   }, [loading]);
 
   const handlePrint = async () => {
-    await captureAndPrint(viewShotRef);
+    await captureAndPrint(viewShotRef, 'etiqueta');
   };
 
   const handleNoPrint = async () => {
@@ -39,7 +41,8 @@ const PrintEtiqueta = ({ navigation, route }: HomeStackRouteScreen<'PrintEtiquet
 
   return (
     <Layout onLogoPress={() => navigation.goBack()}>
-      <View style={{ 'flexDirection': 'row', justifyContent: 'space-between', marginTop: 30, paddingHorizontal: 20 }}>
+      <Text style={styles.initMsg}>Caso queira imprimir as etiquetas dos produtos sujos, selecione uma das opções abaixo:</Text>
+      <View style={{ 'flexDirection': 'row', justifyContent: 'space-between', marginTop: 30, marginBottom: 30, paddingHorizontal: 20 }}>
         <TouchableOpacity onPress={handlePrint} style={styles.print}>
           <Text style={{ color: '#fff' }}>IMPRIMIR</Text>
         </TouchableOpacity>
@@ -53,14 +56,19 @@ const PrintEtiqueta = ({ navigation, route }: HomeStackRouteScreen<'PrintEtiquet
         
         {Array.from({ length: Number(volumes) }).map((_, index) => (
           <View key={index} style={styles.etiqueta}>
-            <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: -10 }}>
               <LogoMceBlack width={150} height={100} />
             </View>
 
-            <Text style={styles.title}>{'Recibo de Devolução'}</Text>
+            <View>
+              <Text style={styles.eventName}>{formatDBDate(useEvent?.data)} - {useEvent?.nome}</Text>
+            </View>
+
+            <Text style={styles.title}>Recibo de Devolução</Text>
 
             <Text style={styles.responsavel}>{params.pdv ? 'PDV:' : ''} <Text style={styles.bold}>{params.pdv}</Text></Text>
             <Text style={styles.responsavel}>{params.reponsavel_pdv ? 'Responsável:' : ''} <Text style={styles.bold}>{params.reponsavel_pdv}</Text></Text>
+            <Text style={styles.responsavel}>- Copos Sujos: <Text style={styles.bold}>{index + 1 == volumes ? sobras.toString() : '150'}</Text> und.</Text>
 
             {/* <Text>{params.operador}</Text> */}
             <Text style={styles.responsavel}>{'Devolvido por:'} <Text style={styles.bold}>{params.reponsavel}</Text></Text>
@@ -95,26 +103,26 @@ const styles = StyleSheet.create({
   view: {
     width: 320,
     padding: 5,
-    marginTop: 10,
-
+    marginTop: 0,
   },
   etiqueta: {
-    paddingBottom: 30,
-    marginBottom: 20,
+    paddingBottom: 22,
+    marginBottom: 10,
     borderColor: 'black',
     borderBottomWidth: 1,
     borderStyle: 'dashed'
+  },
+  initMsg: {
+    fontSize: 18,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    fontWeight: '600',
   },
   eventName: {
     fontSize: 22,
     fontWeight: "bold",
     color: '#000',
     textAlign: 'center'
-  },
-  stockName: {
-    fontSize: 20,
-    textAlign: 'center',
-    marginBottom: 10
   },
   title: {
     fontSize: 22,
