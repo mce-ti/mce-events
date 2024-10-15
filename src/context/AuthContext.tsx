@@ -1,10 +1,8 @@
 import { createContext, useState, useContext } from 'react'
 import { useAsyncStorage } from 'src/hooks'
 
-import { getEventStorage } from 'src/storage/storage'
-
 import type { ReactNode } from 'react'
-import type { OperatorStorage } from 'src/storage/storage.types'
+import { Alert } from 'react-native'
 
 type AuthContextType = {
   user: number | null
@@ -28,13 +26,29 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }
 
   const logout = async () => {
-    await removeItem('event')
-    await removeItem('user')
-    await removeItem('arts')
-    await removeItem('stock')
-    await removeItem('operators')
-
-    setUser(null)
+    Alert.alert(
+      "Atenção!",
+      "Você tem certeza que deseja sair?",
+      [
+        {
+          text: "Sim",
+          onPress: async () => {
+            await removeItem('event')
+            await removeItem('user')
+            await removeItem('arts')
+            await removeItem('stock')
+            await removeItem('operators')
+  
+            setUser(null)
+          },
+        },
+        {
+          text: "Cancelar",
+          style: "cancel",
+        },
+      ],
+      { cancelable: true }
+    )
   }
 
   return (
