@@ -90,7 +90,7 @@ const useLogin = ({ showAlert }: useLoginProps) => {
   }
 
   const openDownloadLink = () => {
-    const url = 'https://www.meucopoeco.com.br/app/eventos-mce.apk';
+    const url = 'https://play.google.com/store/apps/details?id=com.tsunakyz.mceevents';
 
     Linking.canOpenURL(url)
       .then((supported) => {
