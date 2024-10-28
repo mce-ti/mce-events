@@ -37,11 +37,17 @@ export const styles = StyleSheet.create({
     color: '#fff'
   },
   downloadButton: {
-    flexDirection: 'row',
     marginTop: 10,
-    backgroundColor: '#ffffff4f',
-    padding: 10,
-    borderRadius: 5
+    alignSelf: 'center',
+    paddingVertical: 5,
+  },
+  underlineText: {
+    color: '#fff',
+    textDecorationLine: 'underline',
+    fontSize: 14,
+    fontWeight: '300',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   buttonText : {
     color: 'white',

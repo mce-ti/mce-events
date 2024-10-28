@@ -1,5 +1,6 @@
 import { createContext, useState, useContext } from 'react'
 import { useAsyncStorage } from 'src/hooks'
+import { useMovementStore } from "src/stores"
 
 import type { ReactNode } from 'react'
 import { Alert } from 'react-native'
@@ -18,6 +19,9 @@ type AuthProviderProps = {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<number | null>(null)
+  const movements = useMovementStore(state => state.movements)
+
+  let hasSync = !!movements.filter(({ sync }) => !sync).length
 
   const { removeItem } = useAsyncStorage()
 
@@ -26,6 +30,22 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }
 
   const logout = async () => {
+
+    if(hasSync) {
+      Alert.alert(
+        "Atenção!",
+        "Você precisa sincronizar os dados antes de sair. Por favor, sincronize e tente novamente!",
+        [
+          {
+            text: "Entendido",
+          },
+        ],
+        { cancelable: true }
+      )
+
+      return;
+    }
+
     Alert.alert(
       "Atenção!",
       "Você tem certeza que deseja sair?",

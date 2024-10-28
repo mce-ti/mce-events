@@ -55,8 +55,9 @@ const Login = () => {
         <Button label="Entrar" onPress={submitForm} disabled={isLoading} loading={isLoading} />
 
         <TouchableOpacity onPress={openDownloadLink} style={styles.downloadButton}>
-          <MaterialIcons name="download" size={14} color="#fff" />
-          <Text style={styles.buttonText}>ATUALIZAR APP</Text>
+          <Text style={styles.underlineText}>
+            Atualizar APP
+          </Text>
         </TouchableOpacity>
 
         <AwesomeAlertComponent />

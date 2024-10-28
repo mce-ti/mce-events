@@ -75,13 +75,13 @@ const useLogin = ({ showAlert }: useLoginProps) => {
     setIsLoading(true)
     const user: UserStorage|null = await getItem('user')
   
-    await syncArts()
-    await syncOperators()
-    await syncMovements()
-    await syncStock()
-    await syncStockLimpos()
-    await syncStockRel()
-    await syncStockInfos()
+    await syncArts();
+    await syncOperators();
+    await syncMovements();
+    await syncStock();
+    await syncStockLimpos();
+    await syncStockRel();
+    await syncStockInfos();
     await calculateTotalStock();
     await calculateTotalSubStock();
 
