@@ -1,5 +1,5 @@
 import { ReactNode, useState } from 'react'
-import { SafeAreaView, View, ScrollView, StatusBar } from "react-native"
+import { SafeAreaView, View, ScrollView, StatusBar, Text } from "react-native"
 import { SyncButton } from "../syncButton/SyncButton"
 import { LogOutButton } from "../logoutButton/LogoutButton"
 import { styles } from './styles'
@@ -22,6 +22,8 @@ const Layout = ({ children, onLogoPress }: LayoutProps) => {
 
         <View style={styles.headerContent}>
           <Logo width={90} style={{ borderColor: 'red', borderWidth: 1 }} onPress={() => onLogoPress?.()} />
+
+          <Text style={styles.headerTitleApp}>GESTÃO DE ESTOQUE</Text>
 
           <View style={styles.btnsContainer}>
             <SyncButton />

@@ -23,5 +23,13 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: 80
+  },
+  headerTitleApp: {
+    fontSize: 18,
+    width: 125,
+    textAlign: 'center',
+    color: '#fff',
+    textTransform: 'uppercase',
+    fontWeight: '800'
   }
 })

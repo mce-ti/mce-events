@@ -47,9 +47,9 @@ const useSyncButton = () => {
   )).current
 
   const sync = async () => {
-    hasSync = !!movements.filter(({ sync }) => !sync).length
-
-    if (isSyncing || !hasSync) return;
+    // hasSync = !!movements.filter(({ sync }) => !sync).length
+    // if (isSyncing || !hasSync) return;
+    if (isSyncing) return;
 
     anim.start()
     setIsSyncing(true)
