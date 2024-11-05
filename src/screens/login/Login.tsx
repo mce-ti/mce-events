@@ -4,7 +4,6 @@ import { useLogin } from "./hooks/useLogin"
 import { Button } from "src/components"
 import { styles } from "./styles"
 import { useAwesomeAlert } from "src/hooks"
-import { MaterialIcons } from '@expo/vector-icons'
 
 import Logo from '../../../assets/logo.svg'
 

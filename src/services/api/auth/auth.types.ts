@@ -30,3 +30,9 @@ export type LoginResponse = {
 } | {
   message: string
 }
+
+export type lastedAppVersionResponse = {
+  status: 'success' | 'error';
+  message: string;
+  version : string
+}

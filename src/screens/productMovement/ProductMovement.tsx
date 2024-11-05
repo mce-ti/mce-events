@@ -168,9 +168,9 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
                 disabled={
                   route?.params?.movementType === 'out'
                     ? (
-                      !Object.values(values.limposQuantityByArt).some(value => value !== undefined) ||
-                      !values.responsible ||
-                      !values.sujos
+                      (!Object.values(values.limposQuantityByArt).some(value => value !== undefined) && !values.sujos) ||
+                      !values.responsible 
+                      
                     )
                     : (
                       !Object.values(values.limposQuantityByArt).some(value => value !== undefined && value > 0) ||

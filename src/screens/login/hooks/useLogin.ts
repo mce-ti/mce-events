@@ -10,7 +10,8 @@ import { useMovementStore, useOperatorsStore } from 'src/stores'
 import { useArtsStore } from 'src/stores/artsStore'
 import { useStockStore } from 'src/stores/stockStore'
 import { hasNetwork } from "src/utils/net"
-import { Linking } from 'react-native'
+import { Alert, Linking } from 'react-native'
+import Constants from 'expo-constants';
 
 type useLoginProps = {
   showAlert: (arg0: AwesomeAlertProps) => void
@@ -31,7 +32,7 @@ const useLogin = ({ showAlert }: useLoginProps) => {
   const syncStockLimpos = useStockStore(state => state.syncStockLimpos)
   const syncStockRel = useStockStore(state => state.syncStockRel)
   const syncStockInfos = useStockStore(state => state.syncStockInfos)
- 
+
   const formik = useFormik({
     initialValues: {
       username: '',
@@ -73,8 +74,8 @@ const useLogin = ({ showAlert }: useLoginProps) => {
 
   const verifyUserIsLogged = async () => {
     setIsLoading(true)
-    const user: UserStorage|null = await getItem('user')
-  
+    const user: UserStorage | null = await getItem('user')
+
     await syncArts();
     await syncOperators();
     await syncMovements();
@@ -104,7 +105,31 @@ const useLogin = ({ showAlert }: useLoginProps) => {
   };
 
   useEffect(() => {
-    verifyUserIsLogged()
+    const checkVersionAndLogin = async () => {
+      if (await hasNetwork()) {
+        const response = await apiAuth.getLastedAppVersion();
+        const appCurrentVersion = Constants.expoConfig?.version;
+  
+        if (response.version && response.version !== appCurrentVersion) {
+          await setItem('event', '');
+          await setItem('user', '');
+
+          Alert.alert(
+            'Atualização disponível!',
+            'Uma nova versão do aplicativo está disponível. Por favor, atualize para continuar!',
+            [
+              { text: 'Atualizar', onPress: () => openDownloadLink() },
+            ]
+          );
+          
+          return;
+        }
+      }
+
+      verifyUserIsLogged();
+    };
+
+    checkVersionAndLogin();
   }, [])
 
   return {
