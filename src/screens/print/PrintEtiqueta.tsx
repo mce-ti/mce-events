@@ -68,7 +68,7 @@ const PrintEtiqueta = ({ navigation, route }: HomeStackRouteScreen<'PrintEtiquet
 
             <Text style={styles.responsavel}>{params.pdv ? 'PDV:' : ''} <Text style={styles.bold}>{params.pdv}</Text></Text>
             <Text style={styles.responsavel}>{params.reponsavel_pdv ? 'Responsável:' : ''} <Text style={styles.bold}>{params.reponsavel_pdv}</Text></Text>
-            <Text style={styles.responsavel}>- Copos Sujos: <Text style={styles.bold}>{index + 1 == volumes ? sobras.toString() : '150'}</Text> und.</Text>
+            <Text style={styles.responsavel}>- Copos Sujos: <Text style={styles.bold}>{index + 1 == volumes && sobras ? sobras.toString() : '150'}</Text> und.</Text>
 
             {/* <Text>{params.operador}</Text> */}
             <Text style={styles.responsavel}>{'Devolvido por:'} <Text style={styles.bold}>{params.reponsavel}</Text></Text>
