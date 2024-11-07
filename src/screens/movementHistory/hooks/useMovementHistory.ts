@@ -14,7 +14,7 @@ const useMovementHistory = ({ navigation }: RootDrawerScreen<'MovementHistory'> 
   const [visibleMovements, setVisibleMovements] = useState(30);
   const [hideAddMoreMovements, setHideAddMoreMovements] = useState(false);
   const [countTotalMovements, setCountTotalMovements] = useState(movementsInStore.length);
-
+  console.log(movementsInStore)
   const movements = movementsInStore
     .sort((a, b) => {
       const d1 = a.date ? new Date(a.date).getTime() : a.time;

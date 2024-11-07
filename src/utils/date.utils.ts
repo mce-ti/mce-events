@@ -45,3 +45,10 @@ export function currentDateTime(): string {
 
   return formattedDateTime;
 }
+
+export function currentDateTimeDB(): string {
+  const dateTime = new Date();
+  const formattedDateTime = format(dateTime, 'yyyy-MM-dd HH:mm:ss');
+
+  return formattedDateTime;
+}

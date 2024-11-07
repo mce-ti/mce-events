@@ -22,7 +22,7 @@ export const useMovementStore = create<MovementSate>((set, get) => ({
   movements: [],
   addProductMovement: async (data: ProductMovementStorage): Promise<void> => {
     const { setItem } = useAsyncStorage()
-
+ 
     const storageMovements = await getMovementsStorage() || []
     const newMovements = [...storageMovements, data]
 
@@ -105,7 +105,8 @@ export const useMovementStore = create<MovementSate>((set, get) => ({
           id_arte: movement.id_art,
           responsavel: movement.responsible,
           assinatura: movement.assinatura ? movement.assinatura : '',
-          app_time: movement.time
+          app_time: movement.time,
+          date: movement.date
         });
       }
     }

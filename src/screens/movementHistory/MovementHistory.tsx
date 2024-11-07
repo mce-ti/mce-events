@@ -49,9 +49,6 @@ const MovementHistory = ({ navigation, route }: RootDrawerScreen<'MovementHistor
             ]}
           >     
             <Text style={[styles.typeTag, movement.type === 'in' ? styles.typeTagIn : styles.typeTagOut]}></Text>       
-            {/* <View style={[styles.td, { width: 20 }]}>
-              <Text style={[styles.typeTag, movement.type === 'in' ? styles.typeTagIn : styles.typeTagOut]}>{movement.type === 'in' ? 'Entrega' : 'Devolução'}</Text>
-            </View> */}
             <View style={[styles.td, { flex: 1, flexDirection: 'column', position: 'relative' }]}>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <Text style={[styles.typeText, movement.type === 'in' ? styles.typeTextIn : styles.typeTextOut]}>{movement.type === 'in' ? 'Entrega' : 'Devolução'}</Text> 

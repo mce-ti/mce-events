@@ -17,6 +17,7 @@ import { Alert } from 'react-native';
 import { calcInitialStockQuantity, ItemStock } from '../../../utils/stock.utils';
 import { useEffect, useState } from 'react';
 import { parseJSON } from 'date-fns';
+import { currentDateTimeDB } from 'src/utils/date.utils';
 
 type useProductMovementPrps = {
   showAlert: (arg0: AwesomeAlertProps) => void
@@ -117,7 +118,8 @@ const useProductMovement = ({ navigation, route: { params }, showAlert }: usePro
             status: 'Limpo',
             quantity: quantity,
             responsible: values.responsible,
-            type: params.movementType
+            type: params.movementType,
+            date: currentDateTimeDB()
           });
 
           await addProduto(parseInt(artId), quantity);
@@ -144,7 +146,8 @@ const useProductMovement = ({ navigation, route: { params }, showAlert }: usePro
           status: 'Sujo',
           quantity: sujos,
           responsible: values.responsible,
-          type: params.movementType
+          type: params.movementType,
+          date: currentDateTimeDB()
         });
 
         await addProduto(art.id, sujos, true);
