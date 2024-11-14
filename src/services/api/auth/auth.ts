@@ -11,11 +11,17 @@ export const login = async ({ username, password }: LoginRequest): Promise<Login
    
     return data
   } catch (error) {
-    console.log(error)
+    console.log(error, 'login')
 
     const message = (axios.isAxiosError(error) && error?.response?.data?.message) || 'Houve um problema ao realizar a autênticação.'
+    const code = (axios.isAxiosError(error) && error?.response?.status) || 0;
 
-    return { message }
+    return {
+      status: 'error',
+      message: message,
+      http_code: code,
+      data: null
+    };
   }
 }
 
@@ -27,11 +33,14 @@ export const getLastedAppVersion = async (): Promise<lastedAppVersionResponse> =
    
     return data
   } catch (error) {
-    console.log(error)
+    console.log(error, 'getLastedAppVersion')
+
+    const code = (axios.isAxiosError(error) && error?.response?.status) || 0;
 
     return {
       status: 'error',
       message: 'An error occurred',
+      http_code: code,
       version: ''
     };
   }

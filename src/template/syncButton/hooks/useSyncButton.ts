@@ -26,6 +26,7 @@ const useSyncButton = () => {
   
   let hasSync = !!movements.filter(({ sync }) => !sync).length
  
+  const syncMovement = useMovementStore(state => state.sync)
   const syncOperators = useOperatorsStore(state => state.syncOperators)
   const syncArts = useArtsStore(state => state.syncArts)
   const syncStock = useStockStore(state => state.syncStock)
@@ -64,7 +65,9 @@ const useSyncButton = () => {
 
         const response = await apiAuth.login(dataApiUser)
 
-        if ('message' in response) {
+        const { status, http_code } = response;
+
+        if ('message' in response && status === "error" && (http_code === 400 || http_code === 401)) {
           Alert.alert(
             'Houve um problema!',
             'Parece que suas credencias de acesso estão desatualizadas. Tente fazer login novamente',
@@ -83,15 +86,34 @@ const useSyncButton = () => {
   
           anim.reset();
           setIsSyncing(false);
+          return;
         }
+
+        if(http_code === 500 || http_code === 504) {
+          Alert.alert(
+            'Houve um problema!',
+            'A conexão com o servidor está instável, por favor, tente mais tarde.',
+            [
+              {
+                text: 'Entendi'
+              },
+            ],
+            { cancelable: false }
+          );
+
+          anim.reset();
+          setIsSyncing(false);
+          return;
+        }
+
+        await syncMovement()
+        await sendStorageData()
+        await syncOperators()
+        await syncArts()
+        await syncStock()
+        await syncStockLimpos()
+        await syncStockInfos()
       } 
-      
-      await sendStorageData()
-      await syncOperators()
-      await syncArts()
-      await syncStock()
-      await syncStockLimpos()
-      await syncStockInfos()
     } else {
       alert('Sem conexão com a internet')
     }

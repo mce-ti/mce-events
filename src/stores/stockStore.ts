@@ -225,6 +225,7 @@ export const useStockStore = create<StockState>(set => ({
   setStockLimpos: (updatedStock: { id: number; quantidade: number }[]) => set(state => ({
     stockLimpos: state.stockLimpos.map(item => {
       const updatedItem = updatedStock.find(updated => updated.id === item.id);
+  
       return updatedItem ? { ...item, quantidade: updatedItem.quantidade } : item;
     })
   })),
@@ -234,12 +235,14 @@ export const useStockStore = create<StockState>(set => ({
       estoque_limpo: Object.keys(state.stockInfos.estoque_limpo).reduce((acc, key) => {
         // Obtenha o array de itens associado à chave
         const itemsArray = state.stockInfos.estoque_limpo[key];
-  
+     
         // Atualize cada item no array se ele estiver em updatedStock
         const updatedArray = itemsArray.map(item => {
           const updatedItem = updatedStock.find(updated => updated.id_arte === item.id_arte);
           return updatedItem ? { ...item, quantidade: updatedItem.quantidade } : item;
         });
+
+        // console.log(updatedArray);
   
         // Adiciona o array atualizado ao acumulador
         acc[key] = updatedArray;

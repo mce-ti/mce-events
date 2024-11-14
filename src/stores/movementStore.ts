@@ -91,33 +91,46 @@ export const useMovementStore = create<MovementSate>((set, get) => ({
 
     if (!event || !unSyncMovements.length) return
 
-    const { removeItem } = useAsyncStorage()
+    const { setItem, removeItem } = useAsyncStorage()
 
     for (const movement of unSyncMovements) {
       if(!movement.sync) {
         filteredMovements.push({
-          id_operador: movement.id_operator,
+          id_operator: movement.id_operator,
           indice_estoque: movement.indice_estoque,
-          controle: movement.type === 'in' ? 'Entrada' : 'Saída',
+          type: movement.type === 'in' ? 'Entrada' : 'Saída',
           status: movement.status,
-          quantidade: movement.quantity,
-          caucao: event?.caucao ? 'Sim' : 'Não',
-          id_arte: movement.id_art,
-          responsavel: movement.responsible,
+          quantity: movement.quantity,
+          id_art: movement.id_art,
+          responsible: movement.responsible,
           assinatura: movement.assinatura ? movement.assinatura : '',
-          app_time: movement.time,
+          name_operator: movement.name_operator,
+          time: movement.time,
           date: movement.date
         });
       }
     }
 
     if(filteredMovements.length){
-      const sendData = await apiMovements.syncMovement(event.id, filteredMovements);
+      const sentData = await apiMovements.syncMovement(event.id, filteredMovements);
 
-      if(Array.isArray(sendData) && sendData.length === 0) {
+      const { status, inserted_time } = sentData;
+   
+      const notInsertedMovements = filteredMovements.filter(item =>
+        !inserted_time.includes(item.time)
+      ); // Verifica se todos os registros que estavam no local foram inseridos 
+      
+      console.log('inserted_data', inserted_time);
+      console.log('notInsertedMovements', notInsertedMovements);  
+
+      if(Array.isArray(notInsertedMovements) && notInsertedMovements.length > 0) {
+
+        removeItem('movements')
+        setItem('movements', notInsertedMovements);
+
         Alert.alert(
           'Houve um problema!',
-          'Tivemos um problema ao enviar os dados ao servidor, por favor tente novamente mais tarde!',
+          'Tivemos um problema ao enviar algumas movimentações de estoque ao servidor, por favor tente novamente!',
           [
             {
               text: 'Entendi'
@@ -125,10 +138,24 @@ export const useMovementStore = create<MovementSate>((set, get) => ({
           ],
           { cancelable: false }
         );
-      } else {
+
+      } else if(status === 'success') {
         removeItem('movements')
-        await get().sync()
+      } else {
+        Alert.alert(
+          'Houve um problema!',
+          'Tivemos um problema ao enviar as movimentações de estoque ao servidor, por favor tente novamente!',
+          [
+            {
+              text: 'Entendi'
+            },
+          ],
+          { cancelable: false }
+        );
+
       }
+     
+      await get().sync()
     }
   },
   calculateTotalStock: async () => {
@@ -155,9 +182,11 @@ export const useMovementStore = create<MovementSate>((set, get) => ({
     const unSyncMovements = (await getMovementsStorage() || []).filter(({ sync, status }) => !sync && status === 'Limpo');
     let finalCalcStock;
 
+   
+
     Object.keys(stockStore.stockInfos.estoque_limpo).forEach((indice_estoque) => {
       const currentStock = stockStore.stockInfos.estoque_limpo[indice_estoque];
-  
+
       currentStock.forEach(item => {
         const movimentosDoItem = unSyncMovements.filter(movement => movement.id_art === item.id_arte);
   
@@ -174,6 +203,8 @@ export const useMovementStore = create<MovementSate>((set, get) => ({
 
       finalCalcStock = currentStock;
     });
+
+    console.log('finalCalcStock', finalCalcStock);
 
     if(finalCalcStock) stockStore.setStockInfos(finalCalcStock);
   }

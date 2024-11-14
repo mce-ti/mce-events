@@ -1,8 +1,9 @@
 import { httpClient } from "../httpClient"
+import axios from 'axios'
 
-import type { GetMovementsRequest, GetMovementsResponse, SyncMovementsRequest } from './movements.types'
+import type { GetMovementsRequest, GetMovementsResponse, SyncMovementsRequest, PutMovementsResponse } from './movements.types'
 
-export const syncMovement = async (id_evento: number, movements: Array<{id_operador: number, indice_estoque: number, controle: string, status: string, quantidade: number, caucao: string, id_arte: number, responsavel: string, assinatura: string, app_time: number }>): Promise<SyncMovementsRequest> => {
+export const syncMovement = async (id_evento: number, movements: Array<{id_operator: number, indice_estoque: number, type: string, status: string, quantity: number, id_art: number, responsible: string, assinatura: string, name_operator: string, time: number }>): Promise<PutMovementsResponse> => {
 
   const formData = new FormData()
 
@@ -18,12 +19,22 @@ export const syncMovement = async (id_evento: number, movements: Array<{id_opera
   try {
     const response = await httpClient.post('syncMovement?v=' + Date.now(), formData, config);
 
-    const data: SyncMovementsRequest = response.data;
-console.log(data)
+    const data: PutMovementsResponse = response.data;
+    // console.log(data)
     return data;
   } catch (error) {
-    console.log(error)
-    return []
+    const code = (axios.isAxiosError(error) && error?.response?.status) || 0;
+
+    const response: PutMovementsResponse = {
+      status: 'error',
+      message: error ? error.toString() : 'Um erro ocorreu ao comunicar a API.',
+      http_code: code,
+      inserted_time: []
+    };
+
+    console.log(response, 'syncMovement')
+    
+    return response;
   }
 }
 

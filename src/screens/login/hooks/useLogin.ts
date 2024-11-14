@@ -43,32 +43,49 @@ const useLogin = ({ showAlert }: useLoginProps) => {
 
       const response = await apiAuth.login(values)
 
-      if ('message' in response) {
-        setIsLoading(false)
-        showAlert({
-          show: true,
-          title: 'Erro',
-          message: response.message,
-          confirmText: 'Entendi',
-        })
+      if(response) {
+        if ('message' in response && response.status === "error") {
+          setIsLoading(false)
+          showAlert({
+            show: true,
+            title: 'Erro',
+            message: response.message,
+            confirmText: 'Entendi',
+          })
+  
+          return;
+        }
 
-        return;
-      }
+        if(!response.data) {
+          setIsLoading(false)
+          
+          showAlert({
+            show: true,
+            title: 'Erro',
+            message: response.message,
+            confirmText: 'Entendi',
+          })
 
-      await setItem('event', response.evento)
-      await setItem('user', response.usuario)
+          return;
+        }
 
-      await syncArts()
-      await syncMovements()
-      await syncOperators()
-      await syncStock()
-      await syncStockLimpos()
-      await syncStockRel()
-      await syncStockInfos()
-      await calculateTotalStock();
-      await calculateTotalSubStock();
-
-      login(response.usuario.id)
+        const { evento, usuario } = response.data;
+  
+        await setItem('event', evento)
+        await setItem('user', usuario)
+  
+        await syncArts()
+        await syncMovements()
+        await syncOperators()
+        await syncStock()
+        await syncStockLimpos()
+        await syncStockRel()
+        await syncStockInfos()
+        await calculateTotalStock();
+        await calculateTotalSubStock();
+  
+        login(usuario.id)
+      } 
     }
   })
 

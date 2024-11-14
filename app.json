@@ -2,7 +2,7 @@
   "expo": {
     "name": "Estoque - MCE",
     "slug": "mce-events",
-    "version": "2.2.1",
+    "version": "2.3.1",
     "orientation": "portrait",
     "icon": "./assets/app-logo.png",
     "userInterfaceStyle": "light",
@@ -36,7 +36,7 @@
         "android.permission.ACCESS_MEDIA_LOCATION"
       ],
       "package": "com.tsunakyz.mceevents",
-      "versionCode": 5
+      "versionCode": 7
     },
     "web": {
       "favicon": "./assets/favicon.png"

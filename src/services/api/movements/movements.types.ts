@@ -18,6 +18,13 @@ export type SyncMovementsRequest = {
   app_time: number | string
 }[]
 
+export type PutMovementsResponse = {
+  status: 'success' | 'error';
+  message: string;
+  http_code: number;
+  inserted_time: number [];
+}
+
 export type GetMovementsRequest = {
   id_evento: number
 }

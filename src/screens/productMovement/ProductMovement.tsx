@@ -201,7 +201,7 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
                 label="Salvar"
                 color="green"
                 onPress={submitForm}
-                disabled={isLoading}
+                disabled={isLoading || !values.signature ? true : false}
                 loading={isLoading}
               />
             </View>

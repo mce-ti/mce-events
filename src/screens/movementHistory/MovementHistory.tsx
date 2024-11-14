@@ -19,6 +19,10 @@ const MovementHistory = ({ navigation, route }: RootDrawerScreen<'MovementHistor
 
   } = useMovementHistory({ navigation, route })
 
+  // const sanitizedMovements = movements.map(({ assinatura, ...rest }) => rest);
+
+  // console.log(sanitizedMovements);
+
   return (
     <Layout>
       <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
