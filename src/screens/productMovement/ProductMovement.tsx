@@ -72,7 +72,7 @@ const ProductMovement = ({ navigation, route }: HomeStackRouteScreen<'ProductMov
                   id={art.id}
                   currentValue={values.art}
                   image={art.imagem}
-                  name={art.medida ? art.nome + ' - ' + art.medida : art.nome}
+                  name={art.medida ? art.nome + ' ' + art.medida : art.nome}
                 />
                 
                 <View style={{ 'flexDirection': 'row', 'justifyContent': 'space-between', 'width': '100%' }}>

@@ -48,7 +48,7 @@ const Layout = ({ children, onLogoPress }: LayoutProps) => {
       
       <Spinner
         visible={isSyncing}
-        textContent={'Carregando...'}
+        textContent={'Aguarde, sincronizando...'}
         textStyle={{ color: '#FFF' }}
         overlayColor='#000000b8'
       />

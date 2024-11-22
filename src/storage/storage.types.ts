@@ -93,6 +93,7 @@ export type StockInfosStorage = {
     [id_arte: string] : { 
       id_arte: number; 
       nome: string; 
+      medida: string
       quantidade: number 
       quantidade_inicial: number
     }[] 
@@ -100,6 +101,7 @@ export type StockInfosStorage = {
   estoque_inicial: { 
     [id_arte: string]: { 
       nome: string; 
+      medida: string
       quantidade: number 
     }[] 
   };

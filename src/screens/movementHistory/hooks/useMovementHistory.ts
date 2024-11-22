@@ -29,7 +29,7 @@ const useMovementHistory = ({ navigation }: RootDrawerScreen<'MovementHistory'> 
 
   const getNomeProduto = (id_art : number) => {
     const art = arts.find(item => item.id === id_art);
-    const nome = art ? art.nome + ' - ' + art.medida : '';
+    const nome = art ? art.nome + ' ' + art.medida : '';
     if(art) return formatTextLenght(nome, 35);
     return '';
   }

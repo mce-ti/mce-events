@@ -37,7 +37,7 @@ const InfosEstoque = ({ navigation, route }: HomeStackRouteScreen<'InfosEstoque'
       {estoqueLimpo.map(item =>(
         <View key={`stock-item-${item.id_arte}`}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Text style={styles.eventLocal}>{item.nome}</Text>
+            <Text style={styles.eventLocal}>{item.nome} {item.medida}</Text>
             <Text style={styles.eventDate}>{item.quantidade}</Text>
           </View>
 
@@ -52,7 +52,7 @@ const InfosEstoque = ({ navigation, route }: HomeStackRouteScreen<'InfosEstoque'
       {estoqueInicial.map((item, index) =>(
         <View key={`stock-item-${index}`}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Text style={styles.eventLocal}>{item.nome}</Text>
+            <Text style={styles.eventLocal}>{item.nome} {item.medida}</Text>
             <Text style={styles.eventDate}>{item.quantidade}</Text>
           </View>
 
