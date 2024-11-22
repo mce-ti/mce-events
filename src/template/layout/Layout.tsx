@@ -6,6 +6,7 @@ import { styles } from './styles'
 
 import Logo from '../../../assets/logo.svg'
 import React from 'react'
+import Spinner from 'react-native-loading-spinner-overlay'
 
 type LayoutProps = {
   children: ReactNode
@@ -13,7 +14,11 @@ type LayoutProps = {
 }
 
 const Layout = ({ children, onLogoPress }: LayoutProps) => {
-  // const [scrollEnabled, setScrollEnabled] = useState(true);
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  const handleSyncingChange = (syncing: boolean) => {
+    setIsSyncing(syncing);
+  };
 
   return (
     <View style={styles.container}>
@@ -26,7 +31,7 @@ const Layout = ({ children, onLogoPress }: LayoutProps) => {
           <Text style={styles.headerTitleApp}>GESTÃO DE ESTOQUE</Text>
 
           <View style={styles.btnsContainer}>
-            <SyncButton />
+            <SyncButton onSyncingChange={handleSyncingChange} />
 
             <LogOutButton />
           </View>
@@ -40,6 +45,13 @@ const Layout = ({ children, onLogoPress }: LayoutProps) => {
           )}
         </SafeAreaView>
       </ScrollView>
+      
+      <Spinner
+        visible={isSyncing}
+        textContent={'Carregando...'}
+        textStyle={{ color: '#FFF' }}
+        overlayColor='#000000b8'
+      />
     </View>
   )
 }

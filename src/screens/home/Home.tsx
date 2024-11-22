@@ -90,7 +90,7 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
       {stock.map((item, index) => (
         <View key={index}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Text style={styles.eventLocal}>{item.nome}</Text>
+            <Text style={styles.eventLocal}>{item.nome} - {item.medida}</Text>
             <Text style={styles.eventDate}>{item.quantidade}</Text>
           </View>
 

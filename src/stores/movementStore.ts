@@ -204,7 +204,7 @@ export const useMovementStore = create<MovementSate>((set, get) => ({
       finalCalcStock = currentStock;
     });
 
-    console.log('finalCalcStock', finalCalcStock);
+    // console.log('finalCalcStock', finalCalcStock);
 
     if(finalCalcStock) stockStore.setStockInfos(finalCalcStock);
   }

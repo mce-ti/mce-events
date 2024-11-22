@@ -96,7 +96,7 @@ const PrintRecibo = ({ navigation, route }: HomeStackRouteScreen<'PrintRecibo'>)
           } else {
             return (
               <View key={index}>
-                <Text style={styles.produto}>- {art.nome}: {item.quantidade} und. {art.valor ? (formatBRL(art.valor) + '/' + formatBRL(art.valor * item.quantidade)) : ''}</Text>
+                <Text style={styles.produto}>- {art.nome} {art.medida}: {item.quantidade} und. {art.valor ? (formatBRL(art.valor) + '/' + formatBRL(art.valor * item.quantidade)) : ''}</Text>
               </View>
             );
           }

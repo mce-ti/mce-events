@@ -5,16 +5,27 @@ import { styles } from "./styles"
 
 import { MaterialIcons, FontAwesome5 } from '@expo/vector-icons'
 import { hasNetwork } from "src/utils/net"
+import { useEffect } from "react"
 
-const SyncButton = () => {
+interface SyncButtonProps {
+  onSyncingChange?: (isSyncing: boolean) => void;
+}
+
+const SyncButton = ({onSyncingChange} : SyncButtonProps) => {
   const { hasSync, isSyncing, rotate, sync } = useSyncButton()
 
-  useInterval(async () => {
-    const isConnected = await hasNetwork();
-    if (isConnected) {
-      sync();
+  useEffect(() => {
+    if (onSyncingChange) {
+      onSyncingChange(isSyncing);
     }
-  }, 300000);
+  }, [isSyncing, onSyncingChange]);
+
+  // useInterval(async () => {
+  //   const isConnected = await hasNetwork();
+  //   if (isConnected) {
+  //     sync();
+  //   }
+  // }, 300000);
 
   return (
     <TouchableOpacity style={styles.container} onPress={sync}>

@@ -141,6 +141,13 @@ const useLogin = ({ showAlert }: useLoginProps) => {
           
           return;
         }
+      } else {
+        showAlert({
+          show: true,
+          title: 'Alerta',
+          message: 'Você está desconectado da internet. Por favor, verifique sua conexão!',
+          confirmText: 'Entendi',
+        });
       }
 
       verifyUserIsLogged();

@@ -1,6 +1,7 @@
 export type GetStockResponse = {
   id: number
   nome: string
+  medida: string
   quantidade: number
 }[]
 

@@ -27,6 +27,7 @@ type Produto = {
   id: number;
   id_arte: number;
   quantidade: number;
+  medida: string;
   sujos?: boolean;
 };
 
@@ -47,10 +48,10 @@ const useProductMovement = ({ navigation, route: { params }, showAlert }: usePro
 
   let counterId = 0;
 
-  const addProduto = async (artId: number, quantity: number, sujos?: boolean) => {
+  const addProduto = async (artId: number, quantity: number, medida: string, sujos?: boolean) => {
     setProdutos(prevProdutos => [
       ...prevProdutos, 
-      { id: counterId, id_arte: artId, quantidade: quantity, sujos: sujos }
+      { id: counterId, id_arte: artId, quantidade: quantity, medida: medida, sujos: sujos }
     ]);
     counterId++;
   };
@@ -101,10 +102,14 @@ const useProductMovement = ({ navigation, route: { params }, showAlert }: usePro
 
       let itemsToAdd = 0;
       const sujos = values.sujos !== null ? values.sujos : 0;
-      const art = arts[0];
+      const artSujo = arts[0];
 
       for (const artId in values.limposQuantityByArt) {
         const quantity = values.limposQuantityByArt[artId];
+
+        const art = arts.find(item => item.id === parseInt(artId));
+
+        console.log(art ? art.medida : 'Sem medida');
 
         if (typeof quantity === 'number' && !isNaN(quantity) && quantity > 0) {
           await addProductMovement({
@@ -122,7 +127,7 @@ const useProductMovement = ({ navigation, route: { params }, showAlert }: usePro
             date: currentDateTimeDB()
           });
 
-          await addProduto(parseInt(artId), quantity);
+          await addProduto(parseInt(artId), quantity, art?.medida ? art.medida : '');
           itemsToAdd++;
 
           await handleStockQuantity({
@@ -139,7 +144,7 @@ const useProductMovement = ({ navigation, route: { params }, showAlert }: usePro
           id_evento: event.id,
           indice_estoque: params.indice_estoque,
           time: new Date().getTime(),
-          id_art: art.id,
+          id_art: artSujo.id,
           id_operator: params.id,
           name_operator: params.name,
           assinatura: values.signature,
@@ -150,7 +155,7 @@ const useProductMovement = ({ navigation, route: { params }, showAlert }: usePro
           date: currentDateTimeDB()
         });
 
-        await addProduto(art.id, sujos, true);
+        await addProduto(artSujo.id, sujos, artSujo?.medida ? artSujo.medida : '', true);
         itemsToAdd++;
       }
 

@@ -62,6 +62,7 @@ export type ProductMovementStorage = {
 export type StockStorage = {
   id: number
   nome: string
+  medida: string
   quantidade: number
 }[]
 

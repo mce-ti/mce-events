@@ -57,6 +57,7 @@ export const useStockStore = create<StockState>(set => ({
         newStock.push({
           id: item.id,
           nome: item.nome,
+          medida: item.medida,
           quantidade: item.quantidade
         })
       }
@@ -86,6 +87,7 @@ export const useStockStore = create<StockState>(set => ({
         newStock.push({
           id: item.id,
           nome: item.nome,
+          medida: item.medida,
           quantidade: item.quantidade
         })
       }
