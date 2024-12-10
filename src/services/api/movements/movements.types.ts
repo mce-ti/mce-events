@@ -36,6 +36,7 @@ export type GetMovementsResponse = {
     status: string
     id: number
     id_operador: number
+    id_evento: number
     indice_estoque: number
     nome_operador: string
     controle: 'Entrada' | 'Saída'

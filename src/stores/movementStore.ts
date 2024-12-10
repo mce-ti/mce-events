@@ -54,7 +54,7 @@ export const useMovementStore = create<MovementSate>((set, get) => ({
       for (const movement of dbMovements.data) {
         newMovements.push({
           id: movement.id,
-          id_evento: event.id,
+          id_evento: movement.id_evento,
           indice_estoque: movement.indice_estoque,
           id_art: movement.id_arte,
           id_operator: movement.id_operador,
@@ -98,6 +98,7 @@ export const useMovementStore = create<MovementSate>((set, get) => ({
         filteredMovements.push({
           id_operator: movement.id_operator,
           indice_estoque: movement.indice_estoque,
+          id_evento: movement.id_evento,
           type: movement.type === 'in' ? 'Entrada' : 'Saída',
           status: movement.status,
           quantity: movement.quantity,
@@ -120,8 +121,8 @@ export const useMovementStore = create<MovementSate>((set, get) => ({
         !inserted_time.includes(item.time)
       ); // Verifica se todos os registros que estavam no local foram inseridos 
       
-      console.log('inserted_data', inserted_time);
-      console.log('notInsertedMovements', notInsertedMovements);  
+      // console.log('inserted_data', inserted_time);
+      // console.log('notInsertedMovements', notInsertedMovements);  
 
       if(Array.isArray(notInsertedMovements) && notInsertedMovements.length > 0) {
 

@@ -109,7 +109,7 @@ const useProductMovement = ({ navigation, route: { params }, showAlert }: usePro
 
         const art = arts.find(item => item.id === parseInt(artId));
 
-        console.log(art ? art.medida : 'Sem medida');
+        // console.log(art ? art.medida : 'Sem medida');
 
         if (typeof quantity === 'number' && !isNaN(quantity) && quantity > 0) {
           await addProductMovement({

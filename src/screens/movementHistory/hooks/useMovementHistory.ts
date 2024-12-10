@@ -4,18 +4,22 @@ import type { RootDrawerScreen } from "src/routes/routes.types"
 import { useMovementStore } from 'src/stores';
 import { useArtsStore } from "src/stores/artsStore"
 import { formatTextLenght } from 'src/utils/text.utils';
-
-
+import { EventStorage } from 'src/storage/storage.types';
+import { useAsyncStorage } from 'src/hooks'
 
 const useMovementHistory = ({ navigation }: RootDrawerScreen<'MovementHistory'> ) => {
   const movementsInStore = useMovementStore(state => state.movements)
   const arts = useArtsStore(state => state.arts)
 
+  const [useEvent, setEvent] = useState<EventStorage|null>(null)
   const [visibleMovements, setVisibleMovements] = useState(30);
   const [hideAddMoreMovements, setHideAddMoreMovements] = useState(false);
-  const [countTotalMovements, setCountTotalMovements] = useState(movementsInStore.length);
-  // console.log(movementsInStore)
+  const [countTotalMovements, setCountTotalMovements] = useState(movementsInStore.length); 
+
+  const { getItem } = useAsyncStorage()
+
   const movements = movementsInStore
+    .filter(movement => movement.id_evento === useEvent?.id)
     .sort((a, b) => {
       const d1 = a.date ? new Date(a.date).getTime() : a.time;
       const d2 = b.date ? new Date(b.date).getTime() : b.time;
@@ -34,6 +38,12 @@ const useMovementHistory = ({ navigation }: RootDrawerScreen<'MovementHistory'> 
     return '';
   }
 
+  const loadInfos = async () => {
+    const eventStorage: EventStorage|null = await getItem('event')
+
+    setEvent(eventStorage)
+  }
+
   useEffect(() => {
     if(visibleMovements >= countTotalMovements) {
       setHideAddMoreMovements(true);
@@ -43,6 +53,10 @@ const useMovementHistory = ({ navigation }: RootDrawerScreen<'MovementHistory'> 
 
     setCountTotalMovements(movementsInStore.length);
   }, [visibleMovements, movements]);
+
+  useEffect(() => {
+    loadInfos()
+  }, [])
 
   useFocusEffect(
     useCallback(() => {

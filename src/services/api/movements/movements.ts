@@ -3,13 +3,13 @@ import axios from 'axios'
 
 import type { GetMovementsRequest, GetMovementsResponse, SyncMovementsRequest, PutMovementsResponse } from './movements.types'
 
-export const syncMovement = async (id_evento: number, movements: Array<{id_operator: number, indice_estoque: number, type: string, status: string, quantity: number, id_art: number, responsible: string, assinatura: string, name_operator: string, time: number }>): Promise<PutMovementsResponse> => {
+export const syncMovement = async (id_evento: number, movements: Array<{id_operator: number, id_evento?: number, indice_estoque: number, type: string, status: string, quantity: number, id_art: number, responsible: string, assinatura: string, name_operator: string, time: number }>): Promise<PutMovementsResponse> => {
 
   const formData = new FormData()
 
   formData.append('id_evento', id_evento.toString());
   formData.append('movements', JSON.stringify(movements));
-
+  console.log('movements', movements)
   const config = {
     headers: {
       'Content-Type': 'multipart/form-data'
