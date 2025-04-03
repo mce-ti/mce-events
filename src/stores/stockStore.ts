@@ -2,7 +2,7 @@ import { create } from "zustand"
 
 import { useAsyncStorage } from "src/hooks"
 import { apiStock } from "src/services/api"
-import { getEventStorage, getStockStorage, getStockLimposStorage, getStockRelStorage, getStockInfosStorage } from "src/storage/storage"
+import { getEventStorage, getStockStorage, getStockLimposStorage, getStockRelStorage, getStockInfosStorage, getSujos } from "src/storage/storage"
 import { StockStorage, StockRelStorage, StockInfosStorage, handleStockQuantity } from "src/storage/storage.types"
 import { hasNetwork } from "src/utils/net"
 
@@ -24,6 +24,7 @@ type StockState = {
   stockLimpos: StockStorage,
   stockRel: StockRelStorage,
   stockInfos: StockInfosStorage,
+  stockSujos: number,
   syncStock: () => Promise<void>
   syncStockLimpos: () => Promise<void>
   syncStockRel: () => Promise<void>
@@ -31,11 +32,13 @@ type StockState = {
   handleStockQuantity: (data: handleStockQuantity) => Promise<void>
   setStockLimpos: (value: StockItem[]) => void;
   setStockInfos: (value: StockItemInfo[]) => void;
+  syncSujos : () => Promise<void>
 }
 
 export const useStockStore = create<StockState>(set => ({
   stock: [],
   stockLimpos: [],
+  stockSujos: 0,
   stockRel: [],
   stockInfos: {
     estoque_limpo: {},
@@ -157,6 +160,30 @@ export const useStockStore = create<StockState>(set => ({
       };
 
       set(() => ({ stockInfos: convertedStockInfos }));
+    }
+  },
+  syncSujos: async () => {
+    const event = await getEventStorage()
+
+    if (!event) return
+
+    if (await hasNetwork()) {
+      const { setItem } = useAsyncStorage()
+
+      const dbSujos = await apiStock.getSujos(event.id)
+      let sujos = 0;
+
+      if(dbSujos.http_code == 200) {
+        sujos = dbSujos.sujos;
+      }
+
+      await setItem('sujos', sujos)
+
+      set(() => ({ stockSujos: sujos}));
+    } else {
+      const sujos = await getSujos()
+
+      set(() => ({ stockSujos: sujos ? sujos : 0 }));
     }
   },
   handleStockQuantity: async (data: handleStockQuantity) => {

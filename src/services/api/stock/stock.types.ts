@@ -26,3 +26,10 @@ export type GetStockInfosResponse = {
     }[] 
   };
 }[];
+
+export type GetSujosResponse = {
+  status: 'success' | 'error';
+  message: string;
+  http_code: number;
+  sujos: number;
+}

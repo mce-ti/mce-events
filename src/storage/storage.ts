@@ -65,6 +65,16 @@ export const getStockInfosStorage = async () => {
   return stockInfos
 }
 
+export const getSujos = async (): Promise<number> => {
+  const { getItem } = useAsyncStorage();
+
+  const storedValue = await getItem('sujos');
+
+  const sujos = storedValue ? Number(storedValue) : 0;
+
+  return sujos;
+};
+
 export const getQrCodesStorage = async () => {
   const { getItem } = useAsyncStorage()
 

@@ -1,6 +1,6 @@
 import { StyleSheet, View, Text, FlatList } from "react-native"
 import { Layout } from "src/template"
-import { Divider, Input} from "src/components"
+import { Divider, Input } from "src/components"
 import { Operator } from "./components/Operator"
 import { formatDBDate } from "src/utils/date.utils"
 import { useHome } from './hooks/useHome'
@@ -17,6 +17,7 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
     stockLimpoTotal,
     useEvent,
     searchValue,
+    sujos,
     setSearchValue
   } = useHome({ navigation, route })
 
@@ -37,7 +38,7 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
         value={searchValue}
         onChangeText={setSearchValue}
       />
-      
+
       <FlatList
         data={stockRel}
         scrollEnabled={false}
@@ -46,7 +47,7 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
             <Text style={styles.estoque} onPress={() => navigation.navigate('InfosEstoque', { id_estoque: stockItem.indice, nome_estoque: stockItem.estoque, nome_evento: useEvent?.nome, data: formatDBDate(useEvent?.data) })}>{stockItem.estoque}</Text>
 
             <FlatList
-             data={operators.filter(({ nome, localizacao, indice_estoque }) => indice_estoque === stockItem.indice && (nome.toLowerCase().includes(searchValue.toLowerCase()) || localizacao?.toLowerCase().includes(searchValue.toLowerCase())))}
+              data={operators.filter(({ nome, localizacao, indice_estoque }) => indice_estoque === stockItem.indice && (nome.toLowerCase().includes(searchValue.toLowerCase()) || localizacao?.toLowerCase().includes(searchValue.toLowerCase())))}
               scrollEnabled={false}
               renderItem={({ item }) => (
                 <Operator
@@ -64,24 +65,24 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
         keyExtractor={(item, index) => index.toString()}
       />
 
-      { stockRel.length === 1 ? (   
-          <View>
-            <Divider opacity={0} />
-            <Text style={styles.stockName}>Estoque total limpo disponível</Text>
-            {stockLimpoTotal.map((item, index) => (
-              <View key={index}>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                  <Text style={styles.eventLocal}>{item.nome} {item.medida}</Text>
-                  <Text style={styles.eventDate}>{item.quantidade}</Text>
-                </View>
-
-                <Divider opacity={.1} space={2.5} />
+      {stockRel.length === 1 ? (
+        <View>
+          <Divider opacity={0} />
+          <Text style={styles.stockName}>Estoque total limpo disponível</Text>
+          {stockLimpoTotal.map((item, index) => (
+            <View key={index}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                <Text style={styles.eventLocal}>{item.nome} {item.medida}</Text>
+                <Text style={styles.eventDate}>{item.quantidade}</Text>
               </View>
-            ))}
-          </View>
-        ) : (
-          <Text style={{display : 'none'}}></Text>
-        )
+
+              <Divider opacity={.1} space={2.5} />
+            </View>
+          ))}
+        </View>
+      ) : (
+        <Text style={{ display: 'none' }}></Text>
+      )
       }
 
       <Divider opacity={0} />
@@ -97,6 +98,15 @@ const Home = ({ navigation, route }: HomeStackRouteScreen<'Home'>) => {
           <Divider opacity={.1} space={2.5} />
         </View>
       ))}
+
+      <Divider opacity={0} />
+
+      <Text style={styles.stockName}>Estoque total sujo</Text>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+      <Text style={styles.eventLocal}>Copos Sujos</Text>
+      <Text style={styles.eventDate}>{sujos}</Text>
+      </View>
+
     </Layout>
   )
 }

@@ -32,6 +32,7 @@ const useSyncButton = () => {
   const syncStock = useStockStore(state => state.syncStock)
   const syncStockLimpos = useStockStore(state => state.syncStockLimpos)
   const syncStockInfos = useStockStore(state => state.syncStockInfos)
+  const syncSujos = useStockStore(state => state.syncSujos)
 
   const { getItem, removeItem } = useAsyncStorage()
 
@@ -111,6 +112,7 @@ const useSyncButton = () => {
         await syncOperators()
         await syncArts()
         await syncStock()
+        await syncSujos()
         await syncStockLimpos()
         await syncStockInfos()
       } 
